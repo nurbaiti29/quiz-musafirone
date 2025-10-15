@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis PAI Kelas 3 - Jujur, Hormat, dan Patuh</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --bg-color: #eef5ff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .start-screen, .quiz-screen, .result-screen {
+            display: none;
+        }
+
+        .start-screen.active, .quiz-screen.active, .result-screen.active {
+            display: block;
+        }
+        
+        /* Start Screen Styling */
+        #start-screen-content {
+            text-align: center;
+        }
+
+        #student-name {
+            width: calc(100% - 40px);
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        #student-name:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .packet-selection button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .packet-selection button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Quiz Screen Styling */
+        .question-item {
+            background-color: var(--light-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .options div {
+            margin-bottom: 10px;
+        }
+
+        .options label {
+            display: block;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .options input[type="radio"] {
+            display: none;
+        }
+
+        .options input[type="radio"]:checked + label {
+            background-color: #d1e7fd;
+            border-color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .fill-in-the-blank-input {
+            width: 50%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .submit-btn, .restart-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        
+        .restart-btn {
+            background-color: var(--secondary-color);
+        }
+        .restart-btn:hover {
+            background-color: #5a6268;
+        }
+
+        /* Result Screen Styling */
+        #result-summary {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        #score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--success-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            font-size: 1.5em;
+        }
+        
+        #score-circle.medium { background-color: #ffc107; }
+        #score-circle.low { background-color: var(--danger-color); }
+        
+        #score-text {
+            font-size: 2em;
+            font-weight: 700;
+        }
+
+        #wrong-answers-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #wrong-answers-list li {
+            background-color: #fbebee;
+            border: 1px solid var(--danger-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        
+        #wrong-answers-container h3 {
+            text-align: center;
+            color: var(--danger-color);
+        }
+        
+        #correct-answers-message {
+            text-align: center;
+            color: var(--success-color);
+            font-size: 1.2em;
+            padding: 20px;
+            background-color: #e9f7ef;
+            border-radius: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="start-screen active">
+            <div id="start-screen-content">
+                <h1>Kuis Online PAI Kelas 3</h1>
+                <h2>Materi: Jujur, Hormat, dan Patuh</h2>
+                <input type="text" id="student-name" placeholder="Ketik nama lengkap kamu di sini...">
+                <p>Silakan pilih paket soal yang ingin dikerjakan:</p>
+                <div class="packet-selection">
+                    <button onclick="startQuiz('A')">Paket A</button>
+                    <button onclick="startQuiz('B')">Paket B</button>
+                    <button onclick="startQuiz('C')">Paket C</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="quiz-screen">
+            <h2 id="quiz-header"></h2>
+            <form id="quiz-form"></form>
+            <button class="submit-btn" onclick="submitQuiz()">Selesai & Lihat Hasil</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="result-screen">
+            <h2>Hasil Kuis</h2>
+            <div id="result-summary">
+                <p><strong>Nama:</strong> <span id="result-student-name"></span></p>
+                <div id="score-circle">
+                    <span id="score-text">0</span>
+                    <span>Skor</span>
+                </div>
+            </div>
+            <div id="wrong-answers-container">
+                 <h3>Jawaban yang Salah:</h3>
+                 <ul id="wrong-answers-list"></ul>
+            </div>
+            <div id="correct-answers-message" style="display:none;">
+                <p>🎉 Hebat! Semua jawabanmu benar! 🎉</p>
+            </div>
+            <button class="restart-btn" onclick="restartQuiz()">Kerjakan Kuis Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        // Database Soal
+        const quizData = {
+            A: [
+                { type: 'pg', question: "1. Perilaku jujur artinya berkata dan berbuat sesuai dengan...", options: ["keinginan sendiri", "kenyataan yang sebenarnya", "apa yang dikatakan teman"], answer: "kenyataan yang sebenarnya" },
+                { type: 'pg', question: "2. Saat ulangan, Adi tahu jawaban dari soal yang sulit. Teman di sebelahnya bertanya kepada Adi. Sikap Adi yang menunjukkan perilaku jujur adalah...", options: ["memberikan jawaban kepada temannya", "menolak untuk memberi contekan", "pura-pura tidak mendengar"], answer: "menolak untuk memberi contekan" },
+                { type: 'pg', question: "3. Salah satu akibat buruk dari perbuatan tidak jujur atau berbohong adalah...", options: ["memiliki banyak teman", "disayang oleh guru", "tidak akan dipercaya lagi oleh orang lain"], answer: "tidak akan dipercaya lagi oleh orang lain" },
+                { type: 'pg', question: "4. Ketika bertemu dengan bapak atau ibu guru di jalan, sikap hormat yang sebaiknya kamu lakukan adalah...", options: ["bersembunyi agar tidak terlihat", "membuang muka dan pura-pura tidak kenal", "menyapa dan mengucapkan salam"], answer: "menyapa dan mengucapkan salam" },
+                { type: 'pg', question: "5. Berikut ini yang termasuk contoh sikap hormat kepada orang tua adalah...", options: ["berbicara dengan suara yang keras dan membentak", "meminta izin sebelum pergi bermain", "membantah nasihat yang diberikan"], answer: "meminta izin sebelum pergi bermain" },
+                { type: 'pg', question: "6. Ketika ibu memintamu untuk membantu membersihkan kamar, bentuk kepatuhanmu adalah...", options: ["menolak karena sedang asyik bermain", "segera melaksanakannya dengan ikhlas", "berjanji akan melakukannya nanti"], answer: "segera melaksanakannya dengan ikhlas" },
+                { type: 'pg', question: "7. Bentuk kepatuhan kepada guru di sekolah ditunjukkan dengan cara...", options: ["membuat keributan di dalam kelas", "mengerjakan tugas yang diberikan tepat waktu", "mencoret-coret dinding sekolah"], answer: "mengerjakan tugas yang diberikan tepat waktu" },
+                { type: 'pg', question: "8. Salah satu manfaat dari bersikap jujur dalam kehidupan sehari-hari adalah...", options: ["hati menjadi resah dan tidak tenang", "dijauhi oleh teman-teman", "hati menjadi tenang dan disayang Allah SWT"], answer: "hati menjadi tenang dan disayang Allah SWT" },
+                { type: 'pg', question: "9. Akibat jika kita tidak bersikap hormat kepada guru adalah...", options: ["ilmu yang kita pelajari menjadi tidak berkah", "nilai ulangan menjadi bagus", "teman-teman akan memuji kita"], answer: "ilmu yang kita pelajari menjadi tidak berkah" },
+                { type: 'pg', question: "10. Dita tidak sengaja memecahkan vas bunga di ruang guru. Ia segera memberitahu gurunya, meminta maaf, dan bersedia menggantinya. Perilaku Dita menunjukkan sikap...", options: ["penakut dan cengeng", "rajin dan pintar", "jujur dan bertanggung jawab"], answer: "jujur dan bertanggung jawab" },
+                { type: 'isian', question: "11. Mengembalikan sisa uang belanja kepada ibu tanpa menguranginya adalah contoh perilaku...", answer: "jujur" },
+                { type: 'isian', question: "12. Mendengarkan penjelasan guru di kelas dengan sungguh-sungguh adalah contoh perilaku...", answer: "hormat" },
+                { type: 'isian', question: "13. Melaksanakan nasihat ayah untuk tidak tidur terlalu malam adalah contoh perilaku...", answer: "patuh" },
+                { type: 'isian', question: "14. Anak yang sering berbohong akan kehilangan ... dari orang lain.", answer: "kepercayaan" },
+                { type: 'isian', question: "15. Manfaat taat kepada orang tua dan guru akan membuat hidup kita menjadi...", answer: "berkah" }
+            ],
+            B: [
+                { type: 'pg', question: "1. Manfaat utama dari bersikap taat kepada orang tua dan guru adalah...", options: ["mendapat banyak uang jajan", "membuat hidup menjadi berkah", "bisa bermain sepuasnya"], answer: "membuat hidup menjadi berkah" },
+                { type: 'pg', question: "2. Arti dari perilaku jujur adalah...", options: ["berkata sesuai fakta", "mengikuti kemauan teman", "berbuat sesuka hati"], answer: "berkata sesuai fakta" },
+                { type: 'pg', question: "3. Akibat terburuk jika sering berbohong adalah...", options: ["diberi hadiah", "hilangnya kepercayaan dari orang lain", "menjadi populer"], answer: "hilangnya kepercayaan dari orang lain" },
+                { type: 'pg', question: "4. Anton menemukan dompet di halaman sekolah. Perilaku jujur yang seharusnya ia lakukan adalah...", options: ["mengambil uangnya lalu membuang dompetnya", "memberikannya kepada guru piket", "mengajak teman untuk jajan dengan uang itu"], answer: "memberikannya kepada guru piket" },
+                { type: 'pg', question: "5. Saat ayah dan ibu sedang menasihati, sikap kita yang benar adalah...", options: ["mendengarkan dengan baik", "bermain HP", "memotong pembicaraan mereka"], answer: "mendengarkan dengan baik" },
+                { type: 'pg', question: "6. Jika kita tidak hormat kepada guru, maka ilmu yang didapat akan menjadi...", options: ["sangat bermanfaat", "mudah diingat", "tidak berkah"], answer: "tidak berkah" },
+                { type: 'pg', question: "7. Patuh pada perintah guru di sekolah, contohnya adalah...", options: ["tidak mengerjakan PR", "memakai seragam sesuai aturan", "terlambat datang ke sekolah"], answer: "memakai seragam sesuai aturan" },
+                { type: 'pg', question: "8. Ketika berbicara dengan guru, kita harus menggunakan bahasa yang...", options: ["kasar", "sopan dan santun", "seenaknya"], answer: "sopan dan santun" },
+                { type: 'pg', question: "9. Hati orang yang selalu jujur akan merasa...", options: ["gelisah", "takut", "tenang"], answer: "tenang" },
+                { type: 'pg', question: "10. Ayah menyuruh Roni mematikan TV karena sudah malam. Sikap patuh Roni adalah...", options: ["pura-pura tidur", "segera mematikan TV dan pergi tidur", "menambah volume TV"], answer: "segera mematikan TV dan pergi tidur" },
+                { type: 'isian', question: "11. Perilaku yang menunjukkan kesesuaian antara perkataan dan perbuatan disebut...", answer: "jujur" },
+                { type: 'isian', question: "12. Menjaga nama baik orang tua adalah salah satu bentuk sikap ... kepada mereka.", answer: "hormat" },
+                { type: 'isian', question: "13. Mentaati semua peraturan sekolah adalah wujud ... kepada guru dan kepala sekolah.", answer: "patuh" },
+                { type: 'isian', question: "14. Orang yang sekali berbohong, akan sulit untuk ... orang lain lagi.", answer: "dipercaya" },
+                { type: 'isian', question: "15. Hidup akan menjadi ... jika kita selalu taat pada nasihat orang tua.", answer: "berkah" }
+            ],
+            C: [
+                { type: 'pg', question: "1. Perilaku jujur, hormat, dan patuh adalah perbuatan yang...", options: ["tercela", "terpuji", "biasa saja"], answer: "terpuji" },
+                { type: 'pg', question: "2. Tidak menyontek saat ujian adalah contoh penerapan sikap jujur di lingkungan...", options: ["rumah", "sekolah", "masyarakat"], answer: "sekolah" },
+                { type: 'pg', question: "3. Manfaat dari bersikap jujur adalah...", options: ["mendapat banyak musuh", "dipercaya oleh banyak orang", "selalu merasa cemas"], answer: "dipercaya oleh banyak orang" },
+                { type: 'pg', question: "4. Bentuk kepatuhan kita kepada orang tua di rumah adalah...", options: ["melaksanakan perintahnya dengan ikhlas", "melawan jika tidak suka", "pergi tanpa izin"], answer: "melaksanakan perintahnya dengan ikhlas" },
+                { type: 'pg', question: "5. Saat guru sedang menjelaskan pelajaran, sikap kita sebaiknya...", options: ["mengobrol dengan teman", "memperhatikan dengan saksama", "bermain game di bawah meja"], answer: "memperhatikan dengan saksama" },
+                { type: 'pg', question: "6. Definisi dari jujur adalah...", options: ["berkata bohong demi kebaikan", "berkata apa adanya sesuai kenyataan", "menyembunyikan kebenaran"], answer: "berkata apa adanya sesuai kenyataan" },
+                { type: 'pg', question: "7. Akibat dari sering berbohong adalah...", options: ["hidup menjadi tenang", "disukai teman-teman", "dijauhi teman-teman"], answer: "dijauhi teman-teman" },
+                { type: 'pg', question: "8. Sikap patuh kepada guru akan membuat proses belajar menjadi...", options: ["sulit", "terhambat", "lancar"], answer: "lancar" },
+                { type: 'pg', question: "9. Jika tidak sengaja merusak mainan adik, sikap yang benar adalah...", options: ["menyalahkan adik", "mengakui dan meminta maaf", "membuangnya diam-diam"], answer: "mengakui dan meminta maaf" },
+                { type: 'pg', question: "10. Tidak hormat kepada orang tua adalah perbuatan...", options: ["durhaka", "saleh", "terpuji"], answer: "durhaka" },
+                { type: 'isian', question: "11. Berbicara terus terang dan tidak bohong adalah pengertian dari...", answer: "jujur" },
+                { type: 'isian', question: "12. Mencium tangan orang tua saat akan berangkat sekolah adalah contoh sikap...", answer: "hormat" },
+                { type: 'isian', question: "13. Datang ke sekolah tepat waktu sesuai aturan adalah bentuk ... pada peraturan.", answer: "patuh" },
+                { type: 'isian', question: "14. Sekali kita berbohong, maka akan sulit mendapatkan ... dari orang lain.", answer: "kepercayaan" },
+                { type: 'isian', question: "15. Ridho Allah terletak pada ridho...", answer: "orang tua" }
+            ]
+        };
+
+        let currentPacket = [];
+        let studentName = "";
+
+        // Function to start the quiz
+        function startQuiz(packetKey) {
+            studentName = document.getElementById('student-name').value;
+            if (studentName.trim() === "") {
+                alert("Harap isi nama lengkap terlebih dahulu!");
+                return;
+            }
+
+            currentPacket = quizData[packetKey];
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('quiz-screen').classList.add('active');
+            document.getElementById('quiz-header').innerText = `Soal Paket ${packetKey}`;
+            
+            renderQuiz();
+        }
+
+        // Function to display the questions
+        function renderQuiz() {
+            const quizForm = document.getElementById('quiz-form');
+            quizForm.innerHTML = ''; // Clear previous questions
+
+            currentPacket.forEach((q, index) => {
+                const questionItem = document.createElement('div');
+                questionItem.className = 'question-item';
+                
+                let questionHTML = `<div class="question-text">${q.question}</div>`;
+
+                if (q.type === 'pg') {
+                    questionHTML += `<div class="options">`;
+                    q.options.forEach(option => {
+                        questionHTML += `
+                            <div>
+                                <input type="radio" id="q${index}_${option}" name="question${index}" value="${option}">
+                                <label for="q${index}_${option}">${option}</label>
+                            </div>
+                        `;
+                    });
+                    questionHTML += `</div>`;
+                } else if (q.type === 'isian') {
+                     questionHTML += `<input type="text" name="question${index}" class="fill-in-the-blank-input" placeholder="Ketik jawabanmu...">`;
+                }
+                
+                questionItem.innerHTML = questionHTML;
+                quizForm.appendChild(questionItem);
+            });
+        }
+        
+        // Function to handle quiz submission
+        function submitQuiz() {
+            let score = 0;
+            const wrongAnswers = [];
+            const form = document.getElementById('quiz-form');
+
+            currentPacket.forEach((q, index) => {
+                const input = form.elements[`question${index}`];
+                let userAnswer;
+                
+                if (q.type === 'pg') {
+                    userAnswer = input.value;
+                } else { // isian
+                    userAnswer = input.value.trim().toLowerCase();
+                }
+
+                if (userAnswer === q.answer.toLowerCase()) {
+                    score++;
+                } else {
+                    wrongAnswers.push({
+                        question: q.question,
+                        yourAnswer: userAnswer || "Tidak dijawab",
+                        correctAnswer: q.answer
+                    });
+                }
+            });
+
+            showResults(score, wrongAnswers);
+        }
+
+        // Function to display the results
+        function showResults(score, wrongAnswers) {
+            document.getElementById('quiz-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            const totalQuestions = currentPacket.length;
+            const finalScore = Math.round((score / totalQuestions) * 100);
+
+            document.getElementById('result-student-name').innerText = studentName;
+            
+            const scoreCircle = document.getElementById('score-circle');
+            const scoreText = document.getElementById('score-text');
+            scoreText.innerText = finalScore;
+
+            scoreCircle.className = '';
+            if (finalScore >= 80) {
+                 scoreCircle.classList.add('success');
+            } else if (finalScore >= 60) {
+                 scoreCircle.classList.add('medium');
+            } else {
+                 scoreCircle.classList.add('low');
+            }
+
+            const wrongAnswersList = document.getElementById('wrong-answers-list');
+            const wrongAnswersContainer = document.getElementById('wrong-answers-container');
+            const correctMessage = document.getElementById('correct-answers-message');
+            wrongAnswersList.innerHTML = '';
+
+            if (wrongAnswers.length === 0) {
+                wrongAnswersContainer.style.display = 'none';
+                correctMessage.style.display = 'block';
+            } else {
+                wrongAnswersContainer.style.display = 'block';
+                correctMessage.style.display = 'none';
+                wrongAnswers.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <strong>Soal:</strong> ${item.question}<br>
+                        <strong>Jawabanmu:</strong> <span style="color: red;">${item.yourAnswer}</span><br>
+                        <strong>Jawaban Benar:</strong> <span style="color: green;">${item.correctAnswer}</span>
+                    `;
+                    wrongAnswersList.appendChild(li);
+                });
+            }
+        }
+        
+        // Function to restart the quiz
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('start-screen').classList.add('active');
+            document.getElementById('student-name').value = '';
+        }
+    </script>
+</body>
+</html>
+
