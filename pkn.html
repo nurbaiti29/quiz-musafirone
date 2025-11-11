@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis 40 Soal: Desa & Kelurahan</title>
+    <!-- Memuat Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Menggunakan font Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style kustom untuk radio button yang dipilih */
+        input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #2563eb; /* text-blue-600 */
+        }
+        /* Menyembunyikan elemen pada awalnya */
+        #results-container {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 sm:p-6">
+
+    <div class="w-full max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">
+                    Kuis: Perangkat Desa & Kelurahan
+                </h1>
+                
+                <!-- Timer -->
+                <div id="timer" class="text-2xl font-bold text-center text-blue-700 mb-6 p-3 bg-blue-50 rounded-lg sticky top-4 z-10 shadow-sm">
+                    Waktu Tersisa: 40:00
+                </div>
+
+                <!-- Form Kuis -->
+                <form id="quizForm" class="space-y-8"></form>
+
+                <!-- Tombol Aksi -->
+                <div id="action-buttons" class="mt-10 flex flex-col sm:flex-row gap-4">
+                    <button type="button" id="submitButton" class="w-full sm:w-1/2 bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Selesai & Kumpulkan
+                    </button>
+                    <button type="button" id="resetButton" class="w-full sm:w-1/2 bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                        Mulai Ulang
+                    </button>
+                </div>
+
+                <!-- Hasil Skor & Pembahasan (Tersembunyi) -->
+                <div id="results-container" class="mt-10">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Hasil Kuis Anda</h2>
+                    <!-- Hasil Skor -->
+                    <div id="results-summary" class="text-center text-2xl font-bold mb-8"></div>
+                    
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6 border-t pt-6">Pembahasan Detail</h3>
+                    <!-- Pembahasan Detail -->
+                    <div id="detailed-feedback" class="space-y-6"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BANK SOAL (40 SOAL) ---
+        // Dibuat berdasarkan materi yang diunggah
+        const quizData = [
+            { question: "Wilayah yang berada di luar kota dan masyarakatnya bekerja sebagai petani, nelayan, atau peternak disebut...", options: { A: "Kelurahan", B: "Desa", C: "Kecamatan", D: "Dusun" }, answer: "B" },
+            { question: "Wilayah yang berada di dalam kota atau kecamatan dan masyarakatnya bekerja di bidang perdagangan atau jasa disebut...", options: { A: "Desa", B: "RT", C: "Kelurahan", D: "Kabupaten" }, answer: "C" },
+            { question: "Pemimpin desa yang dipilih oleh rakyat desa melalui pemilihan disebut...", options: { A: "Lurah", B: "Kepala Desa (Kades)", C: "Camat", D: "Kepala Dusun (Kadus)" }, answer: "B" },
+            { question: "Pemimpin kelurahan yang diangkat oleh pemerintah kabupaten/kota disebut...", options: { A: "Lurah", B: "Kepala Desa (Kades)", C: "Kepala Seksi (Kasi)", D: "Sekretaris Kelurahan" }, answer: "A" },
+            { question: "Perangkat desa yang mengurus administrasi seperti surat menyurat dan arsip adalah...", options: { A: "Kepala Urusan (Kaur)", B: "Kepala Dusun (Kadus)", C: "Sekretaris Desa", D: "RT" }, answer: "C" },
+            { question: "Perangkat desa yang mengurus keuangan, pembangunan, dan pelayanan umum adalah...", options: { A: "Sekretaris Desa", B: "Kepala Dusun (Kadus)", C: "Kepala Urusan (Kaur)", D: "RW" }, answer: "C" },
+            { question: "Perangkat desa yang memimpin wilayah dusun di dalam desa adalah...", options: { A: "Sekretaris Desa", B: "Kepala Dusun (Kadus)", C: "Kepala Urusan (Kaur)", D: "Kepala Desa" }, answer: "B" },
+            { question: "Perangkat kelurahan yang mengurus administrasi kelurahan adalah...", options: { A: "Sekretaris Kelurahan", B: "Kepala Seksi (Kasi)", C: "Lurah", D: "RT" }, answer: "A" },
+            { question: "Perangkat kelurahan yang mengurus pemerintahan, pembangunan, dan pelayanan umum adalah...", options: { A: "Sekretaris Kelurahan", B: "Kepala Seksi (Kasi)", C: "Lurah", D: "RW" }, answer: "B" },
+            { question: "Struktur yang membantu mengatur lingkungan terkecil dan ada di desa maupun kelurahan adalah...", options: { A: "Kaur dan Kasi", B: "Hanya Kadus", C: "RT dan RW", D: "Sekretaris Desa dan Lurah" }, answer: "C" },
+            { question: "Mata pencaharian umum masyarakat desa, sesuai materi, adalah...", options: { A: "Perdagangan, Jasa, Industri", B: "Petani, Nelayan, Peternak", C: "Karyawan Pabrik", D: "Pegawai Negeri" }, answer: "B" },
+            { question: "Mata pencaharian umum masyarakat kelurahan, sesuai materi, adalah...", options: { A: "Perdagangan, Jasa, Industri", B: "Petani, Nelayan, Peternak", C: "Berkebun", D: "Bertani Saja" }, answer: "A" },
+            { question: "Apa perbedaan utama antara Kades dan Lurah berdasarkan cara pemilihannya?", options: { A: "Kades diangkat, Lurah dipilih", B: "Kades dipilih rakyat, Lurah diangkat pemerintah", C: "Keduanya dipilih rakyat", D: "Keduanya diangkat pemerintah" }, answer: "B" },
+            { question: "Siapa yang dibantu oleh Sekretaris Desa, Kaur, dan Kadus?", options: { A: "Lurah", B: "Camat", C: "Kepala Desa", D: "Bupati" }, answer: "C" },
+            { question: "Siapa yang dibantu oleh Sekretaris Kelurahan dan Kasi?", options: { A: "Lurah", B: "Camat", C: "Kepala Desa", D: "Walikota" }, answer: "A" },
+            { question: "Membuat KTP, KK, dan surat pindah adalah contoh dari tugas...", options: { A: "Menjaga keamanan", B: "Pelayanan kepada masyarakat", C: "Mengatur pembangunan", D: "Memimpin dusun" }, answer: "B" },
+            { question: "Menjaga ketertiban dan keamanan lingkungan adalah tugas dari...", options: { A: "Hanya Polisi", B: "Hanya Kades", C: "Hanya Lurah", D: "Perangkat desa dan kelurahan" }, answer: "D" },
+            { question: "Mengatur pembangunan di wilayahnya adalah salah satu tugas dari...", options: { A: "Hanya Kades", B: "Hanya Lurah", C: "Perangkat desa dan kelurahan", D: "Hanya Kaur dan Kasi" }, answer: "C" },
+            { question: "Singkatan dari 'Kades' adalah...", options: { A: "Kepala Dusun", B: "Kepala Daerah", C: "Kepala Desa", D: "Keamanan Desa" }, answer: "C" },
+            { question: "Singkatan dari 'Kaur' adalah...", options: { A: "Kepala Urusan", B: "Kepala Daerah", C: "Keamanan Urusan", D: "Kepala Rumah Tangga" }, answer: "A" },
+            { question: "Singkatan dari 'Kadus' adalah...", options: { A: "Keamanan Dusun", B: "Kepala Dusun", C: "Kepala Daerah", D: "Kepala Urusan" }, answer: "B" },
+            { question: "Singkatan dari 'Kasi' adalah...", options: { A: "Keamanan Seksi", B: "Kepala Suku", C: "Kepala Seksi", D: "Kepala Urusan" }, answer: "C" },
+            { question: "Manakah yang BUKAN merupakan perangkat desa?", options: { A: "Sekretaris Desa", B: "Kepala Urusan (Kaur)", C: "Kepala Dusun (Kadus)", D: "Kepala Seksi (Kasi)" }, answer: "D" },
+            { question: "Manakah yang BUKAN merupakan perangkat kelurahan?", options: { A: "Sekretaris Kelurahan", B: "Kepala Seksi (Kasi)", C: "Kepala Dusun (Kadus)", D: "RT dan RW" }, answer: "C" },
+            { question: "Pemimpin yang statusnya diangkat oleh pemerintah adalah...", options: { A: "Kepala Desa", B: "Lurah", C: "Kepala Dusun", D: "Ketua RT" }, answer: "B" },
+            { question: "Pemimpin yang statusnya dipilih oleh rakyat adalah...", options: { A: "Kepala Desa", B: "Lurah", C: "Kepala Seksi", D: "Sekretaris Kelurahan" }, answer: "A" },
+            { question: "Jika Anda tinggal di desa dan ingin mengurus surat, Anda akan pergi ke...", options: { A: "Sekretaris Desa", B: "Kepala Seksi (Kasi)", C: "Lurah", D: "Kantor Kecamatan" }, answer: "A" },
+            { question: "Jika Anda tinggal di kelurahan dan ingin mengurus administrasi, Anda akan pergi ke...", options: { A: "Kepala Urusan (Kaur)", B: "Kepala Dusun (Kadus)", C: "Sekretaris Kelurahan", D: "Kepala Desa" }, answer: "C" },
+            { question: "Tugas mengurus keuangan di desa adalah tanggung jawab...", options: { A: "Kepala Urusan (Kaur)", B: "Kepala Seksi (Kasi)", C: "Sekretaris Desa", D: "Kepala Dusun (Kadus)" }, answer: "A" },
+            { question: "Tugas mengurus pembangunan di kelurahan adalah tanggung jawab...", options: { A: "Kepala Urusan (Kaur)", B: "Kepala Seksi (Kasi)", C: "Sekretaris Kelurahan", D: "Lurah" }, answer: "B" },
+            { question: "Wilayah dusun adalah bagian dari...", options: { A: "Desa", B: "Kelurahan", C: "Kecamatan", D: "Kota" }, answer: "A" },
+            { question: "Sesuai materi, desa dan kelurahan sama-sama...", options: { A: "Dipimpin oleh Kades", B: "Dipimpin oleh Lurah", C: "Dipimpin oleh seorang pemimpin dan dibantu perangkatnya", D: "Berada di dalam kota" }, answer: "C" },
+            { question: "Pemerintah kabupaten/kota berperan dalam...", options: { A: "Memilih Kepala Desa", B: "Mengangkat Lurah", C: "Memilih Kepala Dusun", D: "Mengangkat Kaur" }, answer: "B" },
+            { question: "Rakyat desa berperan dalam...", options: { A: "Memilih Kepala Desa", B: "Mengangkat Lurah", C: "Memilih Kepala Seksi", D: "Mengangkat Kasi" }, answer: "A" },
+            { question: "Yang mengurus pelayanan umum di desa adalah...", options: { A: "Kepala Urusan (Kaur)", B: "Kepala Seksi (Kasi)", C: "Sekretaris Desa", D: "Kepala Dusun (Kadus)" }, answer: "A" },
+            { question: "Yang mengurus pelayanan umum di kelurahan adalah...", options: { A: "Kepala Urusan (Kaur)", B: "Kepala Seksi (Kasi)", C: "Sekretaris Kelurahan", D: "RT" }, answer: "B" },
+            { question: "Wilayah yang identik dengan mata pencaharian petani adalah...", options: { A: "Kelurahan", B: "Desa", C: "Kota", D: "Kecamatan" }, answer: "B" },
+            { question: "Wilayah yang identik dengan mata pencaharian di bidang industri adalah...", options: { A: "Kelurahan", B: "Desa", C: "Dusun", D: "Sawah" }, answer: "A" },
+            { question: "Tugas utama perangkat desa dan kelurahan adalah...", options: { A: "Hanya membangun jalan", B: "Hanya menjaga keamanan", C: "Membantu pemimpin dan melayani masyarakat", D: "Menggantikan pemimpin" }, answer: "C" },
+            { question: "Perbedaan struktur perangkat desa dan kelurahan adalah...", options: { A: "Desa punya Kaur/Kadus, Kelurahan punya Kasi", B: "Desa punya Sekdes, Kelurahan tidak", C: "Kelurahan punya RT/RW, Desa tidak", D: "Tidak ada perbedaan" }, answer: "A" }
+        ];
+
+        // --- ELEMEN DOM ---
+        const quizForm = document.getElementById('quizForm');
+        const timerEl = document.getElementById('timer');
+        const resultsContainer = document.getElementById('results-container');
+        const resultsSummary = document.getElementById('results-summary');
+        const detailedFeedback = document.getElementById('detailed-feedback');
+        const submitButton = document.getElementById('submitButton');
+        const resetButton = document.getElementById('resetButton');
+        const actionButtons = document.getElementById('action-buttons');
+
+        // --- LOGIKA KUIS ---
+        const timerDuration = 40 * 60; // 40 menit dalam detik
+        let timerInterval;
+        let timeLeft;
+        let userAnswers = {}; // Menyimpan jawaban pengguna
+
+        // Fungsi untuk memulai kuis
+        function startQuiz() {
+            // 1. Reset
+            userAnswers = {};
+            quizForm.innerHTML = '';
+            detailedFeedback.innerHTML = '';
+            resultsContainer.style.display = 'none';
+            quizForm.style.display = 'block';
+            actionButtons.style.display = 'flex';
+            submitButton.disabled = false;
+
+            // 2. Render Soal
+            let quizHTML = '';
+            quizData.forEach((item, index) => {
+                const questionNum = index + 1;
+                quizHTML += `
+                    <div class="border rounded-lg p-5 shadow-sm">
+                        <p class="text-lg font-semibold text-gray-900 mb-4">
+                            ${questionNum}. ${item.question}
+                        </p>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="radio" name="q${questionNum}" value="A" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="ml-3 text-gray-700">A. ${item.options.A}</span>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="radio" name="q${questionNum}" value="B" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="ml-3 text-gray-700">B. ${item.options.B}</span>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="radio" name="q${questionNum}" value="C" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="ml-3 text-gray-700">C. ${item.options.C}</span>
+                            </label>
+                            <label class="flex items-center p-3 border rounded-md hover:bg-gray-50 cursor-pointer transition-colors">
+                                <input type="radio" name="q${questionNum}" value="D" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="ml-3 text-gray-700">D. ${item.options.D}</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            quizForm.innerHTML = quizHTML;
+
+            // 3. Mulai Timer
+            timeLeft = timerDuration;
+            startTimer();
+            window.scrollTo(0, 0); // Scroll ke atas
+        }
+
+        // Fungsi untuk memulai timer
+        function startTimer() {
+            clearInterval(timerInterval); // Hapus timer lama (jika ada)
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Fungsi untuk update tampilan timer
+        function updateTimer() {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerEl.textContent = `Waktu Tersisa: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerEl.textContent = "Waktu Habis!";
+                handleSubmitQuiz();
+            }
+        }
+
+        // Fungsi untuk mengumpulkan kuis
+        function handleSubmitQuiz() {
+            clearInterval(timerInterval); // Hentikan timer
+            
+            let score = 0;
+            detailedFeedback.innerHTML = ''; // Kosongkan pembahasan sebelumnya
+
+            // Kumpulkan jawaban pengguna
+            quizData.forEach((item, index) => {
+                const questionNum = index + 1;
+                const selectedAnswer = document.querySelector(`input[name="q${questionNum}"]:checked`);
+                userAnswers[questionNum] = selectedAnswer ? selectedAnswer.value : null;
+            });
+
+            // Hitung skor dan buat pembahasan
+            quizData.forEach((item, index) => {
+                const questionNum = index + 1;
+                const userAnswer = userAnswers[questionNum];
+                const correctAnswer = item.answer;
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) {
+                    score++;
+                }
+
+                // Buat HTML untuk pembahasan
+                let feedbackHTML = `
+                    <div class="border rounded-lg p-5 ${isCorrect ? 'bg-green-50' : 'bg-red-50'}">
+                        <p class="text-lg font-semibold text-gray-900">${questionNum}. ${item.question}</p>
+                        <p class="mt-3 font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}">
+                            Jawaban Anda: ${userAnswer ? `${userAnswer}. ${item.options[userAnswer]}` : 'Tidak Dijawab'}
+                            ${isCorrect ? ' (✅ Benar)' : ' (❌ Salah)'}
+                        </p>
+                `;
+                if (!isCorrect) {
+                    feedbackHTML += `
+                        <p class="mt-2 font-medium text-green-700">
+                            Jawaban Benar: ${correctAnswer}. ${item.options[correctAnswer]}
+                        </p>
+                    `;
+                }
+                feedbackHTML += '</div>';
+                detailedFeedback.innerHTML += feedbackHTML;
+            });
+
+            // Tampilkan hasil
+            resultsSummary.textContent = `Skor Anda: ${score} dari ${quizData.length}`;
+            resultsSummary.className = `text-center text-3xl font-bold ${score > (quizData.length / 2) ? 'text-green-600' : 'text-red-600'}`;
+            
+            quizForm.style.display = 'none';
+            actionButtons.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            submitButton.disabled = true;
+
+            window.scrollTo(0, 0); // Scroll ke atas untuk lihat hasil
+        }
+
+        // --- EVENT LISTENERS ---
+        submitButton.addEventListener('click', handleSubmitQuiz);
+        resetButton.addEventListener('click', startQuiz);
+        
+        // Mulai kuis saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', startQuiz);
+
+    </script>
+
+</body>
+</html>
+
+
