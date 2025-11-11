@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif - Mengenal Bangun Datar</title>
+    <!-- Memuat Tailwind CSS dari CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Font Inter Bawaan Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style kustom untuk tombol pilihan */
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-btn:hover {
+            transform: scale(1.02);
+            background-color: #f0f4ff; /* Biru sangat muda saat hover */
+        }
+        .option-btn.selected {
+            background-color: #3b82f6; /* Biru */
+            color: white;
+            border-color: #2563eb;
+        }
+        /* Style untuk layar review */
+        .review-correct {
+            border-left: 5px solid #22c55e; /* Hijau */
+        }
+        .review-incorrect {
+            border-left: 5px solid #ef4444; /* Merah */
+        }
+        .correct-answer {
+            background-color: #dcfce7; /* Hijau muda */
+            color: #166534; /* Hijau tua */
+        }
+        .user-answer-wrong {
+            background-color: #fee2e2; /* Merah muda */
+            color: #991b1b; /* Merah tua */
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div id="app" class="w-full max-w-2xl bg-white rounded-lg shadow-xl p-6 sm:p-10">
+
+        <!-- Layar 1: Pemilihan Tingkat Kesulitan -->
+        <div id="difficulty-screen">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Mengenal Bangun Datar</h1>
+            <p class="text-center text-gray-600 mb-8">Selamat datang! Silakan pilih tingkat kesulitan soal yang ingin kamu kerjakan.</p>
+            <div class="space-y-4">
+                <button onclick="selectDifficulty('mudah')" class="w-full text-left text-lg font-semibold p-5 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors duration-200">
+                    <span class="block text-xl">Mudah</span>
+                    <span class="block text-sm font-normal">Mengenal definisi dasar dan bentuk bangun datar.</span>
+                </button>
+                <button onclick="selectDifficulty('sedang')" class="w-full text-left text-lg font-semibold p-5 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition-colors duration-200">
+                    <span class="block text-xl">Sedang</span>
+                    <span class="block text-sm font-normal">Menerapkan sifat dan ciri-ciri bangun datar.</span>
+                </button>
+                <button onclick="selectDifficulty('sulit')" class="w-full text-left text-lg font-semibold p-5 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-colors duration-200">
+                    <span class="block text-xl">Sulit</span>
+                    <span class="block text-sm font-normal">Analisis gabungan, perbandingan, dan diagonal.</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Layar 2: Halaman Mulai Kuis -->
+        <div id="start-screen" class="hidden text-center">
+            <h1 id="start-title" class="text-3xl font-bold text-gray-800 mb-4">Kuis Bangun Datar</h1>
+            <div id="start-timer-display" class="text-2xl font-semibold text-gray-700 mb-6">Durasi: 00:00</div>
+            <p id="start-description" class="text-gray-600 mb-8 px-4">
+                <!-- Deskripsi akan diisi oleh JavaScript -->
+            </p>
+            <button onclick="startQuiz()" class="w-full sm:w-1/2 bg-blue-600 text-white text-xl font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-200">
+                Mulai Kerjakan
+            </button>
+        </div>
+
+        <!-- Layar 3: Halaman Kuis -->
+        <div id="quiz-screen" class="hidden">
+            <!-- Header Kuis: Nomor Soal & Timer -->
+            <div class="flex justify-between items-center mb-6">
+                <div id="question-counter" class="text-lg font-semibold text-gray-700">Soal 1 dari 20</div>
+                <div id="quiz-timer-display" class="text-lg font-semibold text-blue-600 bg-blue-100 px-4 py-1 rounded-full">00:00</div>
+            </div>
+
+            <!-- Kontainer Soal -->
+            <div class="mb-8">
+                <div id="question-image" class="mb-4 flex justify-center items-center h-48">
+                    <!-- SVG gambar akan dimuat di sini -->
+                </div>
+                <div id="question-text" class="text-xl font-medium text-gray-800 text-center sm:text-left">
+                    <!-- Teks pertanyaan akan dimuat di sini -->
+                </div>
+            </div>
+
+            <!-- Kontainer Pilihan Jawaban -->
+            <div id="options-container" class="space-y-3">
+                <!-- Pilihan akan dimuat di sini -->
+            </div>
+
+            <!-- Tombol Navigasi -->
+            <div class="mt-8 text-right">
+                <button id="next-btn" onclick="nextQuestion()" class="bg-blue-600 text-white text-lg font-semibold py-2 px-8 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-400" disabled>
+                    Selanjutnya
+                </button>
+            </div>
+        </div>
+
+        <!-- Layar 4: Halaman Hasil -->
+        <div id="results-screen" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Kuis Selesai!</h2>
+            <div class="text-gray-700 text-lg mb-6">
+                Skor yang kamu dapatkan:
+            </div>
+            <div id="score-display" class="text-7xl font-extrabold text-blue-600 mb-4">
+                <!-- Skor akan dimuat di sini -->
+            </div>
+            <div id="stats-display" class="text-lg text-gray-600 mb-8">
+                <!-- Statistik (benar, salah, durasi) akan dimuat di sini -->
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="showReview()" class="w-full sm:w-auto bg-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 transition-colors duration-200">
+                    Lihat Pembahasan
+                </button>
+                <button onclick="restartQuiz()" class="w-full sm:w-auto bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-200">
+                    Kerjakan Ulang
+                </button>
+            </div>
+        </div>
+
+        <!-- Layar 5: Halaman Pembahasan -->
+        <div id="review-screen" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-800">Pembahasan Soal</h2>
+                <button onclick="showResults()" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    &larr; Kembali ke Hasil
+                </button>
+            </div>
+            
+            <div id="review-container" class="space-y-6">
+                <!-- Konten review akan dimuat di sini -->
+            </div>
+
+            <div class="mt-8 text-center">
+                <button onclick="restartQuiz()" class="w-full sm:w-1/2 bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-700 transition-colors duration-200">
+                    Kerjakan Ulang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Kuis -->
+    <script>
+        // === BANK SOAL ===
+        // Berisi 3 paket soal (mudah, sedang, sulit)
+        // Setiap paket berisi 20 soal
+        // Setiap soal memiliki:
+        // q: teks pertanyaan
+        // img: (opsional) kode SVG untuk gambar
+        // o: array pilihan jawaban
+        // a: jawaban benar (indeks dari array o)
+        // e: penjelasan
+        // ------------------
+
+        const allQuestions = {
+            'mudah': [
+                {
+                    q: "Bangun datar yang memiliki 3 sisi dan 3 sudut disebut...",
+                    o: ["Persegi", "Segitiga", "Lingkaran", "Trapesium"],
+                    a: 1,
+                    e: "Segitiga adalah bangun datar yang dibatasi oleh tiga buah sisi dan memiliki tiga buah sudut."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun datar ini memiliki 3 sisi sama panjang. Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,15 15,85 85,85" fill="none" stroke="currentColor" stroke-width="3"/><line x1="15" y1="85" x2="20" y2="80" stroke="currentColor" stroke-width="3"/><line x1="20" y1="85" x2="25" y2="80" stroke="currentColor" stroke-width="3"/><line x1="85" y1="85" x2="80" y2="80" stroke="currentColor" stroke-width="3"/><line x1="80" y1="85" x2="75" y2="80" stroke="currentColor" stroke-width="3"/><line x1="48" y1="15" x2="52" y2="15" stroke="currentColor" stroke-width="3" transform="rotate(60 50 15)"/><line x1="48" y1="15" x2="52" y2="15" stroke="currentColor" stroke-width="3" transform="rotate(120 50 15)"/></svg>`, // SVG untuk Segitiga Sama Sisi
+                    o: ["Sama sisi", "Sama kaki", "Siku-siku", "Sembarang"],
+                    a: 0,
+                    e: "Segitiga sama sisi adalah segitiga yang ketiga sisinya memiliki panjang yang sama. Tanda garis kecil pada setiap sisi menunjukkan panjangnya sama."
+                },
+                {
+                    q: "Segitiga yang semua sisinya SAMA PANJANG disebut...",
+                    o: ["Segitiga sama kaki", "Segitiga sembarang", "Segitiga sama sisi", "Segitiga siku-siku"],
+                    a: 2,
+                    e: "Sesuai dengan namanya, 'sama sisi' berarti semua sisinya memiliki panjang yang sama."
+                },
+                {
+                    q: "Segitiga yang memiliki DUA sisi sama panjang disebut...",
+                    o: ["Segitiga sama kaki", "Segitiga sama sisi", "Segitiga sembarang", "Segitiga tumpul"],
+                    a: 0,
+                    e: "Segitiga sama kaki memiliki dua sisi (kaki) yang sama panjang dan dua sudut yang sama besar."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun datar ini memiliki 2 sisi sama panjang. Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,15 20,90 80,90" fill="none" stroke="currentColor" stroke-width="3"/><line x1="35" y1="52.5" x2="40" y2="48" stroke="currentColor" stroke-width="3"/><line x1="40" y1="52.5" x2="45" y2="48" stroke="currentColor" stroke-width="3"/><line x1="65" y1="52.5" x2="60" y2="48" stroke="currentColor" stroke-width="3"/><line x1="60" y1="52.5" x2="55" y2="48" stroke="currentColor" stroke-width="3"/></svg>`, // SVG untuk Segitiga Sama Kaki
+                    o: ["Sama sisi", "Lancip", "Sembarang", "Sama kaki"],
+                    a: 3,
+                    e: "Segitiga sama kaki adalah segitiga yang memiliki dua sisi sama panjang. Tanda garis kecil pada kedua sisi miring menunjukkan panjangnya sama."
+                },
+                {
+                    q: "Segitiga yang ketiga sisinya memiliki panjang yang BERBEDA disebut...",
+                    o: ["Segitiga sama sisi", "Segitiga sama kaki", "Segitiga sembarang", "Segitiga siku-siku"],
+                    a: 2,
+                    e: "Segitiga sembarang adalah segitiga yang panjang ketiga sisinya berbeda-beda."
+                },
+                {
+                    q: "Segitiga yang memiliki satu sudut SIKU-SIKU (90°) adalah...",
+                    o: ["Segitiga lancip", "Segitiga tumpul", "Segitiga siku-siku", "Segitiga sama sisi"],
+                    a: 2,
+                    e: "Sudut siku-siku adalah sudut yang besarnya 90°. Segitiga yang memiliki salah satu sudut 90° disebut segitiga siku-siku."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Salah satu sudutnya adalah 90°. Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="10,10 10,90 90,90" fill="none" stroke="currentColor" stroke-width="3"/><rect x="10" y="80" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`, // SVG untuk Segitiga Siku-siku
+                    o: ["Tumpul", "Lancip", "Siku-siku", "Sama sisi"],
+                    a: 2,
+                    e: "Tanda kotak kecil di sudut kiri bawah menunjukkan sudut siku-siku (90°). Oleh karena itu, ini adalah segitiga siku-siku."
+                },
+                {
+                    q: "Segitiga dengan semua sudutnya LANCIP (kurang dari 90°) disebut...",
+                    o: ["Segitiga tumpul", "Segitiga siku-siku", "Segitiga lancip", "Segitiga sembarang"],
+                    a: 2,
+                    e: "Segitiga lancip adalah segitiga yang ketiga sudutnya merupakan sudut lancip (besarnya kurang dari 90°)."
+                },
+                {
+                    q: "Segitiga yang memiliki satu sudut TUMPUL (lebih dari 90°) disebut...",
+                    o: ["Segitiga tumpul", "Segitiga siku-siku", "Segitiga lancip", "Segitiga sama kaki"],
+                    a: 0,
+                    e: "Segitiga tumpul adalah segitiga yang salah satu sudutnya merupakan sudut tumpul (besarnya lebih dari 90°)."
+                },
+                {
+                    q: "Berapakah jumlah total ketiga sudut dalam sebuah segitiga?",
+                    o: ["90°", "180°", "270°", "360°"],
+                    a: 1,
+                    e: "Jumlah total ketiga sudut dalam segitiga jenis apapun (siku-siku, lancip, tumpul, dll.) adalah selalu 180°."
+                },
+                {
+                    q: "Bangun datar yang memiliki 4 sisi SAMA PANJANG dan 4 sudut SIKU-SIKU adalah...",
+                    o: ["Jajar Genjang", "Trapesium", "Persegi", "Belah Ketupat"],
+                    a: 2,
+                    e: "Persegi memiliki 4 sisi yang sama panjang dan 4 sudut yang semuanya siku-siku (90°)."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun ini memiliki 4 sisi sama panjang dan 4 sudut siku-siku. Ini adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" fill="none" stroke="currentColor" stroke-width="3"/><rect x="15" y="15" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/><rect x="75" y="15" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/><rect x="15" y="75" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/><rect x="75" y="75" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`, // SVG untuk Persegi
+                    o: ["Persegi", "Persegi Panjang", "Trapesium", "Belah Ketupat"],
+                    a: 0,
+                    e: "Gambar tersebut adalah persegi, yang ditandai dengan 4 sisi sama panjang dan 4 sudut siku-siku."
+                },
+                {
+                    q: "Bangun datar yang semua sisinya SAMA PANJANG dan diagonalnya saling TEGAK LURUS adalah...",
+                    o: ["Persegi", "Jajar Genjang", "Trapesium", "Belah Ketupat"],
+                    a: 3,
+                    e: "Belah ketupat memiliki 4 sisi sama panjang (seperti persegi), tetapi sudutnya tidak siku-siku. Ciri utamanya adalah kedua diagonalnya berpotongan tegak lurus."
+                },
+                {
+                    q: "Bangun datar yang HANYA memiliki SATU pasang sisi sejajar disebut...",
+                    o: ["Jajar Genjang", "Trapesium", "Belah Ketupat", "Persegi"],
+                    a: 1,
+                    e: "Trapesium adalah segi empat yang hanya memiliki sepasang sisi yang sejajar (sisi atas dan sisi bawah)."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Sisi-sisinya tidak ada yang sama panjang. Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="10,80 40,20 90,90" fill="none" stroke="currentColor" stroke-width="3"/></svg>`, // SVG untuk Segitiga Sembarang
+                    o: ["Sama kaki", "Sama sisi", "Sembarang", "Siku-siku"],
+                    a: 2,
+                    e: "Segitiga sembarang adalah segitiga yang panjang ketiga sisinya berbeda-beda, seperti yang terlihat pada gambar."
+                },
+                {
+                    q: "Bangun datar yang memiliki DUA pasang sisi sejajar dan sama panjang, namun TIDAK memiliki sudut siku-siku adalah...",
+                    o: ["Persegi", "Trapesium", "Belah Ketupat", "Jajar Genjang"],
+                    a: 3,
+                    e: "Jajar genjang memiliki dua pasang sisi sejajar dan sama panjang. Sudut yang berhadapan sama besar, tetapi bukan siku-siku."
+                },
+                {
+                    q: "Berapa besar sudut siku-siku?",
+                    o: ["45°", "60°", "90°", "180°"],
+                    a: 2,
+                    e: "Sudut siku-siku adalah sudut yang besarnya tepat 90°."
+                },
+                {
+                    q: "Jenis segitiga berdasarkan panjang sisinya adalah...",
+                    o: ["Lancip, Tumpul, Siku-siku", "Sama sisi, Sama kaki, Sembarang", "Persegi, Lingkaran, Trapesium", "Kanan, Kiri, Tengah"],
+                    a: 1,
+                    e: "Berdasarkan panjang sisinya, segitiga dibagi menjadi tiga: sama sisi (semua sisi sama), sama kaki (dua sisi sama), dan sembarang (semua sisi beda)."
+                },
+                {
+                    q: "Jenis segitiga berdasarkan besar sudutnya adalah...",
+                    o: ["Lancip, Tumpul, Siku-siku", "Sama sisi, Sama kaki, Sembarang", "Besar, Kecil, Sedang", "Kanan, Kiri, Tengah"],
+                    a: 0,
+                    e: "Berdasarkan besar sudutnya, segitiga dibagi menjadi tiga: lancip (semua sudut < 90°), tumpul (satu sudut > 90°), dan siku-siku (satu sudut = 90°)."
+                }
+            ],
+            'sedang': [
+                {
+                    q: "Sebuah segitiga memiliki tiga sudut yang sama besar. Berapa besar tiap sudutnya dan disebut segitiga apakah itu?",
+                    o: ["60°, Segitiga Sama Sisi", "90°, Segitiga Siku-siku", "45°, Segitiga Sama Kaki", "60°, Segitiga Sembarang"],
+                    a: 0,
+                    e: "Jumlah sudut segitiga adalah 180°. Jika ketiga sudutnya sama besar, maka 180° / 3 = 60°. Segitiga yang memiliki tiga sudut 60° juga memiliki tiga sisi sama panjang, sehingga disebut Segitiga Sama Sisi."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Salah satu sudutnya lebih dari 90°. Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="20,80 80,80 30,30" fill="none" stroke="currentColor" stroke-width="3"/><path d="M 70 80 C 70 75 75 70 80 70" fill="none" stroke="gray" stroke-width="2"/></svg>`, // SVG untuk Segitiga Tumpul
+                    o: ["Siku-siku", "Lancip", "Tumpul", "Sama sisi"],
+                    a: 2,
+                    e: "Sudut di kanan bawah jelas lebih besar dari 90° (tumpul). Segitiga yang memiliki satu sudut tumpul disebut segitiga tumpul."
+                },
+                {
+                    q: "Sebuah segitiga memiliki dua sudut yang sama besar. Segitiga ini PASTI merupakan...",
+                    o: ["Segitiga Sama Sisi", "Segitiga Sama Kaki", "Segitiga Siku-siku", "Segitiga Sembarang"],
+                    a: 1,
+                    e: "Segitiga sama kaki memiliki dua sisi sama panjang DAN dua sudut di hadapan sisi tersebut yang sama besar."
+                },
+                {
+                    q: "Sebuah segitiga memiliki dua sisi sama panjang dan satu sudut siku-siku. Segitiga itu adalah...",
+                    o: ["Segitiga sama kaki lancip", "Segitiga sama sisi", "Segitiga siku-siku sembarang", "Segitiga sama kaki siku-siku"],
+                    a: 3,
+                    e: "Gabungan dari 'dua sisi sama panjang' (sama kaki) dan 'satu sudut siku-siku' (siku-siku) menjadikannya segitiga sama kaki siku-siku."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Semua sudutnya kurang dari 90°. Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,20 10,90 90,80" fill="none" stroke="currentColor" stroke-width="3"/></svg>`, // SVG untuk Segitiga Lancip
+                    o: ["Siku-siku", "Tumpul", "Lancip", "Sama sisi"],
+                    a: 2,
+                    e: "Semua sudut pada segitiga tersebut terlihat runcing atau lancip (kurang dari 90°). Oleh karena itu, ini adalah segitiga lancip."
+                },
+                {
+                    q: "Apa perbedaan utama antara Persegi dan Belah Ketupat?",
+                    o: ["Persegi 4 sisi, Belah Ketupat 3 sisi", "Persegi punya sudut siku-siku, Belah Ketupat tidak", "Persegi sisinya beda, Belah Ketupat sisinya sama", "Persegi tidak punya diagonal, Belah Ketupat punya"],
+                    a: 1,
+                    e: "Keduanya memiliki 4 sisi sama panjang. Perbedaan utamanya adalah Persegi memiliki 4 sudut siku-siku (90°), sedangkan Belah Ketupat sudutnya tidak siku-siku (kecuali jika itu adalah persegi)."
+                },
+                {
+                    q: "Apa persamaan antara Persegi dan Belah Ketupat?",
+                    o: ["Keduanya memiliki 4 sisi sama panjang", "Keduanya memiliki 4 sudut siku-siku", "Keduanya hanya punya 1 pasang sisi sejajar", "Keduanya adalah segitiga"],
+                    a: 0,
+                    e: "Baik Persegi maupun Belah Ketupat sama-sama memiliki 4 sisi dengan panjang yang sama."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun ini memiliki 4 sisi sama panjang, tapi sudutnya tidak 90°. Ini adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="currentColor" stroke-width="3"/></svg>`, // SVG untuk Belah Ketupat
+                    o: ["Trapesium", "Jajar Genjang", "Persegi", "Belah Ketupat"],
+                    a: 3,
+                    e: "Ini adalah Belah Ketupat. Ciri-cirinya adalah 4 sisi sama panjang dan sudut yang berhadapan sama besar (tapi bukan 90°)."
+                },
+                {
+                    q: "Sebuah trapesium yang memiliki sisi-sisi non-sejajar (kaki) yang sama panjang disebut...",
+                    o: ["Trapesium Siku-siku", "Trapesium Sama Kaki", "Trapesium Sembarang", "Jajar Genjang"],
+                    a: 1,
+                    e: "Trapesium sama kaki adalah trapesium yang sisi-sisi kakinya (sisi miring/non-sejajar) memiliki panjang yang sama."
+                },
+                {
+                    q: "Pada Jajar Genjang, sudut yang berhadapan memiliki sifat...",
+                    o: ["Sama besar", "Berjumlah 180°", "Selalu siku-siku", "Tidak beraturan"],
+                    a: 0,
+                    e: "Jajar genjang memiliki dua pasang sudut yang berhadapan, dan setiap pasang sudut tersebut besarnya sama."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun ini memiliki dua pasang sisi sejajar. Ini adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="20,20 80,20 60,80 0,80" fill="none" stroke="currentColor" stroke-width="3"/></svg>`, // SVG untuk Jajar Genjang
+                    o: ["Jajar Genjang", "Trapesium", "Segitiga", "Belah Ketupat"],
+                    a: 0,
+                    e: "Gambar ini menunjukkan Jajar Genjang, yang memiliki dua pasang sisi sejajar (atas dan bawah, kiri miring dan kanan miring)."
+                },
+                {
+                    q: "Sebuah segitiga memiliki sudut 90°, 45°, dan 45°. Jenis segitiga apakah ini?",
+                    o: ["Siku-siku Sembarang", "Tumpul Sama Kaki", "Siku-siku Sama Kaki", "Lancip Sama Sisi"],
+                    a: 2,
+                    e: "Karena memiliki sudut 90°, ini adalah segitiga siku-siku. Karena memiliki dua sudut yang sama (45°), ini juga segitiga sama kaki. Jadi, ini adalah Siku-siku Sama Kaki."
+                },
+                {
+                    q: "Sebuah segitiga memiliki sudut 60°, 60°, dan 60°. Jenis segitiga apakah ini?",
+                    o: ["Lancip Sembarang", "Sama Sisi", "Siku-siku Sama Kaki", "Tumpul Sama Kaki"],
+                    a: 1,
+                    e: "Semua sudutnya 60° (lancip), dan karena ketiga sudutnya sama besar, maka ketiga sisinya juga pasti sama panjang. Ini adalah Segitiga Sama Sisi."
+                },
+                {
+                    q: "Sebuah segitiga memiliki sudut 100°, 40°, dan 40°. Jenis segitiga apakah ini?",
+                    o: ["Tumpul Sama Kaki", "Lancip Sama Kaki", "Siku-siku Sembarang", "Tumpul Sembarang"],
+                    a: 0,
+                    e: "Karena memiliki sudut 100° (> 90°), ini adalah segitiga tumpul. Karena memiliki dua sudut yang sama (40°), ini juga segitiga sama kaki. Jadi, ini adalah Tumpul Sama Kaki."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun ini hanya punya sepasang sisi sejajar. Ini adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="20,20 80,20 100,80 0,80" fill="none" stroke="currentColor" stroke-width="3"/></svg>`, // SVG untuk Trapesium
+                    o: ["Persegi", "Jajar Genjang", "Trapesium", "Belah Ketupat"],
+                    a: 2,
+                    e: "Gambar ini adalah Trapesium (sama kaki). Ciri utamanya adalah hanya memiliki sepasang sisi sejajar (sisi atas dan sisi bawah)."
+                },
+                {
+                    q: "Pada Belah Ketupat, kedua diagonalnya memiliki sifat...",
+                    o: ["Sama panjang", "Sejajar", "Saling tegak lurus", "Tidak berpotongan"],
+                    a: 2,
+                    e: "Ciri khas dari Belah Ketupat (dan juga Persegi) adalah kedua diagonalnya saling berpotongan tegak lurus (membentuk sudut 90°)."
+                },
+                {
+                    q: "Berapa pasang sisi sejajar yang dimiliki oleh Jajar Genjang?",
+                    o: ["0 pasang", "1 pasang", "2 pasang", "4 pasang"],
+                    a: 2,
+                    e: "Jajar genjang memiliki 2 pasang sisi yang sejajar dan sama panjang."
+                },
+                {
+                    q: "Berapa pasang sisi sejajar yang dimiliki oleh Trapesium?",
+                    o: ["0 pasang", "1 pasang", "2 pasang", "4 pasang"],
+                    a: 1,
+                    e: "Trapesium HANYA memiliki 1 pasang sisi sejajar."
+                },
+                {
+                    q: "Bangun datar berikut yang PASTI TIDAK memiliki sudut siku-siku adalah...",
+                    o: ["Persegi", "Trapesium Siku-siku", "Jajar Genjang (bukan persegi)", "Segitiga Siku-siku"],
+                    a: 2,
+                    e: "Persegi, trapesium siku-siku, dan segitiga siku-siku semuanya memiliki sudut siku-siku. Jajar genjang (yang bukan persegi) memiliki sudut lancip dan tumpul, tapi tidak siku-siku."
+                },
+                {
+                    q: "Bangun datar yang memiliki 'sudut berhadapan sama besar' adalah...",
+                    o: ["Jajar Genjang dan Trapesium", "Persegi, Belah Ketupat, dan Jajar Genjang", "Hanya Persegi", "Hanya Trapesium Sama Kaki"],
+                    a: 1,
+                    e: "Persegi (semua 90°), Belah Ketupat (2 pasang sudut sama), dan Jajar Genjang (2 pasang sudut sama) semuanya memiliki sifat 'sudut berhadapan sama besar'."
+                }
+            ],
+            'sulit': [
+                {
+                    q: "Dalam segitiga siku-siku sama kaki, berapa besar dua sudut lainnya (selain sudut siku-siku)?",
+                    o: ["30° dan 60°", "45° dan 45°", "60° dan 60°", "90° dan 90°"],
+                    a: 1,
+                    e: "Jumlah sudut segitiga adalah 180°. Sudut siku-siku adalah 90°. Sisa sudutnya 180° - 90° = 90°. Karena 'sama kaki', maka sisa 90° itu dibagi dua sama besar: 45° dan 45°."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Bangun ini memiliki 1 pasang sisi sejajar dan 2 sudut siku-siku. Ini adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="10,20 70,20 70,90 10,90" fill="none" stroke="currentColor" stroke-width="3" transform="skewX(-20)"/><rect x="23" y="20" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" transform="skewX(-20)"/><rect x="23" y="80" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" transform="skewX(-20)"/></svg>`, // SVG untuk Trapesium Siku-siku (dimiringkan sedikit agar terlihat jelas) -> mari kita buat yang lebih baik
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="10,20 60,20 90,80 10,80" fill="none" stroke="currentColor" stroke-width="3"/><rect x="10" y="70" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`, // SVG Trapesium Siku-siku (yang ini salah, sisi miringnya salah)
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="20,20 70,20 90,80 20,80" fill="none" stroke="currentColor" stroke-width="3"/><rect x="20" y="70" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/><rect x="20" y="20" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" transform="rotate(90 20 20)"/></svg>`, // Coba lagi
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="20,20 80,20 80,80 20,80" fill="none" stroke="currentColor" stroke-width="3" transform="skewY(-15) translate(0, 10)"/><rect x="20" y="68" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" transform="skewY(-15) translate(0, 10)"/><rect x="70" y="68" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" transform="skewY(-15) translate(0, 10)"/></svg>`, // Ini Jajar Genjang
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="20,20 60,20 90,80 20,80" fill="none" stroke="currentColor" stroke-width="3"/><rect x="20" y="70" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`, // Ini Trapesium Siku-siku yang benar
+                    o: ["Jajar Genjang", "Trapesium Siku-siku", "Belah Ketupat", "Trapesium Sama Kaki"],
+                    a: 1,
+                    e: "Bangun ini adalah Trapesium (sisi atas dan bawah sejajar). Karena salah satu sisi non-sejajarnya (sisi kiri) tegak lurus dengan sisi sejajar, maka terbentuk 2 sudut siku-siku. Ini adalah Trapesium Siku-siku."
+                },
+                {
+                    q: "Sebuah segitiga memiliki dua sisi sama panjang dan salah satu sudutnya 110°. Jenis segitiga ini adalah...",
+                    o: ["Lancip Sama Kaki", "Tumpul Sama Kaki", "Siku-siku Sama Kaki", "Tumpul Sembarang"],
+                    a: 1,
+                    e: "Dua sisi sama panjang berarti 'Sama Kaki'. Sudut 110° lebih besar dari 90°, yang berarti 'Tumpul'. Jadi, ini adalah Segitiga Tumpul Sama Kaki."
+                },
+                {
+                    q: "Perhatikan gambar di samping! Ini adalah segitiga...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,80 10,30 90,30" fill="none" stroke="currentColor" stroke-width="3"/><line x1="30" y1="55" x2="35" y2="50" stroke="currentColor" stroke-width="3"/><line x1="35" y1="55" x2="40" y2="50" stroke="currentColor" stroke-width="3"/><line x1="70" y1="55" x2="65" y2="50" stroke="currentColor" stroke-width="3"/><line x1="65" y1="55" x2="60" y2="50" stroke="currentColor" stroke-width="3"/><path d="M 20 30 C 30 25 40 25 50 25" fill="none" stroke="gray" stroke-width="2"/></svg>`, // SVG Tumpul Sama Kaki (terbalik)
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,30 10,80 90,80" fill="none" stroke="currentColor" stroke-width="3"/><line x1="30" y1="55" x2="35" y2="60" stroke="currentColor" stroke-width="3"/><line x1="35" y1="55" x2="40" y2="60" stroke="currentColor" stroke-width="3"/><line x1="70" y1="55" x2="65" y2="60" stroke="currentColor" stroke-width="3"/><line x1="65" y1="55" x2="60" y2="60" stroke="currentColor" stroke-width="3"/><path d="M 20 80 C 30 85 40 85 50 85" fill="none" stroke="gray" stroke-width="2"/></svg>`, // Ini Lancip Sama Kaki
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,90 10,80 90,80" fill="none" stroke="currentColor" stroke-width="3" transform="rotate(180 50 50) translate(0 -40)"><line x1="30" y1="85" x2="35" y2="80" stroke="currentColor" stroke-width="3" transform="rotate(180 50 50) translate(0 -40)"/><line x1="35" y1="85" x2="40" y2="80" stroke="currentColor" stroke-width="3" transform="rotate(180 50 50) translate(0 -40)"/><line x1="70" y1="85" x2="65" y2="80" stroke="currentColor" stroke-width="3" transform="rotate(180 50 50) translate(0 -40)"/><line x1="65" y1="85" x2="60" y2="80" stroke="currentColor" stroke-width="3" transform="rotate(180 50 50) translate(0 -40)"/></svg>`, // Tumpul Sama Kaki
+                    o: ["Tumpul Sama Kaki", "Lancip Sama Kaki", "Siku-siku Sama Kaki", "Tumpul Sembarang"],
+                    a: 0,
+                    e: "Segitiga ini memiliki dua sisi sama panjang (ditandai garis kecil) sehingga ia 'sama kaki'. Sudut di puncaknya (atas) jelas lebih dari 90°, sehingga ia 'tumpul'. Ini adalah Tumpul Sama Kaki."
+                },
+                {
+                    q: "Manakah pernyataan yang PALING TEPAT mengenai diagonal Persegi?",
+                    o: ["Sama panjang dan saling tegak lurus", "Tidak sama panjang tapi tegak lurus", "Sama panjang tapi tidak tegak lurus", "Tidak sama panjang dan tidak tegak lurus"],
+                    a: 0,
+                    e: "Persegi memiliki sifat diagonal yang paling sempurna: keduanya sama panjang DAN saling berpotongan tegak lurus (90°)."
+                },
+                {
+                    q: "Manakah pernyataan yang TEPAT mengenai diagonal Jajar Genjang (bukan persegi/belah ketupat)?",
+                    o: ["Sama panjang dan saling tegak lurus", "Saling membagi dua sama panjang, tapi tidak sama panjang", "Sama panjang tapi tidak tegak lurus", "Saling tegak lurus tapi tidak sama panjang"],
+                    a: 1,
+                    e: "Diagonal jajar genjang saling berpotongan di titik tengahnya (membagi dua sama panjang), tetapi kedua diagonal itu sendiri panjangnya tidak sama dan tidak tegak lurus."
+                },
+                {
+                    q: "Berapa jumlah total sudut dalam dari bangun segi empat (Persegi, Trapesium, Jajar Genjang, dll.)?",
+                    o: ["180°", "270°", "360°", "Tergantung bentuknya"],
+                    a: 2,
+                    e: "Setiap bangun segi empat dapat dibagi menjadi dua segitiga. Karena setiap segitiga memiliki 180°, maka total sudut segi empat adalah 2 x 180° = 360°."
+                },
+                {
+                    q: "Perhatikan Jajar Genjang di samping. Jika sudut A = 60°, berapa besar sudut B?",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="25,20 85,20 75,80 15,80" fill="none" stroke="currentColor" stroke-width="3"/><text x="10" y="85">A</text><text x="70" y="85">B</text><text x="88" y="25">C</text><text x="20" y="25">D</text><text x="20" y="75" font-size="0.8em">60°</text></svg>`,
+                    o: ["60°", "90°", "120°", "180°"],
+                    a: 2,
+                    e: "Pada jajar genjang, sudut yang berdekatan (seperti A dan B) jumlahnya adalah 180°. Jadi, jika A = 60°, maka B = 180° - 60° = 120°."
+                },
+                {
+                    q: "Perbedaan utama antara Jajar Genjang dan Belah Ketupat adalah...",
+                    o: ["Jumlah sisi", "Sifat sisi (panjangnya)", "Jumlah sudut", "Jumlah diagonal"],
+                    a: 1,
+                    e: "Keduanya adalah jajar genjang. Namun, Belah Ketupat memiliki 4 sisi SAMA PANJANG, sedangkan Jajar Genjang umum hanya memiliki 2 pasang sisi yang sama panjang."
+                },
+                {
+                    q: "Bangun datar yang memiliki 4 sisi SAMA PANJANG bisa jadi adalah...",
+                    o: ["Persegi atau Jajar Genjang", "Persegi atau Trapesium", "Persegi atau Belah Ketupat", "Hanya Persegi"],
+                    a: 2,
+                    e: "Ada dua bangun datar yang memiliki 4 sisi sama panjang: Persegi (dengan sudut 90°) dan Belah Ketupat (dengan sudut tidak 90°)."
+                },
+                {
+                    q: "Bangun datar yang memiliki 4 sudut SAMA BESAR bisa jadi adalah...",
+                    o: ["Hanya Persegi", "Persegi atau Belah Ketupat", "Persegi atau Persegi Panjang", "Hanya Persegi Panjang"],
+                    a: 2,
+                    e: "Persegi (semua 90°) dan Persegi Panjang (semua 90°) adalah segi empat yang semua sudutnya sama besar. (Segitiga Sama Sisi juga punya sudut sama besar, tapi sisinya 3)."
+                },
+                {
+                    q: "Perhatikan Belah Ketupat di samping. Garis AC dan BD adalah diagonal. Sifat kedua garis itu adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="currentColor" stroke-width="3"/><line x1="50" y1="10" x2="50" y2="90" stroke="gray" stroke-width="2" stroke-dasharray="4"/><line x1="10" y1="50" x2="90" y2="50" stroke="gray" stroke-width="2" stroke-dasharray="4"/><text x="5" y="55">A</text><text x="45" y="5">B</text><text x="93" y="55">C</text><text x="45" y="98">D</text></svg>`, // Salah label, A dan C harus di ujung yang sama
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,10 90,50 50,90 10,50" fill="none" stroke="currentColor" stroke-width="3"/><line x1="50" y1="10" x2="50" y2="90" stroke="gray" stroke-width="2" stroke-dasharray="4"/><line x1="10" y1="50" x2="90" y2="50" stroke="gray" stroke-width="2" stroke-dasharray="4"/><text x="5" y="55">D</text><text x="45" y="5">A</text><text x="93" y="55">B</text><text x="45" y="98">C</text></svg>`,
+                    o: ["Sejajar", "Sama panjang", "Saling tegak lurus", "Berimpit"],
+                    a: 2,
+                    e: "Pada Belah Ketupat, kedua diagonalnya (AC dan BD) selalu berpotongan saling tegak lurus (membentuk sudut 90°) di titik tengahnya."
+                },
+                {
+                    q: "Sebuah trapesium yang sisi-sisi non-sejajarnya (kaki) TIDAK sama panjang dan TIDAK ada yang tegak lurus disebut...",
+                    o: ["Trapesium Sama Kaki", "Trapesium Siku-siku", "Trapesium Sembarang", "Jajar Genjang"],
+                    a: 2,
+                    e: "Trapesium Sembarang adalah jenis trapesium yang paling umum, di mana kedua kakinya memiliki panjang yang berbeda dan tidak ada sudut siku-siku."
+                },
+                {
+                    q: "Sebuah segitiga memiliki salah satu sudut 91°. Jenis segitiga ini PASTI...",
+                    o: ["Segitiga Siku-siku", "Segitiga Tumpul", "Segitiga Lancip", "Tidak mungkin ada"],
+                    a: 1,
+                    e: "Karena 91° lebih besar dari 90°, maka segitiga tersebut memiliki satu sudut tumpul. Oleh karena itu, ia PASTI merupakan Segitiga Tumpul."
+                },
+                {
+                    q: "Mungkinkah sebuah segitiga memiliki DUA sudut siku-siku?",
+                    o: ["Ya, mungkin saja", "Tidak mungkin", "Hanya jika itu segitiga sama sisi", "Hanya jika itu segitiga sama kaki"],
+                    a: 1,
+                    e: "Tidak mungkin. Jumlah sudut segitiga adalah 180°. Jika ada dua sudut siku-siku (90° + 90° = 180°), maka sudut ketiga adalah 0°, što tidak mungkin."
+                },
+                {
+                    q: "Mungkinkah sebuah segitiga memiliki DUA sudut tumpul?",
+                    o: ["Ya, mungkin saja", "Tidak mungkin", "Hanya jika itu segitiga sembarang", "Ya, namanya segitiga tumpul ganda"],
+                    a: 1,
+                    e: "Tidak mungkin. Sudut tumpul > 90°. Jika ada dua sudut tumpul (misal 91° + 91° = 182°), jumlahnya saja sudah melebihi total sudut segitiga (180°)."
+                },
+                {
+                    q: "Perhatikan Persegi di samping. Garis AC dan BD adalah diagonal. Sifat yang TEPAT adalah...",
+                    img: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" fill="none" stroke="currentColor" stroke-width="3"/><line x1="15" y1="15" x2="85" y2="85" stroke="gray" stroke-width="2" stroke-dasharray="4"/><line x1="85" y1="15" x2="15" y2="85" stroke="gray" stroke-width="2" stroke-dasharray="4"/><text x="10" y="15">A</text><text x="88" y="15">B</text><text x="88" y="90">C</text><text x="10" y="90">D</text></svg>`,
+                    o: ["AC > BD, tegak lurus", "AC = BD, tidak tegak lurus", "AC < BD, tidak tegak lurus", "AC = BD, tegak lurus"],
+                    a: 3,
+                    e: "Persegi memiliki diagonal yang sempurna: keduanya sama panjang (AC = BD) dan saling berpotongan tegak lurus."
+                },
+                {
+                    q: "Bangun datar yang memiliki 2 pasang sisi sejajar dan 4 sudut siku-siku bisa jadi adalah...",
+                    o: ["Persegi atau Persegi Panjang", "Persegi atau Jajar Genjang", "Hanya Persegi", "Hanya Persegi Panjang"],
+                    a: 0,
+                    e: "Sifat ini (2 pasang sisi sejajar & 4 sudut siku-siku) dimiliki oleh Persegi dan Persegi Panjang. Persegi adalah kasus khusus dari persegi panjang."
+                },
+                {
+                    q: "Bangun datar yang memiliki 4 sisi sama panjang DAN diagonalnya saling tegak lurus adalah...",
+                    o: ["Persegi dan Jajar Genjang", "Persegi dan Belah Ketupat", "Hanya Belah Ketupat", "Hanya Persegi"],
+                    a: 1,
+                    e: "Sifat '4 sisi sama panjang' dimiliki oleh Persegi dan Belah Ketupat. Sifat 'diagonal tegak lurus' juga dimiliki oleh Persegi dan Belah Ketupat. Jadi, jawabannya adalah keduanya."
+                },
+                {
+                    q: "Bangun datar yang memiliki tepat 1 pasang sisi sejajar dan 2 sudut siku-siku adalah...",
+                    o: ["Persegi Panjang", "Jajar Genjang", "Trapesium Sama Kaki", "Trapesium Siku-siku"],
+                    a: 3,
+                    e: "'1 pasang sisi sejajar' adalah Trapesium. '2 sudut siku-siku' menjadikannya Trapesium Siku-siku."
+                }
+            ]
+        };
+
+        // === VARIABEL GLOBAL ===
+        let currentDifficulty = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let score = 0;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let quizInProgress = false;
+
+        // === REFERENSI DOM ===
+        const difficultyScreen = document.getElementById('difficulty-screen');
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const reviewScreen = document.getElementById('review-screen');
+
+        const startTitle = document.getElementById('start-title');
+        const startDescription = document.getElementById('start-description');
+        const startTimerDisplay = document.getElementById('start-timer-display');
+
+        const questionCounter = document.getElementById('question-counter');
+        const quizTimerDisplay = document.getElementById('quiz-timer-display');
+        const questionImage = document.getElementById('question-image');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+
+        const scoreDisplay = document.getElementById('score-display');
+        const statsDisplay = document.getElementById('stats-display');
+        const reviewContainer = document.getElementById('review-container');
+
+        // === FUNGSI UTAMA ===
+
+        /**
+         * Memilih Tingkat Kesulitan Kuis
+         * @param {'mudah' | 'sedang' | 'sulit'} level 
+         */
+        function selectDifficulty(level) {
+            currentDifficulty = level;
+            currentQuestions = allQuestions[level];
+            userAnswers = new Array(currentQuestions.length).fill(null);
+
+            let title = "Kuis Bangun Datar";
+            let description = "";
+
+            if (level === 'mudah') {
+                title = "Kuis: Tingkat Mudah";
+                description = "Kamu akan diuji tentang definisi dasar dan pengenalan bentuk bangun datar seperti segitiga, persegi, dan trapesium. Ada 20 soal total.";
+            } else if (level === 'sedang') {
+                title = "Kuis: Tingkat Sedang";
+                description = "Kamu akan diuji tentang penerapan sifat-sifat bangun datar, perbandingan, dan skenario gabungan. Ada 20 soal total.";
+            } else if (level === 'sulit') {
+                title = "Kuis: Tingkat Sulit";
+                description = "Kamu akan diuji tentang analisis mendalam, sifat diagonal, dan logika gabungan antar bangun datar. Ada 20 soal total.";
+            }
+
+            startTitle.innerText = title;
+            startDescription.innerText = description;
+
+            difficultyScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+
+        /**
+         * Memulai Kuis
+         */
+        function startQuiz() {
+            quizInProgress = true;
+            currentQuestionIndex = 0;
+            score = 0;
+            secondsElapsed = 0;
+            userAnswers.fill(null);
+
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            startTimer();
+            showQuestion();
+        }
+
+        /**
+         * Menampilkan Pertanyaan
+         */
+        function showQuestion() {
+            // Reset
+            optionsContainer.innerHTML = '';
+            questionImage.innerHTML = '';
+            nextBtn.disabled = true;
+
+            const q = currentQuestions[currentQuestionIndex];
+
+            // Set Teks & Nomor Soal
+            questionCounter.innerText = `Soal ${currentQuestionIndex + 1} dari ${currentQuestions.length}`;
+            questionText.innerText = q.q;
+
+            // Set Gambar (jika ada)
+            if (q.img) {
+                questionImage.innerHTML = q.img;
+                questionImage.classList.remove('h-0');
+                questionImage.classList.add('h-48');
+            } else {
+                questionImage.classList.remove('h-48');
+                questionImage.classList.add('h-0');
+            }
+
+            // Buat Tombol Pilihan
+            q.o.forEach((option, index) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.innerHTML = `<span class="font-bold mr-2">${String.fromCharCode(65 + index)}.</span> ${option}`;
+                optionBtn.className = "option-btn w-full text-left p-4 border-2 border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100";
+                optionBtn.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionBtn);
+            });
+        }
+
+        /**
+         * Memilih Jawaban
+         * @param {number} selectedIndex 
+         */
+        function selectAnswer(selectedIndex) {
+            userAnswers[currentQuestionIndex] = selectedIndex;
+
+            // Hapus 'selected' dari semua tombol
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.classList.remove('selected');
+                btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-500');
+            });
+
+            // Tambahkan 'selected' ke tombol yang diklik
+            const selectedBtn = optionsContainer.children[selectedIndex];
+            selectedBtn.classList.add('selected');
+            selectedBtn.classList.add('bg-blue-600', 'text-white', 'border-blue-500');
+
+            // Aktifkan tombol 'Selanjutnya'
+            nextBtn.disabled = false;
+        }
+
+        /**
+         * Pindah ke Pertanyaan Berikutnya
+         */
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] == null) {
+                // Seharusnya tidak terjadi karena tombol dinonaktifkan
+                return;
+            }
+
+            // Pindah ke pertanyaan berikutnya
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        /**
+         * Mengakhiri Kuis
+         */
+        function endQuiz() {
+            quizInProgress = false;
+            stopTimer();
+            calculateScore();
+
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            const percentage = (score / currentQuestions.length) * 100;
+            scoreDisplay.innerText = `${percentage.toFixed(0)}%`;
+
+            statsDisplay.innerHTML = `
+                <p>Benar: <span class="font-bold text-green-600">${score}</span></p>
+                <p>Salah: <span class="font-bold text-red-600">${currentQuestions.length - score}</span></p>
+                <p>Durasi: <span class="font-bold text-blue-600">${formatTime(secondsElapsed)}</span></p>
+            `;
+        }
+
+        /**
+         * Menghitung Skor
+         */
+        function calculateScore() {
+            score = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === currentQuestions[index].a) {
+                    score++;
+                }
+            });
+        }
+
+        /**
+         * Menampilkan Layar Pembahasan
+         */
+        function showReview() {
+            resultsScreen.classList.add('hidden');
+            reviewScreen.classList.remove('hidden');
+            reviewContainer.innerHTML = '';
+
+            currentQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = q.a;
+                const isCorrect = userAnswer === correctAnswer;
+
+                let reviewItem = document.createElement('div');
+                reviewItem.className = `p-4 rounded-lg shadow-md bg-gray-50 ${isCorrect ? 'review-correct' : 'review-incorrect'}`;
+
+                let questionHtml = `
+                    <div class="mb-4">
+                        <p class="font-bold text-lg text-gray-800">Soal ${index + 1}:</p>
+                        <p class="text-gray-700">${q.q}</p>
+                        ${q.img ? `<div class="mt-2 flex justify-center h-40">${q.img}</div>` : ''}
+                    </div>
+                `;
+
+                let optionsHtml = '<div class="space-y-2 mb-4">';
+                q.o.forEach((option, i) => {
+                    let optionClass = "p-2 rounded-md";
+                    
+                    if (i === correctAnswer) {
+                        optionClass += " correct-answer font-bold"; // Jawaban benar
+                    } else if (i === userAnswer && !isCorrect) {
+                        optionClass += " user-answer-wrong font-bold"; // Jawaban user (salah)
+                    } else {
+                        optionClass += " bg-gray-100";
+                    }
+                    
+                    optionsHtml += `<div class="${optionClass}">${String.fromCharCode(65 + i)}. ${option}</div>`;
+                });
+                optionsHtml += '</div>';
+
+                let explanationHtml = `
+                    <div class="border-t border-gray-200 pt-3">
+                        <p class="font-semibold text-gray-800">Pembahasan:</p>
+                        <p class="text-gray-600">${q.e}</p>
+                    </div>
+                `;
+
+                reviewItem.innerHTML = questionHtml + optionsHtml + explanationHtml;
+                reviewContainer.appendChild(reviewItem);
+            });
+        }
+
+        /**
+         * Kembali ke Layar Hasil
+         */
+        function showResults() {
+            reviewScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+        }
+
+        /**
+         * Memulai Ulang Kuis (kembali ke pemilihan difficulty)
+         */
+        function restartQuiz() {
+            stopTimer();
+            secondsElapsed = 0;
+            startTimerDisplay.innerText = "Durasi: 00:00";
+            quizTimerDisplay.innerText = "00:00";
+
+            // Sembunyikan semua layar
+            startScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            reviewScreen.classList.add('hidden');
+
+            // Tampilkan layar pertama
+            difficultyScreen.classList.remove('hidden');
+        }
+
+        // === FUNGSI TIMER ===
+
+        /**
+         * Memulai Timer
+         */
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                if (quizInProgress) {
+                    secondsElapsed++;
+                    const timeString = formatTime(secondsElapsed);
+                    startTimerDisplay.innerText = `Durasi: ${timeString}`; // Update juga di start screen (meski tersembunyi)
+                    quizTimerDisplay.innerText = timeString;
+                }
+            }, 1000);
+        }
+
+        /**
+         * Menghentikan Timer
+         */
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        /**
+         * Memformat detik menjadi MM:SS
+         * @param {number} totalSeconds 
+         * @returns {string}
+         */
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+    </script>
+</body>
+</html>
+
