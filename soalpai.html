@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis PAI - Menyambut Usia Balig</title>
+    <style>
+        /* Gaya Dasar */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            
+            /* TUGAS ANDA:
+              Untuk menambah background Kuromi, cari link gambar Kuromi di Google.
+              Lalu hapus tanda '/*' dan '*/' di bawah dan ganti 'LINK_GAMBAR_KUROMI_ANDA.png'
+              dengan link yang Anda temukan.
+            */
+            
+            /*
+            background-image: url('LINK_GAMBAR_KUROMI_ANDA.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            */
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95); /* Sedikit transparan jika ada background */
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        /* Layar (Home, Kuis, Skor, Review) */
+        .screen {
+            padding: 25px 30px;
+            display: none; /* Sembunyi semua layar */
+        }
+        #home-screen {
+            display: block; /* Tampilkan layar home */
+        }
+        
+        /* Tombol */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-sizing: border-box; /* Penting untuk padding */
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn-difficulty {
+            background-color: #17a2b8;
+        }
+        .btn-difficulty:hover {
+            background-color: #117a8b;
+        }
+        .btn-restart {
+            background-color: #28a745;
+        }
+        .btn-restart:hover {
+            background-color: #1e7e34;
+        }
+        .btn-review {
+            background-color: #ffc107;
+            color: #333;
+        }
+        .btn-review:hover {
+            background-color: #d39e00;
+        }
+
+        /* Layar Home */
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-top: 0;
+        }
+        #home-screen p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #difficulty-selection h3 {
+            text-align: center;
+            font-weight: 600;
+            color: #555;
+        }
+
+        /* Layar Kuis */
+        #quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        #question-counter {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #555;
+        }
+        #timer {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #007bff;
+            background-color: #e6f2ff;
+            padding: 5px 12px;
+            border-radius: 6px;
+        }
+        #question-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        #options-container .btn {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 2px solid #ddd;
+            text-align: left;
+        }
+        #options-container .btn:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+
+        /* Layar Skor */
+        #score-text {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        #score-value {
+            text-align: center;
+            font-size: 4em;
+            font-weight: 800;
+            color: #007bff;
+            margin-bottom: 25px;
+        }
+
+        /* Layar Review */
+        #review-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .review-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        .review-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .review-question {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .review-answer {
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+        .correct {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .rationale {
+            margin-top: 10px;
+            font-style: italic;
+            color: #555;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div id="home-screen" class="screen">
+            <h1>Kuis PAI: Bab 4</h1>
+            <p>Materi "Menyambut Usia Balig", mencakup tanda-tanda balig (fikih & biologi) dan kewajiban setelah balig (mandi besar, salat, menutup aurat).</p>
+            <div id="difficulty-selection">
+                <h3>Pilih Tingkat Kesulitan:</h3>
+                <button class="btn btn-difficulty" onclick="startQuiz('easy')">🟢 Mudah</button>
+                <button class="btn btn-difficulty" onclick="startQuiz('medium')">🟡 Sedang</button>
+                <button class="btn btn-difficulty" onclick="startQuiz('hard')">🔴 Sulit</button>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen">
+            <div id="quiz-header">
+                <span id="question-counter">Soal 1 dari 20</span>
+                <span id="timer">00:00</span>
+            </div>
+            <div id="question-text">Memuat pertanyaan...</div>
+            <div id="options-container">
+                </div>
+        </div>
+
+        <div id="score-screen" class="screen">
+            <h1>Kuis Selesai!</h1>
+            <p id="score-text">Skor Anda:</p>
+            <div id="score-value">100</div>
+            <button id="review-button" class="btn btn-review" onclick="showReview()">Lihat Pembahasan</button>
+            <button class="btn btn-restart" onclick="restartQuiz()">Kerjakan Ulang</button>
+        </div>
+
+        <div id="review-screen" class="screen">
+            <h1>Pembahasan</h1>
+            <div id="review-container">
+                </div>
+            <button class="btn btn-restart" onclick="restartQuiz()">Kerjakan Ulang</button>
+        </div>
+
+    </div>
+
+    <script>
+        // =======================================================================
+        // DATABASE PERTANYAAN
+        // =======================================================================
+        const questionDatabase = {
+            "easy": [
+                {
+                    "question": "Tanda balig bagi anak laki-laki menurut ilmu fikih adalah...",
+                    "options": ["Tumbuh jakun", "Suara membesar", "Mimpi basah", "Berkumis"],
+                    "answer": "Mimpi basah",
+                    "rationale": "Mimpi basah (Ihtilam) adalah tanda balig utama menurut fikih karena mengeluarkan air mani."
+                },
+                {
+                    "question": "Tanda balig bagi anak perempuan menurut ilmu fikih adalah...",
+                    "options": ["Haid (menstruasi)", "Pinggul membesar", "Jerawatan", "Suara merdu"],
+                    "answer": "Haid (menstruasi)",
+                    "rationale": "Haid adalah tanda balig utama bagi perempuan yang menandakan ia sudah wajib menjalankan hukum agama."
+                },
+                {
+                    "question": "Jika tanda mimpi basah atau haid tidak muncul, seseorang dianggap balig pada usia...",
+                    "options": ["10 tahun", "12 tahun", "15 tahun", "17 tahun"],
+                    "answer": "15 tahun",
+                    "rationale": "Batas usia balig menurut ilmu fikih jika tanda-tanda fisik tidak muncul adalah 15 tahun (usia Qamariyah)."
+                },
+                {
+                    "question": "Orang yang telah balig dan berakal sehat disebut...",
+                    "options": ["Mukmin", "Muslim", "Mukalaf", "Musafir"],
+                    "answer": "Mukalaf",
+                    "rationale": "Mukalaf artinya orang yang telah dibebani kewajiban (taklif) untuk menjalankan hukum agama."
+                },
+                {
+                    "question": "Perubahan fisik pada laki-laki seperti suara membesar diatur oleh hormon...",
+                    "options": ["Estrogen", "Testosteron", "Insulin", "Ovum"],
+                    "answer": "Testosteron",
+                    "rationale": "Testosteron adalah hormon utama pada laki-laki yang memicu perubahan fisik saat pubertas."
+                },
+                {
+                    "question": "Perubahan fisik pada perempuan seperti pinggul membesar diatur oleh hormon...",
+                    "options": ["Estrogen", "Testosteron", "Sperma", "Insulin"],
+                    "answer": "Estrogen",
+                    "rationale": "Estrogen adalah hormon utama pada perempuan yang memicu perkembangan fisik saat pubertas."
+                },
+                {
+                    "question": "Setelah mengalami mimpi basah, seorang anak laki-laki wajib melakukan...",
+                    "options": ["Wudu", "Tayamum", "Mandi besar (mandi wajib)", "Istirahat"],
+                    "answer": "Mandi besar (mandi wajib)",
+                    "rationale": "Mimpi basah menyebabkan hadas besar, yang hanya bisa disucikan dengan mandi besar."
+                },
+                {
+                    "question": "Setelah selesai masa haid, seorang anak perempuan wajib melakukan...",
+                    "options": ["Mandi besar (mandi wajib)", "Wudu saja", "Puasa", "Sedekah"],
+                    "answer": "Mandi besar (mandi wajib)",
+                    "rationale": "Haid adalah hadas besar. Untuk bisa salat kembali, wajib bersuci dengan mandi besar."
+                },
+                {
+                    "question": "Batas aurat untuk anak laki-laki yang telah balig adalah...",
+                    "options": ["Dari pusar hingga lutut", "Seluruh tubuh", "Hanya kemaluan", "Dari leher sampai kaki"],
+                    "answer": "Dari pusar hingga lutut",
+                    "rationale": "Teks materi menjelaskan bahwa aurat laki-laki adalah bagian tubuh antara pusar dan lutut."
+                },
+                {
+                    "question": "Batas aurat untuk anak perempuan yang telah balig adalah...",
+                    "options": ["Hanya rambut", "Dari pusar hingga lutut", "Seluruh tubuh kecuali wajah dan telapak tangan", "Baju lengan panjang"],
+                    "answer": "Seluruh tubuh kecuali wajah dan telapak tangan",
+                    "rationale": "Teks materi menjelaskan aurat perempuan adalah seluruh badan kecuali wajah dan telapak tangan."
+                },
+                {
+                    "question": "Wahyu pertama yang diterima Nabi Muhammad saw. adalah 'Iqra' yang artinya...",
+                    "options": ["Sembahlah", "Bacalah", "Bersujudlah", "Dengarlah"],
+                    "answer": "Bacalah",
+                    "rationale": "Iqra (QS. Al-'Alaq) artinya 'Bacalah', yang menjadi perintah pertama untuk mencari ilmu."
+                },
+                {
+                    "question": "Perintah 'Iqra' (Bacalah) berkaitan erat dengan kewajiban seorang mukalaf untuk...",
+                    "options": ["Mencari Ilmu", "Salat", "Puasa", "Menutup Aurat"],
+                    "answer": "Mencari Ilmu",
+                    "rationale": "Membaca adalah gerbang utama mencari ilmu, yang hukumnya wajib bagi setiap mukalaf."
+                },
+                {
+                    "question": "Anak-anak mulai diperintahkan untuk membiasakan salat sejak usia...",
+                    "options": ["Baru lahir", "5 tahun", "7 tahun", "10 tahun"],
+                    "answer": "7 tahun",
+                    "rationale": "Rasulullah memerintahkan orang tua untuk menyuruh anaknya salat pada usia 7 tahun sebagai pembiasaan."
+                },
+                {
+                    "question": "Orang tua boleh memberi sanksi (teguran) jika anak meninggalkan salat pada usia...",
+                    "options": ["7 tahun", "10 tahun", "12 tahun", "15 tahun"],
+                    "answer": "10 tahun",
+                    "rationale": "Ini adalah batas usia penegakan disiplin salat sebelum anak tersebut balig dan menanggung dosanya sendiri."
+                },
+                {
+                    "question": "Berikut ini yang termasuk larangan bagi orang yang sedang haid adalah...",
+                    "options": ["Makan dan minum", "Tidur", "Salat", "Berzikir"],
+                    "answer": "Salat",
+                    "rationale": "Salat, Tawaf, dan berdiam di masjid adalah larangan utama bagi wanita yang sedang haid."
+                },
+                {
+                    "question": "Rukun mandi besar yang pertama dan paling penting adalah...",
+                    "options": ["Niat", "Berwudu", "Menggosok badan", "Mencuci tangan"],
+                    "answer": "Niat",
+                    "rationale": "Niat adalah rukun yang membedakan mandi biasa dengan mandi besar (ibadah)."
+                },
+                {
+                    "question": "Rukun mandi besar yang kedua adalah...",
+                    "options": ["Berwudu", "Membasuh kaki", "Meratakan air ke seluruh tubuh", "Memakai sampo"],
+                    "answer": "Meratakan air ke seluruh tubuh",
+                    "rationale": "Setelah niat, rukun wajibnya adalah memastikan semua bagian tubuh (termasuk kulit) terkena air."
+                },
+                {
+                    "question": "Peristiwa keluarnya darah dari rahim perempuan karena sel telur tidak dibuahi disebut...",
+                    "options": ["Ovum", "Mimpi basah", "Haid", "Pubertas"],
+                    "answer": "Haid",
+                    "rationale": "Ini adalah definisi biologis dari haid (menstruasi) yang dijelaskan dalam materi."
+                },
+                {
+                    "question": "Sel reproduksi pada laki-laki yang terdapat dalam air mani disebut...",
+                    "options": ["Sperma", "Testosteron", "Ovum", "Estrogen"],
+                    "answer": "Sperma",
+                    "rationale": "Teks menjelaskan bahwa air mani (sperma) adalah cairan yang keluar saat mimpi basah."
+                },
+                {
+                    "question": "Kewajiban utama yang harus segera dilakukan setelah balig adalah...",
+                    "options": ["Mencari kerja", "Menikah", "Menjalankan salat fardu", "Membayar zakat"],
+                    "answer": "Menjalankan salat fardu",
+                    "rationale": "Salat fardu adalah tiang agama dan kewajiban pertama yang dihisab bagi seorang mukalaf."
+                }
+            ],
+            "medium": [
+                {
+                    "question": "Ahmad berumur 16 tahun, namun ia belum pernah mimpi basah. Bagaimana status balignya?",
+                    "options": ["Belum balig", "Sudah balig", "Menunggu mimpi basah", "Masih anak-anak"],
+                    "answer": "Sudah balig",
+                    "rationale": "Meskipun belum mimpi basah, ia sudah balig karena telah melewati batas usia 15 tahun."
+                },
+                {
+                    "question": "Aisyah baru berusia 9 tahun, tetapi ia sudah mengalami haid. Bagaimana status balignya?",
+                    "options": ["Belum balig karena usia", "Sudah balig", "Harus menunggu 15 tahun", "Haidnya tidak sah"],
+                    "answer": "Sudah balig",
+                    "rationale": "Haid adalah tanda balig utama bagi perempuan. Begitu haid, ia sudah balig meskipun usianya baru 9 tahun."
+                },
+                {
+                    "question": "Perbedaan utama antara tanda balig menurut fikih dan biologi adalah...",
+                    "options": ["Fikih tidak nyata, biologi nyata", "Fikih mengatur hukum, biologi menjelaskan fisik", "Fikih hanya untuk laki-laki", "Biologi hanya untuk perempuan"],
+                    "answer": "Fikih mengatur hukum, biologi menjelaskan fisik",
+                    "rationale": "Tanda fikih (haid, mimpi basah) menentukan dimulainya kewajiban ibadah, tanda biologi (jakun, pinggul) menjelaskan perubahan tubuh."
+                },
+                {
+                    "question": "Apa konsekuensi utama setelah seseorang menjadi mukalaf?",
+                    "options": ["Boleh menikah", "Harus mencari kerja", "Amal baik dan buruknya mulai dicatat", "Tidak boleh bermain lagi"],
+                    "answer": "Amal baik dan buruknya mulai dicatat",
+                    "rationale": "Menjadi mukalaf berarti seseorang telah bertanggung jawab penuh atas perbuatannya (pahala dan dosa)."
+                },
+                {
+                    "question": "Manakah yang BUKAN termasuk sunnah dalam mandi besar?",
+                    "options": ["Niat di dalam hati", "Berwudu sebelumnya", "Mendahulukan anggota kanan", "Membasuh tangan 3 kali"],
+                    "answer": "Niat di dalam hati",
+                    "rationale": "Niat adalah RUKUN (wajib), bukan sunnah. Berwudu, membasuh tangan, dan mendahulukan kanan adalah sunnah."
+                },
+                {
+                    "question": "Kapan waktu yang paling tepat untuk membaca niat mandi besar?",
+                    "options": ["Sebelum masuk kamar mandi", "Saat menggosok gigi", "Saat basuhan air pertama ke tubuh", "Setelah selesai mandi"],
+                    "answer": "Saat basuhan air pertama ke tubuh",
+                    "rationale": "Niat ibadah (termasuk mandi wajib) dilakukan bersamaan dengan permulaan perbuatan ibadah itu."
+                },
+                {
+                    "question": "Ahmad mimpi basah saat tidur siang. Kapan ia wajib mandi besar?",
+                    "options": ["Malam hari sebelum tidur", "Besok pagi", "Segera sebelum salat Asar", "Minggu depan"],
+                    "answer": "Segera sebelum salat Asar",
+                    "rationale": "Ia wajib mandi besar sebelum melaksanakan salat fardu berikutnya yang ia temui (dalam kasus ini Salat Asar)."
+                },
+                {
+                    "question": "Aisyah sedang haid, ia tetap dianjurkan melakukan ibadah berikut, KECUALI...",
+                    "options": ["Berzikir dan istigfar", "Berdoa", "Tawaf mengelilingi Ka'bah", "Mendengarkan ceramah agama"],
+                    "answer": "Tawaf mengelilingi Ka'bah",
+                    "rationale": "Tawaf (sama seperti salat) mensyaratkan suci dari hadas besar. Berzikir, berdoa, dan mendengarkan ilmu tetap dianjurkan."
+                },
+                {
+                    "question": "Mengapa orang yang sedang haid atau junub (mimpi basah) disebut berhadas besar?",
+                    "options": ["Karena kotor", "Karena dosanya besar", "Karena harus disucikan dengan mandi wajib", "Karena tidak boleh makan"],
+                    "answer": "Karena harus disucikan dengan mandi wajib",
+                    "rationale": "Hadas besar adalah kondisi 'tidak suci' yang cara menghilangkannya adalah dengan mandi wajib (mandi besar)."
+                },
+                {
+                    "question": "Manakah pernyataan yang paling tepat mengenai aurat?",
+                    "options": ["Aurat hanya wajib ditutup saat salat", "Aurat boleh dibuka di depan teman", "Menutup aurat adalah kewajiban setelah balig", "Anak kecil tidak punya aurat"],
+                    "answer": "Menutup aurat adalah kewajiban setelah balig",
+                    "rationale": "Seperti halnya salat, menutup aurat menjadi kewajiban yang berdosa jika ditinggalkan setelah seseorang balig (mukalaf)."
+                },
+                {
+                    "question": "Tumbuhnya jakun, kumis, dan jenggot adalah tanda balig sekunder secara...",
+                    "options": ["Fikih", "Biologi", "Psikologi", "Tradisi"],
+                    "answer": "Biologi",
+                    "rationale": "Ini adalah perubahan fisik (biologis) yang dipicu hormon, bukan penentu wajibnya ibadah (fikih)."
+                },
+                {
+                    "question": "Membesarnya pinggul dan payudara adalah tanda balig sekunder secara...",
+                    "options": ["Fikih", "Biologi", "Psikologi", "Tradisi"],
+                    "answer": "Biologi",
+                    "rationale": "Ini adalah perubahan fisik (biologis) yang dipicu hormon pada perempuan, bukan penentu wajibnya ibadah (fikih)."
+                },
+                {
+                    "question": "Aisyah lupa membersihkan kemaluan sebelum mandi besar. Apakah mandinya sah?",
+                    "options": ["Sah, yang penting niat", "Sah, karena itu sunnah", "Tidak sah, harus diulang", "Sah, tapi makruh"],
+                    "answer": "Sah, karena itu sunnah",
+                    "rationale": "Membersihkan kemaluan adalah adab/sunnah. Rukun yang wajib adalah niat dan meratakan air ke seluruh tubuh."
+                },
+                {
+                    "question": "Ahmad mandi di sungai dengan cara niat lalu menceburkan diri hingga rata. Sah?",
+                    "options": ["Tidak sah, karena tidak berwudu", "Sah, karena rukunnya terpenuhi", "Tidak sah, karena tidak pakai sabun", "Tidak sah, harus di kamar mandi"],
+                    "answer": "Sah, karena rukunnya terpenuhi",
+                    "rationale": "Meskipun tidak menjalankan sunnah (seperti wudu), mandinya tetap sah karena rukun (niat dan air rata) terpenuhi."
+                },
+                {
+                    "question": "Sel telur pada perempuan yang tidak dibuahi akan luruh menjadi...",
+                    "options": ["Air mani", "Mimpi basah", "Darah haid", "Hormon estrogen"],
+                    "answer": "Darah haid",
+                    "rationale": "Teks biologi menjelaskan haid adalah luruhnya dinding rahim karena sel telur (ovum) tidak dibuahi."
+                },
+                {
+                    "question": "Manakah yang BUKAN merupakan kewajiban setelah balig yang disebut di materi?",
+                    "options": ["Salat Fardu", "Menutup Aurat", "Mencari Ilmu", "Membayar Zakat"],
+                    "answer": "Membayar Zakat",
+                    "rationale": "Materi ini secara spesifik menyoroti 3 kewajiban: Salat Fardu, Menutup Aurat, dan Mencari Ilmu. Zakat memiliki syaratnya sendiri."
+                },
+                {
+                    "question": "Fatimah sedang haid hari pertama. Ia tetap bangun sahur untuk...",
+                    "options": ["Salat subuh", "Membaca Al-Qur'an", "Puasa Ramadan", "Makan sahur (tidak puasa)"],
+                    "answer": "Makan sahur (tidak puasa)",
+                    "rationale": "Wanita haid dilarang puasa (dan wajib menggantinya), namun ia boleh saja ikut makan sahur bersama keluarga."
+                },
+                {
+                    "question": "Tujuan utama orang tua diperintahkan 'memukul' (memberi sanksi) anak usia 10 tahun yang lalai salat adalah...",
+                    "options": ["Menyakiti anak", "Membuat anak takut", "Mendidik dan membiasakan disiplin", "Membuat anak balig"],
+                    "answer": "Mendidik dan membiasakan disiplin",
+                    "rationale": "Tujuannya adalah pendidikan (tarbiyah) agar anak terbiasa disiplin salat sebelum ia menanggung dosa di usia balig."
+                },
+                {
+                    "question": "Seseorang yang telah mandi besar karena mimpi basah, kemudian ia kentut. Jika ingin salat, ia harus...",
+                    "options": ["Mandi besar lagi", "Berwudu saja", "Tayamum", "Langsung salat"],
+                    "answer": "Berwudu saja",
+                    "rationale": "Mandi besar menghilangkan hadas besar. Kentut adalah hadas kecil, yang cukup disucikan dengan berwudu."
+                },
+                {
+                    "question": "Apa persamaan antara haid dan mimpi basah?",
+                    "options": ["Sama-sama mengeluarkan darah", "Keduanya adalah tanda balig fikih", "Hanya terjadi pada laki-laki", "Sama-sama hadas kecil"],
+                    "answer": "Keduanya adalah tanda balig fikih",
+                    "rationale": "Keduanya (haid untuk perempuan, mimpi basah untuk laki-laki) adalah tanda utama balig menurut fikih dan sama-sama mewajibkan mandi besar."
+                }
+            ],
+            "hard": [
+                {
+                    "question": "Ali berusia 10 tahun dan sudah mimpi basah. Hasan berusia 12 tahun dan belum mimpi basah. Siapakah yang berdosa jika meninggalkan salat Jumat?",
+                    "options": ["Hasan, karena lebih tua", "Ali, karena sudah balig", "Keduanya, karena sudah besar", "Tidak keduanya, masih anak-anak"],
+                    "answer": "Ali, karena sudah balig",
+                    "rationale": "Kewajiban ibadah (dan dosa) dihitung berdasarkan status balig (mukalaf), bukan usia. Ali sudah balig (mimpi basah), sedangkan Hasan belum."
+                },
+                {
+                    "question": "Fatimah berusia 14 tahun dan belum haid. Ia tidak mau menutup aurat saat keluar rumah. Bagaimana hukumnya menurut materi?",
+                    "options": ["Boleh, karena belum haid", "Boleh, karena belum 15 tahun", "Wajib, karena sudah 14 tahun", "Wajib, karena jika 15 tahun belum haid, ia tetap balig"],
+                    "answer": "Wajib, karena jika 15 tahun belum haid, ia tetap balig",
+                    "rationale": "Meskipun ia belum haid, ia akan otomatis balig di usia 15 tahun. Di usia 14, ia seharusnya sudah dibiasakan karena kewajiban itu akan segera datang."
+                },
+                {
+                    "question": "Ahmad mandi besar, tapi ia lupa niat. Setelah selesai, ia langsung salat. Bagaimana hukum salatnya?",
+                    "options": ["Sah, karena sudah basah", "Tidak sah, karena hadas besarnya belum hilang", "Sah, karena niat tidak wajib", "Makruh, tapi sah"],
+                    "answer": "Tidak sah, karena hadas besarnya belum hilang",
+                    "rationale": "Niat adalah RUKUN. Tanpa niat, mandinya hanya dianggap mandi biasa (membersihkan badan), bukan mandi ibadah (menghilangkan hadas)."
+                },
+                {
+                    "question": "Fatimah sedang haid. Ia ingin tetap beribadah. Mana kegiatan yang paling tepat ia lakukan di masjid?",
+                    "options": ["Ikut salat berjamaah di saf belakang", "Duduk diam di dalam masjid sambil berzikir", "Membaca Al-Qur'an (mushaf) di pojok masjid", "Duduk di teras masjid mendengarkan ceramah"],
+                    "answer": "Duduk di teras masjid mendengarkan ceramah",
+                    "rationale": "Materi melarang 'berdiam di masjid'. Teras (di luar area salat utama) umumnya dibolehkan, dan mendengarkan ilmu sangat dianjurkan."
+                },
+                {
+                    "question": "Seorang anak perempuan usia 10 tahun mengalami keputihan (cairan bening/putih). Apakah ia wajib mandi besar?",
+                    "options": ["Ya, itu tanda balig", "Ya, karena kotor", "Tidak, karena itu bukan haid", "Tidak, cukup berwudu"],
+                    "answer": "Tidak, karena itu bukan haid",
+                    "rationale": "Materi menegaskan yang mewajibkan mandi adalah Haid (darah). Keputihan biasa tidak menyebabkan hadas besar."
+                },
+                {
+                    "question": "Pada diagram tata cara mandi besar, berwudu diletakkan setelah mencuci tangan. Apa status hukum wudu tersebut?",
+                    "options": ["Wajib, rukun mandi", "Sunnah (dianjurkan)", "Haram, tidak boleh wudu", "Mubah (boleh saja)"],
+                    "answer": "Sunnah (dianjurkan)",
+                    "rationale": "Berwudu sebelum mandi besar adalah sunnah yang dicontohkan Nabi, tetapi bukan rukun. Mandi tetap sah tanpanya, asalkan niat & air rata."
+                },
+                {
+                    "question": "Mengapa 'Mencari Ilmu' (Iqra) ditempatkan sebagai kewajiban yang sama pentingnya dengan Salat dan Menutup Aurat setelah balig?",
+                    "options": ["Karena ilmu membuat kaya", "Karena tanpa ilmu, ibadah (salat, dll) bisa salah", "Karena ilmu hanya didapat di sekolah", "Karena ilmu adalah syarat balig"],
+                    "answer": "Karena tanpa ilmu, ibadah (salat, dll) bisa salah",
+                    "rationale": "Seorang mukalaf wajib tahu tata cara ibadah yang benar (salat, bersuci), dan itu hanya bisa didapat dengan 'mencari ilmu'."
+                },
+                {
+                    "question": "Ahmad lupa apakah ia sudah mimpi basah atau belum, tapi usianya sudah 15 tahun. Bagaimana statusnya?",
+                    "options": ["Dianggap belum balig", "Dianggap sudah balig", "Harus bertanya pada orang tua", "Menunggu sampai mimpi basah"],
+                    "answer": "Dianggap sudah balig",
+                    "rationale": "Usia 15 tahun adalah batas akhir penentu balig. Walaupun ia ragu tanda fisiknya, batas usia sudah memastikan ia mukalaf."
+                },
+                {
+                    "question": "Manakah yang membatalkan mandi besar yang sedang berlangsung?",
+                    "options": ["Kentut saat sedang mandi", "Lupa membaca doa masuk kamar mandi", "Tiba-tiba air mati saat belum rata", "Berbicara saat mandi"],
+                    "answer": "Tiba-tiba air mati saat belum rata",
+                    "rationale": "Kentut (hadas kecil) tidak membatalkan mandi (hadas besar). Tapi jika air mati sebelum rukun 'meratakan air' terpenuhi, mandinya belum sah."
+                },
+                {
+                    "question": "Aisyah selesai haid pada pukul 13.00 (masuk waktu Zuhur). Apa yang harus ia lakukan?",
+                    "options": ["Salat Zuhur saja", "Mandi besar, lalu salat Zuhur", "Menunggu waktu Asar", "Mandi besar besok pagi"],
+                    "answer": "Mandi besar, lalu salat Zuhur",
+                    "rationale": "Begitu suci (haid berhenti), ia wajib segera mandi besar agar bisa melaksanakan salat fardu pada waktunya (Zuhur)."
+                },
+                {
+                    "question": "Saat mandi besar, Ahmad lupa menggosok punggungnya. Tapi air sudah mengalir deras ke punggungnya. Sah?",
+                    "options": ["Sah, karena air sudah rata", "Tidak sah, karena harus digosok", "Tidak sah, karena tidak bersih", "Makruh, tapi sah"],
+                    "answer": "Sah, karena air sudah rata",
+                    "rationale": "Rukunnya adalah 'meratakan air'. Menggosok hanya membantu, tapi yang wajib adalah air sampai ke kulit. Aliran deras sudah mencukupi."
+                },
+                {
+                    "question": "Apa perbedaan paling mendasar antara 'air mani' (sperma) dan 'air kencing' (urin) dalam konteks bersuci?",
+                    "options": ["Keduanya najis dan membatalkan wudu", "Mani suci, kencing najis", "Mani mewajibkan mandi, kencing mewajibkan wudu", "Keduanya mewajibkan mandi besar"],
+                    "answer": "Mani mewajibkan mandi, kencing mewajibkan wudu",
+                    "rationale": "Keluarnya air mani (mimpi basah) menyebabkan hadas besar (wajib mandi). Keluarnya air kencing adalah hadas kecil (wajib wudu)."
+                },
+                {
+                    "question": "Seorang anak laki-laki kelas 4 SD (usia 10 th) belum mimpi basah. Ia sengaja tidak salat. Bagaimana status dosanya?",
+                    "options": ["Ia berdosa", "Orang tuanya yang berdosa", "Ia belum berdosa, tapi orang tuanya wajib menegur", "Tidak berdosa sama sekali"],
+                    "answer": "Ia belum berdosa, tapi orang tuanya wajib menegur",
+                    "rationale": "Ia belum mukalaf (belum balig), jadi belum menanggung dosa. Tapi di usia 10 tahun, orang tuanya wajib mendidiknya (menegur/memberi sanksi)."
+                },
+                {
+                    "question": "Fatimah sedang haid. Ia membaca buku pelajaran PAI (seperti yang Anda berikan) yang di dalamnya ada kutipan ayat Al-Qur'an. Hukumnya?",
+                    "options": ["Haram, tidak boleh sama sekali", "Boleh, karena tujuannya belajar, bukan membaca mushaf", "Wajib, karena sedang belajar", "Makruh, sebaiknya dihindari"],
+                    "answer": "Boleh, karena tujuannya belajar, bukan membaca mushaf",
+                    "rationale": "Larangan dalam materi adalah 'Membaca Al-Qur'an' (merujuk pada mushaf). Membaca buku yang ada kutipannya untuk belajar memiliki hukum berbeda."
+                },
+                {
+                    "question": "Mengapa dalam materi, tanda biologi (jakun, kumis) tidak dijadikan standar wajibnya ibadah?",
+                    "options": ["Karena tidak semua orang mengalaminya", "Karena tanda itu bisa muncul sebelum atau sesudah mimpi basah", "Karena itu tanda-tanda palsu", "Karena tanda biologi tidak penting"],
+                    "answer": "Karena tanda itu bisa muncul sebelum atau sesudah mimpi basah",
+                    "rationale": "Hukum fikih butuh penanda yang pasti (haid/mimpi basah/15 tahun). Tanda biologi (jakun, dll) adalah proses, waktunya bisa berbeda-beda."
+                },
+                {
+                    "question": "Ahmad sedang mandi besar. Saat sedang menyiram badan sebelah kiri, ia kentut. Apa yang harus ia lakukan?",
+                    "options": ["Mengulang mandi dari awal", "Melanjutkan mandinya, lalu wudu setelah mandi", "Batal mandinya, harus tayamum", "Melanjutkan mandi dan tidak perlu wudu lagi"],
+                    "answer": "Melanjutkan mandinya, lalu wudu setelah mandi",
+                    "rationale": "Hadas kecil (kentut) tidak membatalkan hadas besar (mandi). Ia selesaikan mandinya (untuk hadas besar), lalu berwudu (untuk hadas kecil)."
+                },
+                {
+                    "question": "Siti (12 tahun) mengeluarkan darah karena terluka di kaki. Apakah ia dilarang salat?",
+                    "options": ["Ya, karena mengeluarkan darah", "Tidak, itu bukan darah haid", "Ya, harus mandi besar dulu", "Tidak, tapi harus pakai plester"],
+                    "answer": "Tidak, itu bukan darah haid",
+                    "rationale": "Hanya darah Haid (yang keluar dari rahim) yang menyebabkan hadas besar dan melarang salat. Darah luka hanya najis yang perlu dibersihkan."
+                },
+                {
+                    "question": "Apa hikmah diwajibkannya mandi besar setelah haid/junub?",
+                    "options": ["Agar badan bersih dan wangi", "Membedakan antara anak-anak dan dewasa", "Bentuk ibadah (ta'abbudi) dan kebersihan spiritual", "Supaya tidak boros air"],
+                    "answer": "Bentuk ibadah (ta'abbudi) dan kebersihan spiritual",
+                    "rationale": "Selain kebersihan fisik, mandi besar adalah ritual ibadah untuk mengembalikan kesucian spiritual agar bisa kembali beribadah."
+                },
+                {
+                    "question": "Ahmad (15 tahun, sudah balig) sengaja meninggalkan salat Zuhur. Dosanya ditanggung oleh siapa?",
+                    "options": ["Orang tuanya", "Gurunya", "Dirinya sendiri", "Tidak ada yang menanggung"],
+                    "answer": "Dirinya sendiri",
+                    "rationale": "Konsekuensi balig (mukalaf) adalah bertanggung jawab penuh atas amal perbuatannya. Orang tua sudah tidak menanggung dosanya."
+                },
+                {
+                    "question": "Aisyah (10 tahun, sudah haid) diajak ibunya ke masjid untuk salat. Ia menolak dengan alasan malu. Sikap Aisyah...",
+                    "options": ["Benar, karena masih kecil", "Salah, karena sudah wajib salat", "Benar, karena haid itu memalukan", "Salah, karena harusnya mencari ilmu dulu"],
+                    "answer": "Salah, karena sudah wajib salat",
+                    "rationale": "Status 'sudah haid' mengalahkan status 'usia 10 tahun'. Ia sudah mukalaf dan wajib salat serta menutup aurat, tidak ada alasan malu."
+                }
+            ]
+        };
+
+        // =======================================================================
+        // VARIABEL GLOBAL UNTUK KUIS
+        // =======================================================================
+        
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timerInterval;
+        let secondsElapsed = 0;
+        let userAnswers = []; // Menyimpan jawaban siswa
+        
+        // =======================================================================
+        // ELEMEN DOM
+        // =======================================================================
+        
+        const screens = {
+            home: document.getElementById('home-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            score: document.getElementById('score-screen'),
+            review: document.getElementById('review-screen')
+        };
+        
+        const timerElement = document.getElementById('timer');
+        const questionCounterElement = document.getElementById('question-counter');
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const scoreValueElement = document.getElementById('score-value');
+        const reviewContainer = document.getElementById('review-container');
+        
+        // =======================================================================
+        // FUNGSI TIMER
+        // =======================================================================
+        
+        function startTimer() {
+            secondsElapsed = 0;
+            timerElement.textContent = "00:00";
+            
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const minutes = Math.floor(secondsElapsed / 60);
+                const seconds = secondsElapsed % 60;
+                
+                timerElement.textContent = 
+                    `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }, 1000);
+        }
+        
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+        
+        // =======================================================================
+        // FUNGSI KUIS
+        // =======================================================================
+        
+        // Fungsi untuk pindah layar
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                screen.style.display = 'none';
+            });
+            screens[screenName].style.display = 'block';
+        }
+
+        // Memulai kuis
+        window.startQuiz = function(difficulty) {
+            currentQuestions = questionDatabase[difficulty];
+            // Acak urutan soal (opsional, bisa dihapus jika ingin urut)
+            // currentQuestions.sort(() => Math.random() - 0.5); 
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            showScreen('quiz');
+            loadQuestion();
+            startTimer();
+        }
+
+        // Memuat pertanyaan
+        function loadQuestion() {
+            if (currentQuestionIndex < currentQuestions.length) {
+                const q = currentQuestions[currentQuestionIndex];
+                
+                questionTextElement.textContent = q.question;
+                questionCounterElement.textContent = `Soal ${currentQuestionIndex + 1} dari ${currentQuestions.length}`;
+                optionsContainer.innerHTML = '';
+                
+                // Acak pilihan jawaban
+                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                
+                shuffledOptions.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'btn';
+                    button.onclick = () => selectAnswer(option);
+                    optionsContainer.appendChild(button);
+                });
+            } else {
+                endQuiz();
+            }
+        }
+
+        // Saat siswa memilih jawaban
+        window.selectAnswer = function(selectedOption) {
+            const q = currentQuestions[currentQuestionIndex];
+            const isCorrect = (selectedOption === q.answer);
+            
+            if (isCorrect) {
+                score++;
+            }
+            
+            // Simpan jawaban siswa untuk review
+            userAnswers.push({
+                question: q.question,
+                selected: selectedOption,
+                correct: q.answer,
+                rationale: q.rationale,
+                isCorrect: isCorrect
+            });
+            
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // Mengakhiri kuis
+        function endQuiz() {
+            stopTimer();
+            showScreen('score');
+            
+            const finalScore = Math.round((score / currentQuestions.length) * 100);
+            scoreValueElement.textContent = finalScore;
+        }
+
+        // =======================================================================
+        // FUNGSI REVIEW & RESTART
+        // =======================================================================
+
+        // Menampilkan pembahasan
+        window.showReview = function() {
+            showScreen('review');
+            reviewContainer.innerHTML = '';
+            
+            userAnswers.forEach((answer, index) => {
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                
+                item.innerHTML = `
+                    <div class="review-question">Soal ${index + 1}: ${answer.question}</div>
+                    <div class="review-answer ${answer.isCorrect ? 'correct' : 'incorrect'}">
+                        Jawaban Anda: ${answer.selected} ${answer.isCorrect ? ' (Benar)' : ' (Salah)'}
+                    </div>
+                    ${!answer.isCorrect ? 
+                        `<div class="review-answer correct">Jawaban Benar: ${answer.correct}</div>` : ''}
+                    <div class="rationale"><strong>Pembahasan:</strong> ${answer.rationale}</div>
+                `;
+                
+                reviewContainer.appendChild(item);
+            });
+        }
+        
+        // Mengulang kuis
+        window.restartQuiz = function() {
+            stopTimer();
+            showScreen('home');
+        }
+
+    </script>
+
+</body>
+</html>
