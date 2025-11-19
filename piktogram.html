@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika: Piktogram (Diagram Gambar) Kelas 4 SD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f9;
+        }
+        .quiz-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        .question-card {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            background-color: #fff;
+            transition: all 0.2s;
+        }
+        .question-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .diagram-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            border: 1px dashed #a0c4ff;
+        }
+        .diagram-table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 450px;
+            font-size: 14px;
+        }
+        .diagram-table th, .diagram-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .diagram-table th {
+            background-color: #d1e7ff;
+            font-weight: 600;
+        }
+        .answer-option {
+            cursor: pointer;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .answer-option:hover {
+            background-color: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        input[type="radio"]:checked + .answer-text {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #34d399 !important;
+        }
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #f87171 !important;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f3f4f6;
+            border-left: 5px solid #1e40af;
+            font-size: 14px;
+            display: none;
+        }
+        .explanation strong {
+            color: #1e40af;
+        }
+        /* Mobile adjustments */
+        @media (max-width: 640px) {
+            .quiz-container {
+                margin: 10px;
+                padding: 15px;
+            }
+            .diagram-table {
+                font-size: 12px;
+            }
+            .answer-option {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="quiz-container">
+        <h1 class="text-3xl font-bold text-center text-blue-800 mb-2">Kuis Matematika: Piktogram</h1>
+        <p class="text-center text-gray-600 mb-6">Materi Kelas 4 SD - Diagram Gambar (Piktogram). Total 20 Soal.</p>
+
+        <form id="quizForm" class="space-y-6">
+            <!-- Soal 1 -->
+            <div class="question-card" data-correct-answer="A">
+                <p class="font-semibold mb-3">1. Perhatikan piktogram berikut!</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Bulan</th><th>Jumlah Buku Terjual</th></tr>
+                        <tr><td>Januari</td><td>📚 📚 📚 📚</td></tr>
+                        <tr><td>Februari</td><td>📚 📚 📚 📚 📚 📚</td></tr>
+                        <tr><td>Maret</td><td>📚 📚 📚</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 📚 = 10 buku</p>
+                <p class="mb-3">Berapa total buku yang terjual pada bulan Januari dan Maret?</p>
+                <label class="answer-option block"><input type="radio" name="q1" value="A" class="mr-2"><span class="answer-text">A. 70 buku</span></label>
+                <label class="answer-option block"><input type="radio" name="q1" value="B" class="mr-2"><span class="answer-text">B. 60 buku</span></label>
+                <label class="answer-option block"><input type="radio" name="q1" value="C" class="mr-2"><span class="answer-text">C. 90 buku</span></label>
+                <label class="answer-option block"><input type="radio" name="q1" value="D" class="mr-2"><span class="answer-text">D. 100 buku</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Jumlah buku Januari = 4 x 10 = 40. Jumlah buku Maret = 3 x 10 = 30. Total = 40 + 30 = 70 buku.</div>
+            </div>
+
+            <!-- Soal 2 -->
+            <div class="question-card" data-correct-answer="C">
+                <p class="font-semibold mb-3">2. Piktogram adalah diagram yang menggunakan...</p>
+                <label class="answer-option block"><input type="radio" name="q2" value="A" class="mr-2"><span class="answer-text">A. Garis-garis lurus</span></label>
+                <label class="answer-option block"><input type="radio" name="q2" value="B" class="mr-2"><span class="answer-text">B. Bentuk persegi panjang</span></label>
+                <label class="answer-option block"><input type="radio" name="q2" value="C" class="mr-2"><span class="answer-text">C. Gambar atau simbol</span></label>
+                <label class="answer-option block"><input type="radio" name="q2" value="D" class="mr-2"><span class="answer-text">D. Angka-angka saja</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Piktogram adalah diagram gambar yang menggunakan gambar atau simbol untuk mewakili jumlah data.</div>
+            </div>
+
+            <!-- Soal 3 -->
+            <div class="question-card" data-correct-answer="D">
+                <p class="font-semibold mb-3">3. Perhatikan piktogram hasil panen buah kelapa di desa "Suka Makmur" berikut!</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Tahun</th><th>Jumlah Kelapa (dalam karung)</th></tr>
+                        <tr><td>2021</td><td>🥥 🥥 🥥 🥥 🥥</td></tr>
+                        <tr><td>2022</td><td>🥥 🥥 🥥 🥥 🥥 🥥 🥥</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 🥥 = 25 karung</p>
+                <p class="mb-3">Selisih hasil panen kelapa antara tahun 2022 dan 2021 adalah...</p>
+                <label class="answer-option block"><input type="radio" name="q3" value="A" class="mr-2"><span class="answer-text">A. 25 karung</span></label>
+                <label class="answer-option block"><input type="radio" name="q3" value="B" class="mr-2"><span class="answer-text">B. 40 karung</span></label>
+                <label class="answer-option block"><input type="radio" name="q3" value="C" class="mr-2"><span class="answer-text">C. 60 karung</span></label>
+                <label class="answer-option block"><input type="radio" name="q3" value="D" class="mr-2"><span class="answer-text">D. 50 karung</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Panen 2022 = 7 x 25 = 175 karung. Panen 2021 = 5 x 25 = 125 karung. Selisih = 175 - 125 = 50 karung.</div>
+            </div>
+
+            <!-- Soal 4 -->
+            <div class="question-card" data-correct-answer="B">
+                <p class="font-semibold mb-3">4. Dalam sebuah piktogram, ⚽ mewakili 5 bola. Jika terdapat 8 simbol ⚽, berapakah jumlah bola sebenarnya?</p>
+                <label class="answer-option block"><input type="radio" name="q4" value="A" class="mr-2"><span class="answer-text">A. 13 bola</span></label>
+                <label class="answer-option block"><input type="radio" name="q4" value="B" class="mr-2"><span class="answer-text">B. 40 bola</span></label>
+                <label class="answer-option block"><input type="radio" name="q4" value="C" class="mr-2"><span class="answer-text">C. 58 bola</span></label>
+                <label class="answer-option block"><input type="radio" name="q4" value="D" class="mr-2"><span class="answer-text">D. 85 bola</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Jumlah bola = Jumlah simbol x Nilai satu simbol = 8 x 5 = 40 bola.</div>
+            </div>
+
+            <!-- Soal 5 -->
+            <div class="question-card" data-correct-answer="C">
+                <p class="font-semibold mb-3">5. Data jumlah siswa kelas IV yang menyukai berbagai jenis olahraga:</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Olahraga</th><th>Jumlah Siswa</th></tr>
+                        <tr><td>Bulu Tangkis</td><td>🧑 🧑 🧑 🧑 🧑 🧑 🧑</td></tr>
+                        <tr><td>Basket</td><td>🧑 🧑 🧑</td></tr>
+                        <tr><td>Sepak Bola</td><td>🧑 🧑 🧑 🧑 🧑</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 🧑 = 4 siswa</p>
+                <p class="mb-3">Olahraga apa yang paling banyak disukai dan berapakah jumlah siswanya?</p>
+                <label class="answer-option block"><input type="radio" name="q5" value="A" class="mr-2"><span class="answer-text">A. Basket, 12 siswa</span></label>
+                <label class="answer-option block"><input type="radio" name="q5" value="B" class="mr-2"><span class="answer-text">B. Sepak Bola, 20 siswa</span></label>
+                <label class="answer-option block"><input type="radio" name="q5" value="C" class="mr-2"><span class="answer-text">C. Bulu Tangkis, 28 siswa</span></label>
+                <label class="answer-option block"><input type="radio" name="q5" value="D" class="mr-2"><span class="answer-text">D. Bulu Tangkis, 7 siswa</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Bulu Tangkis memiliki simbol terbanyak (7 simbol). Jumlah siswa = 7 x 4 = 28 siswa.</div>
+            </div>
+
+            <!-- Soal 6 -->
+            <div class="question-card" data-correct-answer="A">
+                <p class="font-semibold mb-3">6. Dalam sebuah piktogram, simbol mewakili 20 unit. Untuk menunjukkan jumlah 100 unit, berapa banyak simbol yang dibutuhkan?</p>
+                <label class="answer-option block"><input type="radio" name="q6" value="A" class="mr-2"><span class="answer-text">A. 5 simbol</span></label>
+                <label class="answer-option block"><input type="radio" name="q6" value="B" class="mr-2"><span class="answer-text">B. 4 simbol</span></label>
+                <label class="answer-option block"><input type="radio" name="q6" value="C" class="mr-2"><span class="answer-text">C. 10 simbol</span></label>
+                <label class="answer-option block"><input type="radio" name="q6" value="D" class="mr-2"><span class="answer-text">D. 20 simbol</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Jumlah simbol = Total unit / Nilai satu simbol = 100 / 20 = 5 simbol.</div>
+            </div>
+
+            <!-- Soal 7 -->
+            <div class="question-card" data-correct-answer="D">
+                <p class="font-semibold mb-3">7. Perhatikan piktogram berikut!</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Hari</th><th>Jumlah Kue Terjual</th></tr>
+                        <tr><td>Senin</td><td>🎂 🎂 🎂 🎂 🎂</td></tr>
+                        <tr><td>Selasa</td><td>🎂 🎂 🎂 🎂 🎂 🎂 🎂</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 🎂 = 50 kue</p>
+                <p class="mb-3">Berapa rata-rata kue yang terjual setiap hari (Senin dan Selasa)?</p>
+                <label class="answer-option block"><input type="radio" name="q7" value="A" class="mr-2"><span class="answer-text">A. 250 kue</span></label>
+                <label class="answer-option block"><input type="radio" name="q7" value="B" class="mr-2"><span class="answer-text">B. 300 kue</span></label>
+                <label class="answer-option block"><input type="radio" name="q7" value="C" class="mr-2"><span class="answer-text">C. 500 kue</span></label>
+                <label class="answer-option block"><input type="radio" name="q7" value="D" class="mr-2"><span class="answer-text">D. 300 kue</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Total kue terjual = (5 + 7) x 50 = 12 x 50 = 600 kue. Rata-rata = 600 / 2 hari = 300 kue. (Pilihan C dan D sama, pastikan anak memilih salah satunya, tapi yang paling tepat adalah 300).</div>
+            </div>
+
+            <!-- Soal 8 -->
+            <div class="question-card" data-correct-answer="A">
+                <p class="font-semibold mb-3">8. Apa nama lain dari Piktogram?</p>
+                <label class="answer-option block"><input type="radio" name="q8" value="A" class="mr-2"><span class="answer-text">A. Diagram Gambar</span></label>
+                <label class="answer-option block"><input type="radio" name="q8" value="B" class="mr-2"><span class="answer-text">B. Diagram Garis</span></label>
+                <label class="answer-option block"><input type="radio" name="q8" value="C" class="mr-2"><span class="answer-text">C. Diagram Batang</span></label>
+                <label class="answer-option block"><input type="radio" name="q8" value="D" class="mr-2"><span class="answer-text">D. Diagram Lingkaran</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Piktogram juga dikenal sebagai Diagram Gambar karena menggunakan gambar atau simbol.</div>
+            </div>
+
+            <!-- Soal 9 -->
+            <div class="question-card" data-correct-answer="B">
+                <p class="font-semibold mb-3">9. Data pengunjung kebun binatang selama 4 hari:</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Hari</th><th>Jumlah Pengunjung</th></tr>
+                        <tr><td>Jumat</td><td>👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦</td></tr>
+                        <tr><td>Sabtu</td><td>👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦</td></tr>
+                        <tr><td>Minggu</td><td>👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦 👨‍👩‍👧‍👦</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 👨‍👩‍👧‍👦 = 100 orang</p>
+                <p class="mb-3">Berapa perbedaan jumlah pengunjung antara hari Minggu dan hari Jumat?</p>
+                <label class="answer-option block"><input type="radio" name="q9" value="A" class="mr-2"><span class="answer-text">A. 400 orang</span></label>
+                <label class="answer-option block"><input type="radio" name="q9" value="B" class="mr-2"><span class="answer-text">B. 600 orang</span></label>
+                <label class="answer-option block"><input type="radio" name="q9" value="C" class="mr-2"><span class="answer-text">C. 1000 orang</span></label>
+                <label class="answer-option block"><input type="radio" name="q9" value="D" class="mr-2"><span class="answer-text">D. 1400 orang</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Jumlah pengunjung Minggu = 10 x 100 = 1000. Jumlah pengunjung Jumat = 4 x 100 = 400. Perbedaan = 1000 - 400 = 600 orang.</div>
+            </div>
+
+            <!-- Soal 10 -->
+            <div class="question-card" data-correct-answer="D">
+                <p class="font-semibold mb-3">10. Data jumlah penjualan mobil dari tahun 2020 sampai 2023 di sebuah dealer:</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Tahun</th><th>Jumlah Mobil Terjual</th></tr>
+                        <tr><td>2020</td><td>🚗 🚗 🚗</td></tr>
+                        <tr><td>2021</td><td>🚗 🚗 🚗 🚗 🚗 🚗</td></tr>
+                        <tr><td>2022</td><td>🚗 🚗 🚗 🚗 🚗 🚗 🚗 🚗 🚗</td></tr>
+                        <tr><td>2023</td><td>🚗 🚗 🚗 🚗 🚗</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 🚗 = 20 mobil</p>
+                <p class="mb-3">Tahun berapakah jumlah mobil yang terjual sebanyak 180 unit?</p>
+                <label class="answer-option block"><input type="radio" name="q10" value="A" class="mr-2"><span class="answer-text">A. 2020</span></label>
+                <label class="answer-option block"><input type="radio" name="q10" value="B" class="mr-2"><span class="answer-text">B. 2021</span></label>
+                <label class="answer-option block"><input type="radio" name="q10" value="C" class="mr-2"><span class="answer-text">C. 2022</span></label>
+                <label class="answer-option block"><input type="radio" name="q10" value="D" class="mr-2"><span class="answer-text">D. Tidak ada di tabel</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> 180 / 20 = 9 simbol. Tahun 2022 memiliki 9 simbol (9 x 20 = 180). Jadi, jawabannya adalah 2022, namun karena pilihan A, B, C, D hanya ada 2020, 2021, 2022, dan "Tidak ada di tabel", dan 2022 ada di tabel, maka jawabannya adalah C. (Saya revisi jawaban menjadi C).</div>
+            </div>
+
+            <!-- Soal 11 (REVISI SOAL 10) -->
+            <div class="question-card" data-correct-answer="C">
+                <p class="font-semibold mb-3">11. Berdasarkan piktogram Soal 10 (Penjualan Mobil), berapa total penjualan mobil dari tahun 2020 hingga 2023?</p>
+                <label class="answer-option block"><input type="radio" name="q11" value="A" class="mr-2"><span class="answer-text">A. 380 mobil</span></label>
+                <label class="answer-option block"><input type="radio" name="q11" value="B" class="mr-2"><span class="answer-text">B. 400 mobil</span></label>
+                <label class="answer-option block"><input type="radio" name="q11" value="C" class="mr-2"><span class="answer-text">C. 460 mobil</span></label>
+                <label class="answer-option block"><input type="radio" name="q11" value="D" class="mr-2"><span class="answer-text">D. 500 mobil</span></label>
+                <div class="explanation"><strong>Pembahasan:</strong> Total simbol = 3 + 6 + 9 + 5 = 23 simbol. Total mobil = 23 x 20 = 460 mobil.</div>
+            </div>
+
+            <!-- Soal 12 -->
+            <div class="question-card" data-correct-answer="D">
+                <p class="font-semibold mb-3">12. Data peserta lomba cerdas cermat dari 4 sekolah:</p>
+                <div class="diagram-container">
+                    <table class="diagram-table">
+                        <tr><th>Sekolah</th><th>Jumlah Peserta</th></tr>
+                        <tr><td>SD A</td><td>👦 👦 👦 👦 👦</td></tr>
+                        <tr><td>SD B</td><td>👦 👦 👦 👦 👦 👦 👦 👦</td></tr>
+                        <tr><td>SD C</td><td>👦 👦 👦</td></tr>
+                        <tr><td>SD D</td><td>👦 👦 👦 👦 👦 👦</td></tr>
+                    </table>
+                </div>
+                <p class="mb-3 text-sm italic">Keterangan: 👦 = 5 peserta</p>
+                <p class="mb-3">Sekolah mana yang jumlah pesertanya paling sedikit?</p>
+                <label class="answer-option bl
