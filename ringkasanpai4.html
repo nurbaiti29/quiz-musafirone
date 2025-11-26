@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisah Hijrah Nabi Muhammad SAW - Kelas 4 SD</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Mermaid JS untuk Diagram -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    
+    <!-- Chart JS untuk Grafik -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-answer {
+            transition: all 0.3s;
+        }
+        .btn-answer:hover {
+            transform: scale(1.02);
+        }
+        .correct {
+            background-color: #4ade80 !important;
+            color: white !important;
+            border-color: #4ade80 !important;
+        }
+        .wrong {
+            background-color: #f87171 !important;
+            color: white !important;
+            border-color: #f87171 !important;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section with SVG -->
+    <div class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-6 rounded-b-3xl shadow-lg relative overflow-hidden">
+        <div class="absolute right-0 bottom-0 opacity-20 transform translate-x-10 translate-y-10">
+            <!-- SVG Decoration: Moon and Clouds -->
+            <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 20C100 20 130 50 130 90C130 130 100 160 100 160C110 160 160 140 160 90C160 40 110 20 100 20Z" fill="white"/>
+                <circle cx="40" cy="40" r="10" fill="white" fill-opacity="0.5"/>
+                <circle cx="160" cy="140" r="5" fill="white" fill-opacity="0.5"/>
+            </svg>
+        </div>
+
+        <div class="container mx-auto max-w-4xl relative z-10 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold mb-2">Kisah Hijrah Nabi Muhammad saw.</h1>
+            <p class="text-lg md:text-xl opacity-90">Pelajaran PAI & Budi Pekerti Kelas 4 SD - Bab 5</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto max-w-4xl p-4 space-y-8">
+
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center space-x-4 mb-6">
+            <button onclick="switchTab('materi')" id="tab-materi" class="px-6 py-2 rounded-full font-bold bg-blue-600 text-white shadow-md transition">Ringkasan Materi</button>
+            <button onclick="switchTab('kuis')" id="tab-kuis" class="px-6 py-2 rounded-full font-bold bg-white text-blue-600 shadow-md hover:bg-blue-50 transition">Latihan Soal</button>
+        </div>
+
+        <!-- CONTENT: MATERI -->
+        <div id="content-materi" class="space-y-6 animate-fade-in">
+            
+            <!-- Section 1: Pengertian & Sebab -->
+            <div class="card p-6 border-l-8 border-yellow-400">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">1. Mengapa Nabi Hijrah?</h2>
+                <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div>
+                        <p class="mb-2"><strong>Hijrah</strong> artinya berpindah atau memutuskan. Dalam sejarah Islam, Hijrah adalah perpindahan Nabi Muhammad saw. dan sahabat dari <strong>Makkah ke Madinah</strong>.</p>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-700 bg-yellow-50 p-4 rounded-lg">
+                            <li><strong>Perintah Allah Swt.</strong> untuk menyelamatkan iman dan diri.</li>
+                            <li><strong>Dakwah di Makkah sulit</strong> karena penolakan keras kaum kafir Quraisy.</li>
+                            <li><strong>Permintaan Penduduk Madinah</strong> melalui peristiwa Baiat 'Aqabah.</li>
+                        </ul>
+                    </div>
+                    <div class="flex justify-center">
+                        <!-- SVG Illustration: Direction Sign -->
+                        <svg width="150" height="150" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="90" y="100" width="20" height="100" fill="#8B4513"/>
+                            <path d="M40 60 L160 60 L180 80 L160 100 L40 100 Z" fill="#22c55e" stroke="#15803d" stroke-width="2"/>
+                            <text x="100" y="85" font-family="Arial" font-size="18" fill="white" text-anchor="middle" font-weight="bold">KE MADINAH</text>
+                            <path d="M160 30 L40 30 L20 50 L40 70 L160 70 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/>
+                            <text x="100" y="55" font-family="Arial" font-size="18" fill="white" text-anchor="middle" font-weight="bold" text-decoration="line-through">MAKKAH</text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Tokoh Penting (Chart.js) -->
+            <div class="card p-6 border-l-8 border-blue-400">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">2. Tim Sukses Hijrah</h2>
+                <p class="mb-4">Nabi Muhammad saw. tidak sendirian. Beliau dibantu oleh orang-orang hebat dengan tugas khusus. Mari lihat peran mereka:</p>
+                
+                <div class="bg-white rounded-lg h-64 md:h-80 flex justify-center items-center">
+                    <canvas id="roleChart"></canvas>
+                </div>
+                <p class="text-sm text-center text-gray-500 mt-2">*Grafik peran para sahabat dalam membantu Hijrah</p>
+                
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div class="bg-blue-50 p-2 rounded"><strong>Ali bin Abi Thalib:</strong> Tidur di kasur Nabi untuk mengelabui musuh.</div>
+                    <div class="bg-green-50 p-2 rounded"><strong>Abu Bakar Ash-Shiddiq:</strong> Teman setia menemani perjalanan.</div>
+                    <div class="bg-yellow-50 p-2 rounded"><strong>Abdullah bin Abu Bakar:</strong> Mata-mata pencari informasi.</div>
+                    <div class="bg-pink-50 p-2 rounded"><strong>Asma binti Abu Bakar:</strong> Pengantar makanan ke Gua Tsur.</div>
+                    <div class="bg-gray-50 p-2 rounded"><strong>Amir bin Fuhairah:</strong> Gembala domba untuk menghapus jejak kaki.</div>
+                    <div class="bg-purple-50 p-2 rounded"><strong>Abdullah bin Uraiqit:</strong> Penunjuk jalan (pemandu).</div>
+                </div>
+            </div>
+
+            <!-- Section 3: Alur Perjalanan (Mermaid) -->
+            <div class="card p-6 border-l-8 border-purple-400">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">3. Peta Perjalanan Hijrah</h2>
+                <p class="mb-4">Perjalanan ini sangat berat dan penuh strategi. Nabi tidak langsung ke Utara (Madinah), tapi ke Selatan dulu.</p>
+                <div class="mermaid text-center bg-gray-50 p-4 rounded-xl overflow-x-auto">
+                    graph TD
+                    A[Start: Rumah Nabi di Makkah] -->|Malam Hari| B(Gua Tsur)
+                    B -->|Sembunyi 3 Hari| B
+                    B -->|Jalur Pesisir Pantai| C(Bertemu Suraqah)
+                    C -->|Singgah| D(Quba)
+                    D -->|Membangun Masjid Quba| D
+                    D -->|Jumat Pertama| E(Lembah Ranuna)
+                    E -->|Disambut Meriah| F[Finish: Madinah / Yasrib]
+                    style A fill:#fca5a5,stroke:#333,stroke-width:2px
+                    style B fill:#fde047,stroke:#333,stroke-width:2px
+                    style D fill:#86efac,stroke:#333,stroke-width:2px
+                    style F fill:#93c5fd,stroke:#333,stroke-width:4px
+                </div>
+            </div>
+
+            <!-- Section 4: Peristiwa Penting -->
+            <div class="card p-6 border-l-8 border-green-400">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4">4. Peristiwa Penting</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <span class="bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center mr-3 mt-1 text-sm">1</span>
+                        <div><strong>Di Gua Tsur:</strong> Ada laba-laba membuat sarang dan burung merpati bertelur di mulut gua, sehingga kaum kafir mengira gua itu kosong. Abu Bakar takut, tapi Nabi berkata: <em>"Jangan sedih, Allah bersama kita."</em></div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center mr-3 mt-1 text-sm">2</span>
+                        <div><strong>Gelar Asma:</strong> Asma merobek ikat pinggangnya jadi dua untuk mengikat bekal, maka ia dijuluki <em>Zat an-Nitaqain</em> (Pemilik Dua Ikat Pinggang).</div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center mr-3 mt-1 text-sm">3</span>
+                        <div><strong>Tiba di Madinah:</strong> Penduduk menyambut dengan syair <em>Thola'al Badru 'Alaina</em>. Kaum pendatang disebut <strong>Muhajirin</strong>, kaum penolong (penduduk asli) disebut <strong>Ansar</strong>.</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CONTENT: KUIS -->
+        <div id="content-kuis" class="hidden space-y-6">
+            <div class="card p-8 text-center">
+                <h2 class="text-2xl font-bold text-blue-800 mb-2">Latihan Soal</h2>
+                <p class="text-gray-600 mb-6">Jawablah pertanyaan berikut untuk menguji pemahamanmu!</p>
+                
+                <div class="bg-blue-100 rounded-full h-4 mb-6">
+                    <div id="progress-bar" class="bg-blue-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+
+                <!-- Question Container -->
+                <div id="quiz-container" class="text-left">
+                    <div id="question-text" class="text-xl font-semibold mb-6">Memuat soal...</div>
+                    <div id="options-container" class="grid grid-cols-1 gap-3">
+                        <!-- Options will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Result Container (Hidden initially) -->
+                <div id="result-container" class="hidden">
+                    <div class="text-6xl mb-4">🏆</div>
+                    <h3 class="text-3xl font-bold text-gray-800 mb-2">Selesai!</h3>
+                    <p class="text-xl mb-6">Nilai Kamu: <span id="final-score" class="font-bold text-blue-600 text-4xl">0</span>/100</p>
+                    <button onclick="restartQuiz()" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition transform hover:scale-105">Ulangi Kuis</button>
+                </div>
+
+                <!-- Feedback Text -->
+                <div id="feedback" class="mt-4 font-bold text-lg min-h-[30px]"></div>
+                
+                <!-- Next Button -->
+                <button id="next-btn" onclick="nextQuestion()" class="hidden mt-6 bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-700">Soal Selanjutnya &rarr;</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center py-6 text-gray-500 text-sm">
+        <p>Dibuat untuk Siswa Kelas 4 SD - Materi Bab 5</p>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION: CHART.JS ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Mermaid
+            mermaid.initialize({ startOnLoad: true });
+
+            // Initialize Chart.js
+            const ctx = document.getElementById('roleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ali (Pengganti)', 'Abu Bakar (Teman)', 'Abdullah bin Abu Bakar (Mata-mata)', 'Asma (Logistik)', 'Amir (Penghapus Jejak)', 'Abdullah bin Uraiqit (Pemandu)'],
+                    datasets: [{
+                        label: 'Peran dalam Hijrah',
+                        data: [15, 25, 15, 15, 15, 15], // Arbitrary weight for visual
+                        backgroundColor: [
+                            '#3b82f6', // blue
+                            '#22c55e', // green
+                            '#eab308', // yellow
+                            '#ec4899', // pink
+                            '#6b7280', // gray
+                            '#a855f7'  // purple
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 15,
+                                font: { size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- 2. LOGIC: TABS ---
+        function switchTab(tabName) {
+            const materiContent = document.getElementById('content-materi');
+            const kuisContent = document.getElementById('content-kuis');
+            const btnMateri = document.getElementById('tab-materi');
+            const btnKuis = document.getElementById('tab-kuis');
+
+            if (tabName === 'materi') {
+                materiContent.classList.remove('hidden');
+                kuisContent.classList.add('hidden');
+                
+                btnMateri.classList.add('bg-blue-600', 'text-white');
+                btnMateri.classList.remove('bg-white', 'text-blue-600');
+                
+                btnKuis.classList.add('bg-white', 'text-blue-600');
+                btnKuis.classList.remove('bg-blue-600', 'text-white');
+            } else {
+                materiContent.classList.add('hidden');
+                kuisContent.classList.remove('hidden');
+
+                btnKuis.classList.add('bg-blue-600', 'text-white');
+                btnKuis.classList.remove('bg-white', 'text-blue-600');
+
+                btnMateri.classList.add('bg-white', 'text-blue-600');
+                btnMateri.classList.remove('bg-blue-600', 'text-white');
+            }
+        }
+
+        // --- 3. LOGIC: QUIZ ---
+        const questions = [
+            {
+                q: "Apa arti kata 'Hijrah' secara bahasa?",
+                options: ["Berperang", "Berpindah/Memutuskan", "Berwisata", "Berdagang"],
+                correct: 1
+            },
+            {
+                q: "Siapakah sahabat yang menggantikan Nabi tidur di tempat tidur beliau saat malam hijrah?",
+                options: ["Umar bin Khattab", "Abu Bakar Ash-Shiddiq", "Ali bin Abi Thalib", "Usman bin Affan"],
+                correct: 2
+            },
+            {
+                q: "Di gua manakah Nabi Muhammad saw. dan Abu Bakar bersembunyi selama 3 hari?",
+                options: ["Gua Hira", "Gua Tsur", "Gua Kahfi", "Gua Uhud"],
+                correct: 1
+            },
+            {
+                q: "Siapakah wanita tangguh yang mengantarkan makanan ke Gua Tsur?",
+                options: ["Siti Khadijah", "Siti Aisyah", "Fatimah Az-Zahra", "Asma binti Abu Bakar"],
+                correct: 3
+            },
+            {
+                q: "Apa nama masjid pertama yang dibangun Nabi saat tiba di Quba?",
+                options: ["Masjidil Haram", "Masjid Nabawi", "Masjid Quba", "Masjid Aqsa"],
+                correct: 2
+            },
+            {
+                q: "Hewan apakah yang menutupi pintu Gua Tsur dengan sarangnya?",
+                options: ["Laba-laba", "Burung Elang", "Semut", "Lebah"],
+                correct: 0
+            },
+            {
+                q: "Penduduk Madinah yang menolong kaum Muhajirin disebut kaum ...",
+                options: ["Musyrikin", "Ansar", "Badui", "Quraisy"],
+                correct: 1
+            },
+            {
+                q: "Kota Madinah sebelumnya bernama ...",
+                options: ["Taif", "Syam", "Yasrib", "Mesir"],
+                correct: 2
+            },
+            {
+                q: "Gelar 'Zat an-Nitaqain' yang diberikan kepada Asma binti Abu Bakar artinya ...",
+                options: ["Pemilik dua pedang", "Pemilik dua unta", "Pemilik dua ikat pinggang", "Pemilik dua rumah"],
+                correct: 2
+            },
+            {
+                q: "Apa sikap yang harus kita teladani dari peristiwa Hijrah?",
+                options: ["Sombong dan pamer", "Penakut dan ragu", "Percaya diri dan tawakal", "Marah dan dendam"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        function loadQuestion() {
+            canAnswer = true;
+            const q = questions[currentQuestion];
+            document.getElementById('question-text').innerText = `${currentQuestion + 1}. ${q.q}`;
+            
+            const optsDiv = document.getElementById('options-container');
+            optsDiv.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-answer w-full text-left p-4 rounded-lg border-2 border-blue-100 hover:border-blue-300 hover:bg-blue-50 text-gray-700 font-medium';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optsDiv.appendChild(btn);
+            });
+
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            // Update progress bar
+            const progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const correctIndex = questions[currentQuestion].correct;
+            const allBtns = document.getElementById('options-container').children;
+
+            if (selectedIndex === correctIndex) {
+                btnElement.classList.add('correct');
+                document.getElementById('feedback').innerText = "Benar! Hebat sekali! 🎉";
+                document.getElementById('feedback').className = "mt-4 font-bold text-lg text-green-600";
+                score++;
+            } else {
+                btnElement.classList.add('wrong');
+                allBtns[correctIndex].classList.add('correct'); // Show correct answer
+                document.getElementById('feedback').innerText = "Yah, kurang tepat. Semangat! 💪";
+                document.getElementById('feedback').className = "mt-4 font-bold text-lg text-red-500";
+            }
+
+            // Show Next Button
+            document.getElementById('next-btn').classList.remove('hidden');
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('next-btn').innerText = "Lihat Nilai";
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('result-container').classList.remove('hidden');
+            
+            const finalScore = score * 10; // 10 questions, max 100
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('progress-bar').style.width = `100%`;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('result-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('feedback').classList.remove('hidden');
+            document.getElementById('next-btn').innerText = "Soal Selanjutnya \u2192";
+            loadQuestion();
+        }
+
+        // Initialize First Question
+        loadQuestion();
+
+    </script>
+</body>
+</html>
+
