@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bahasa Arab: Al-Usrah (Keluarga)</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        .arabic { font-family: 'Noto Naskh Arabic', serif; direction: rtl; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATABASE SOAL ---
+        const questionsData = {
+            easy: [
+                { id: 1, question: "Bahasa Arab dari 'Ayah' adalah...", options: ["أُمٌّ (Ummun)", "أَبٌ (Abun)", "أَخٌ (Akhun)", "جَدٌّ (Jaddun)"], answer: 1, explanation: "'Abun' (أَبٌ) berarti Ayah. 'Ummun' adalah Ibu, 'Akhun' adalah Saudara Laki-laki, dan 'Jaddun' adalah Kakek." },
+                { id: 2, question: "Bahasa Arab dari 'Ibu' adalah...", options: ["عَمٌّ ('Ammun)", "جَدَّةٌ (Jaddatun)", "أُمٌّ (Ummun)", "أُخْتٌ (Ukhtun)"], answer: 2, explanation: "'Ummun' (أُمٌّ) berarti Ibu. 'Jaddatun' adalah Nenek." },
+                { id: 3, question: "Arti kata 'أَخٌ' (Akhun) adalah...", options: ["Paman", "Saudara Laki-laki", "Kakek", "Anak Laki-laki"], answer: 1, explanation: "'Akhun' berarti Saudara Laki-laki. Saudara perempuan adalah 'Ukhtun'." },
+                { id: 4, question: "Arti kata 'أُخْتٌ' (Ukhtun) adalah...", options: ["Bibi", "Nenek", "Saudara Perempuan", "Ibu"], answer: 2, explanation: "'Ukhtun' berarti Saudara Perempuan." },
+                { id: 5, question: "Bahasa Arab dari 'Kakek' adalah...", options: ["جَدٌّ (Jaddun)", "عَمٌّ ('Ammun)", "خَالٌ (Khaalun)", "اِبْنٌ (Ibnun)"], answer: 0, explanation: "'Jaddun' (جَدٌّ) artinya Kakek." },
+                { id: 6, question: "Bahasa Arab dari 'Nenek' adalah...", options: ["عَمَّةٌ ('Ammatun)", "جَدَّةٌ (Jaddatun)", "خَالَةٌ (Khaalatun)", "بِنْتٌ (Bintun)"], answer: 1, explanation: "'Jaddatun' (جَدَّةٌ) artinya Nenek. Bentuk muannats (perempuan) dari Jaddun." },
+                { id: 7, question: "Kata tunjuk (Isim Isyarah) yang tepat untuk 'Ayah' (laki-laki) adalah...", options: ["هَذِهِ (Hazihi)", "هَذَا (Haza)", "تِلْكَ (Tilka)", "هِيَ (Hiya)"], answer: 1, explanation: "'Ayah' adalah laki-laki (mudzakkar), jadi menggunakan 'Haza' (Ini - Lk). 'Hazihi' untuk perempuan." },
+                { id: 8, question: "Kata tunjuk yang tepat untuk 'Ibu' (perempuan) adalah...", options: ["هَذَا (Haza)", "ذَلِكَ (Zalika)", "هَذِهِ (Hazihi)", "هُوَ (Huwa)"], answer: 2, explanation: "'Ibu' adalah perempuan (muannats), jadi menggunakan 'Hazihi' (Ini - Pr)." },
+                { id: 9, question: "Lengkapi kalimat: هَذَا ... (Ini saudaraku lk)", options: ["أُخْتِي (Ukhti)", "أُمِّي (Ummi)", "أَخِي (Akhi)", "جَدَّتِي (Jaddati)"], answer: 2, explanation: "Karena menggunakan 'Haza' (Lk), maka jawabannya harus laki-laki: 'Akhi' (Saudaraku)." },
+                { id: 10, question: "Lengkapi kalimat: هَذِهِ ... (Ini bibiku)", options: ["عَمِّي ('Ammi)", "عَمَّتِي ('Ammati)", "أَبِي (Abi)", "جَدِّي (Jaddi)"], answer: 1, explanation: "Karena menggunakan 'Hazihi' (Pr), maka jawabannya harus perempuan: 'Ammati' (Bibiku)." },
+                { id: 11, question: "'Anak Laki-laki' dalam bahasa Arab adalah...", options: ["بِنْتٌ (Bintun)", "وَلَدٌ (Waladun)/اِبْنٌ (Ibnun)", "أَبٌ (Abun)", "زَوْجٌ (Zaujun)"], answer: 1, explanation: "'Ibnun' atau 'Waladun' berarti anak laki-laki. 'Bintun' adalah anak perempuan." },
+                { id: 12, question: "'Anak Perempuan' dalam bahasa Arab adalah...", options: ["بِنْتٌ (Bintun)", "اِبْنٌ (Ibnun)", "أَخٌ (Akhun)", "عَمٌّ ('Ammun)"], answer: 0, explanation: "'Bintun' artinya anak perempuan." },
+                { id: 13, question: "Siapakah 'Paman' (dari pihak Ayah)?", options: ["عَمٌّ ('Ammun)", "خَالٌ (Khaalun)", "جَدٌّ (Jaddun)", "أَخٌ (Akhun)"], answer: 0, explanation: "'Ammun' adalah Paman dari pihak Ayah. 'Khaalun' adalah Paman dari pihak Ibu." },
+                { id: 14, question: "Siapakah 'Bibi' (dari pihak Ayah)?", options: ["خَالَةٌ (Khaalatun)", "أُخْتٌ (Ukhtun)", "عَمَّةٌ ('Ammatun)", "أُمٌّ (Ummun)"], answer: 2, explanation: "'Ammatun' adalah Bibi (saudara perempuan ayah)." },
+                { id: 15, question: "Apa arti 'أُسْرَتِي' (Usrati)?", options: ["Rumahku", "Keluargaku", "Sekolahku", "Temanku"], answer: 1, explanation: "'Usrah' artinya Keluarga. Ditambah 'ya mukatakallim' (i) menjadi 'Keluargaku'." },
+                { id: 16, question: "Manakah yang merupakan anggota keluarga laki-laki?", options: ["أُمٌّ", "جَدَّةٌ", "أُخْتٌ", "أَخٌ"], answer: 3, explanation: "'Akhun' (Saudara laki-laki) adalah satu-satunya kata benda mudzakkar (laki-laki) di pilihan tersebut." },
+                { id: 17, question: "Manakah yang merupakan anggota keluarga perempuan?", options: ["أَبٌ", "جَدٌّ", "عَمَّةٌ", "عَمٌّ"], answer: 2, explanation: "'Ammatun' (Bibi) ada Ta' Marbuthah (ة), menandakan perempuan." },
+                { id: 18, question: "Bahasa Arab 'Namaku' adalah...", options: ["اِسْمُكَ", "اِسْمُهُ", "اِسْمِي", "اِسْمُهَا"], answer: 2, explanation: "'Ismi' berarti Namaku. 'Ismuka' (Namamu lk), 'Ismuhu' (Namanya lk)." },
+                { id: 19, question: "Terjemahkan: 'Ini kakekku'", options: ["هَذِهِ جَدَّتِي", "هَذَا جَدِّي", "هَذَا أَبِي", "ذَلِكَ عَمِّي"], answer: 1, explanation: "'Ini' (Haza) + 'Kakekku' (Jaddi). Haza Jaddi." },
+                { id: 20, question: "Terjemahkan: 'Ini nenekku'", options: ["هَذَا جَدِّي", "هَذِهِ جَدَّتِي", "تِلْكَ أُمِّي", "هَذِهِ أُخْتِي"], answer: 1, explanation: "'Ini' (Hazihi untuk Pr) + 'Nenekku' (Jaddati). Hazihi Jaddati." }
+            ],
+            medium: [
+                { id: 1, question: "Lengkapi: ... جَدَّتُكَ (Apakah ini nenekmu - lk?)", options: ["هَلْ هَذِهِ", "هَلْ هَذَا", "مَنْ هَذَا", "كَيْفَ هَذَا"], answer: 0, explanation: "'Nenek' adalah perempuan, maka kata tunjuknya harus 'Hazihi'. Jadi: Hal hazihi jaddatuka?" },
+                { id: 2, question: "Jawaban dari: هَلْ هَذَا أَبُوكَ؟ (Ya, ini ayahku)", options: ["نَعَمْ, هَذَا أَبُوكَ", "لا, هَذَا أَبِي", "نَعَمْ, هَذَا أَبِي", "نَعَمْ, هَذِهِ أَبِي"], answer: 2, explanation: "Jika ditanya 'Ayahmu' (Abuka), jawabnya 'Ayahku' (Abi). 'Na'am, haza Abi'." },
+                { id: 3, question: "Susun kalimat: أُمِّي - هَذِهِ - فَاطِمَةُ - وَاِسْمُهَا", options: ["هَذِهِ أُمِّي وَاِسْمُهَا فَاطِمَةُ", "وَاِسْمُهَا أُمِّي هَذِهِ فَاطِمَةُ", "فَاطِمَةُ هَذِهِ أُمِّي وَاِسْمُهَا", "هَذِهِ فَاطِمَةُ وَاِسْمُهَا أُمِّي"], answer: 0, explanation: "Susunan benar: 'Ini ibuku dan namanya Fatimah' (Hazihi Ummi wasmuha Fatimah)." },
+                { id: 4, question: "Ubah ke Bahasa Arab: 'Dia (pr) saudara perempuanku.'", options: ["هُوَ أُخْتِي", "هِيَ أُخْتِي", "أَنْتَ أُخْتِي", "أَنَا أُخْتِي"], answer: 1, explanation: "'Dia' untuk perempuan adalah 'Hiya'. Jadi: 'Hiya Ukhti'." },
+                { id: 5, question: "Kata ganti 'Dia' untuk laki-laki adalah...", options: ["أَنْتَ", "أَنَا", "هِيَ", "هُوَ"], answer: 3, explanation: "'Huwa' adalah Dia (laki-laki). 'Hiya' adalah Dia (perempuan)." },
+                { id: 6, question: "Apa arti 'عَمُّهَا' ('Ammuha)?", options: ["Pamanku", "Pamanmu", "Pamannya (pr)", "Pamannya (lk)"], answer: 2, explanation: "Akhiran '-ha' merujuk pada kepemilikan 'Dia perempuan'. Jadi 'Pamannya (perempuan tersebut)'." },
+                { id: 7, question: "Apa arti 'أَخُوهُ' (Akhuhu)?", options: ["Saudaranya (lk)", "Saudaranya (pr)", "Saudaramu", "Saudaraku"], answer: 0, explanation: "Akhiran '-hu' merujuk pada kepemilikan 'Dia laki-laki'. Jadi 'Saudara laki-lakinya'." },
+                { id: 8, question: "Lengkapi: يَا فَاطِمَةُ, هَلْ هَذَا ... ؟ (Ayahmu)", options: ["أَبُوكِ", "أَبُوكَ", "أَبِي", "أَبُوهُ"], answer: 0, explanation: "Karena yang dipanggil Fatimah (perempuan), maka kepemilikan 'mu' menggunakan '-ki'. Jadi 'Abuki'." },
+                { id: 9, question: "Lengkapi: يَا أَحْمَدُ, هَلْ هَذِهِ ... ؟ (Bibimu)", options: ["عَمَّتُكِ", "عَمَّتُكَ", "عَمَّتِي", "عَمَّتُهَا"], answer: 1, explanation: "Karena yang dipanggil Ahmad (laki-laki), maka kepemilikan 'mu' menggunakan '-ka'. Jadi 'Ammatuka'." },
+                { id: 10, question: "'Saudara perempuan ayah' disebut...", options: ["خَالَةٌ", "عَمَّةٌ", "جَدَّةٌ", "أُمٌّ"], answer: 1, explanation: "Saudara perempuan ayah adalah Bibi dari pihak ayah, bahasa Arabnya 'Ammatun'." },
+                { id: 11, question: "'Anak laki-laki dari saudara laki-laki' (Keponakan) disebut...", options: ["اِبْنُ الْأَخِ", "بِنْتُ الْأَخِ", "اِبْنُ الْعَمِّ", "اِبْنُ الْخَالِ"], answer: 0, explanation: "Anak laki-laki (Ibnun) dari saudara (Al-Akhi). Ibnul Akhi." },
+                { id: 12, question: "Lengkapi: ذَلِكَ خَالِي, اِسْمُهُ...", options: ["عَائِشَةُ", "حَسَنٌ", "زَيْنَبُ", "فَاطِمَةُ"], answer: 1, explanation: "'Khali' (Pamanku) adalah laki-laki, jadi namanya harus laki-laki. 'Hasan'." },
+                { id: 13, question: "Lengkapi: تِلْكَ عَمَّتِي, اِسْمُهَا...", options: ["عُمَرُ", "عَلِيٌّ", "عُثْمَانُ", "مَرْيَمُ"], answer: 3, explanation: "'Ammati' (Bibiku) adalah perempuan, jadi namanya harus perempuan. 'Maryam'." },
+                { id: 14, question: "Terjemahkan: 'Kakekku seorang guru'", options: ["جَدِّي طَبِيْبٌ", "جَدِّي مُدَرِّسٌ", "أَبِي مُدَرِّسٌ", "جَدَّتِي مُدَرِّسَةٌ"], answer: 1, explanation: "'Kakekku' (Jaddi) + 'Guru' (Mudarrisun)." },
+                { id: 15, question: "Bahasa Arab: 'Siapa namamu?' (kepada laki-laki)", options: ["مَا اِسْمُكِ؟", "مَنْ اَنْتَ؟", "مَا اِسْمُكَ؟", "أَيْنَ بَيْتُكَ؟"], answer: 2, explanation: "'Ma Ismuka?' digunakan untuk menanyakan nama kepada laki-laki." },
+                { id: 16, question: "Kata yang TEPAT untuk melengkapi: ... أُخْتُهُ (Itu saudara perempuannya)", options: ["هَذَا", "ذَلِكَ", "تِلْكَ", "هُوَ"], answer: 2, explanation: "'Ukhtun' (Saudara perempuan) adalah muannats. Kata tunjuk jauh (Itu) untuk muannats adalah 'Tilka'." },
+                { id: 17, question: "Manakah kalimat yang BENAR secara tata bahasa?", options: ["هَذَا أُمِّي", "هَذِهِ أَبِي", "هَذِهِ أُخْتِي", "تِلْكَ أَخِي"], answer: 2, explanation: "A salah (Haza vs Ummi), B salah (Hazihi vs Abi), D salah (Tilka vs Akhi). C Benar (Hazihi [Pr] vs Ukhti [Pr])." },
+                { id: 18, question: "Arti kalimat: أَنَا ابْنُهُ", options: ["Aku anak perempuannya", "Aku anak laki-lakinya", "Dia anak laki-lakiku", "Kamu anak laki-lakinya"], answer: 1, explanation: "'Ana' (Aku) + 'Ibnun' (Anak Lk) + 'hu' (Nya Lk). Aku anak laki-lakinya." },
+                { id: 19, question: "Lengkapi: هَلْ ... عَمَّتُكِ؟ لا, هَذِهِ أُمِّي", options: ["هَذِهِ", "تِلْكَ", "ذَلِكَ", "هَذَا"], answer: 0, explanation: "Jawabannya menggunakan 'Hazihi' (Ini), maka pertanyaannya kemungkinan besar juga menggunakan 'Hazihi' (Ini)." },
+                { id: 20, question: "Susun kata: ابْنُهَا - أَنَا - يَا - خَالَتِي", options: ["يَا أَنَا خَالَتِي ابْنُهَا", "أَنَا ابْنُهَا يَا خَالَتِي", "خَالَتِي يَا أَنَا ابْنُهَا", "ابْنُهَا يَا خَالَتِي أَنَا"], answer: 1, explanation: "Kalimat yang logis: 'Ana Ibnuha, ya Khalati' (Aku anak laki-lakinya [dia], wahai bibiku) atau konteks percakapan 'Wahai bibiku, aku anaknya'." }
+            ]
+        };
+
+        function App() {
+            const [step, setStep] = useState('login'); // login, quiz, result
+            const [name, setName] = useState('');
+            const [difficulty, setDifficulty] = useState('easy');
+            const [currentQuestions, setCurrentQuestions] = useState([]);
+            const [userAnswers, setUserAnswers] = useState({});
+            const [currentPage, setCurrentPage] = useState(0);
+            
+            const QUESTIONS_PER_PAGE = 5;
+
+            const startQuiz = () => {
+                if (!name.trim()) {
+                    alert("Silakan masukkan nama terlebih dahulu!");
+                    return;
+                }
+                setCurrentQuestions(questionsData[difficulty]);
+                setStep('quiz');
+                setCurrentPage(0);
+                setUserAnswers({});
+                window.scrollTo(0,0);
+            };
+
+            const handleAnswer = (questionId, optionIndex) => {
+                setUserAnswers(prev => ({
+                    ...prev,
+                    [questionId]: optionIndex
+                }));
+            };
+
+            const finishQuiz = () => {
+                if (Object.keys(userAnswers).length < currentQuestions.length) {
+                    if(!confirm("Masih ada soal yang belum dijawab. Yakin ingin mengumpulkan?")) return;
+                }
+                setStep('result');
+                window.scrollTo(0,0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                currentQuestions.forEach(q => {
+                    if (userAnswers[q.id] === q.answer) correct++;
+                });
+                return Math.round((correct / currentQuestions.length) * 100);
+            };
+
+            // --- KOMPONEN HALAMAN ---
+
+            if (step === 'login') {
+                return (
+                    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-teal-500 to-emerald-700">
+                        <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center border-4 border-yellow-400">
+                            <h1 className="text-3xl font-bold text-teal-800 mb-2">Kuis Bahasa Arab</h1>
+                            <h2 className="text-xl text-teal-600 mb-6 font-serif">Materi: Al-Usrah (Keluarga)</h2>
+                            
+                            <div className="mb-4 text-left">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">Nama Lengkap</label>
+                                <input 
+                                    type="text" 
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    placeholder="Masukkan nama..."
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="mb-6 text-left">
+                                <label className="block text-gray-700 text-sm font-bold mb-2">Pilih Tingkat Kesulitan</label>
+                                <select 
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                                    value={difficulty}
+                                    onChange={(e) => setDifficulty(e.target.value)}
+                                >
+                                    <option value="easy">Mudah (20 Soal)</option>
+                                    <option value="medium">Sedang (20 Soal)</option>
+                                </select>
+                            </div>
+
+                            <button 
+                                onClick={startQuiz}
+                                className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105 shadow-md"
+                            >
+                                Mulai Kuis
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'quiz') {
+                const totalPages = Math.ceil(currentQuestions.length / QUESTIONS_PER_PAGE);
+                const startIdx = currentPage * QUESTIONS_PER_PAGE;
+                const displayedQuestions = currentQuestions.slice(startIdx, startIdx + QUESTIONS_PER_PAGE);
+
+                return (
+                    <div className="min-h-screen bg-gray-50 py-8 px-4">
+                        <div className="max-w-3xl mx-auto">
+                            {/* Header */}
+                            <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-sm">
+                                <div>
+                                    <span className="font-bold text-teal-700 block">Siswa: {name}</span>
+                                    <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded mt-1 inline-block uppercase">{difficulty}</span>
+                                </div>
+                                <div className="text-right">
+                                    <span className="block text-sm text-gray-600">Halaman</span>
+                                    <span className="text-xl font-bold text-teal-600">{currentPage + 1} / {totalPages}</span>
+                                </div>
+                            </div>
+
+                            {/* Questions */}
+                            <div className="space-y-6">
+                                {displayedQuestions.map((q, idx) => (
+                                    <div key={q.id} className="bg-white p-6 rounded-xl shadow-md border-l-4 border-teal-500">
+                                        <div className="flex items-start gap-4 mb-4">
+                                            <span className="bg-teal-100 text-teal-800 font-bold w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0">
+                                                {startIdx + idx + 1}
+                                            </span>
+                                            <h3 className="text-lg font-medium arabic leading-loose text-right w-full" style={{direction: 'ltr', textAlign: 'left'}}>
+                                                {q.question}
+                                            </h3>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-12">
+                                            {q.options.map((opt, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => handleAnswer(q.id, i)}
+                                                    className={`p-3 rounded-lg text-left transition-all border ${
+                                                        userAnswers[q.id] === i 
+                                                        ? 'bg-teal-600 text-white border-teal-600 shadow-inner' 
+                                                        : 'bg-gray-50 hover:bg-teal-50 border-gray-200 text-gray-700'
+                                                    }`}
+                                                >
+                                                    <span className="font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
+                                                    <span className="arabic">{opt}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Navigation */}
+                            <div className="flex justify-between mt-8">
+                                <button 
+                                    onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+                                    disabled={currentPage === 0}
+                                    className={`px-6 py-2 rounded-lg font-bold ${currentPage === 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-white text-teal-600 border border-teal-600 hover:bg-teal-50'}`}
+                                >
+                                    Sebelumnya
+                                </button>
+
+                                {currentPage === totalPages - 1 ? (
+                                    <button 
+                                        onClick={finishQuiz}
+                                        className="px-8 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-bold shadow-lg transform hover:scale-105 transition"
+                                    >
+                                        Selesai & Lihat Nilai
+                                    </button>
+                                ) : (
+                                    <button 
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
+                                        className="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-bold shadow transition"
+                                    >
+                                        Selanjutnya
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongAnswers = currentQuestions.filter(q => userAnswers[q.id] !== q.answer);
+                
+                let feedbackMessage = "";
+                let emoji = "";
+                if (score === 100) { feedbackMessage = "Mumtaz! (Luar Biasa)"; emoji = "🌟"; }
+                else if (score >= 80) { feedbackMessage = "Jayyid Jiddan! (Sangat Bagus)"; emoji = "🎉"; }
+                else if (score >= 60) { feedbackMessage = "Jayyid! (Bagus)"; emoji = "👍"; }
+                else { feedbackMessage = "Belajar lagi ya!"; emoji = "📚"; }
+
+                return (
+                    <div className="min-h-screen bg-gray-50 py-8 px-4">
+                        <div className="max-w-3xl mx-auto">
+                            {/* Score Card */}
+                            <div className="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 text-center">
+                                <div className="bg-teal-600 p-8 text-white">
+                                    <div className="text-6xl mb-2">{emoji}</div>
+                                    <h2 className="text-3xl font-bold mb-2">Nilai Kamu</h2>
+                                    <div className="text-6xl font-extrabold text-yellow-300 mb-2">{score}</div>
+                                    <p className="text-xl opacity-90">{feedbackMessage}</p>
+                                    <p className="mt-4 text-sm opacity-75">Siswa: {name} | Level: {difficulty === 'easy' ? 'Mudah' : 'Sedang'}</p>
+                                </div>
+                                <div className="p-4 bg-gray-100 flex justify-center gap-4">
+                                    <button onClick={() => window.location.reload()} className="text-teal-700 font-bold hover:underline">
+                                        Coba Lagi
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Pembahasan */}
+                            <h3 className="text-2xl font-bold text-gray-800 mb-6 border-b-4 border-yellow-400 inline-block pb-1">
+                                {wrongAnswers.length > 0 ? "Pembahasan (Jawaban Salah)" : "Semua Jawaban Benar!"}
+                            </h3>
+
+                            <div className="space-y-6">
+                                {wrongAnswers.map((q, idx) => (
+                                    <div key={q.id} className="bg-white p-6 rounded-xl shadow border-l-4 border-red-500">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-sm">Soal No. {q.id}</span>
+                                            <span className="text-gray-400 text-sm">Jawaban kamu: <span className="text-red-500 line-through decoration-2">{q.options[userAnswers[q.id]] || "Kosong"}</span></span>
+                                        </div>
+                                        
+                                        <h4 className="font-medium text-lg mb-4 arabic" style={{direction: 'ltr', textAlign: 'left'}}>{q.question}</h4>
+                                        
+                                        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                                            <p className="text-sm text-green-800 font-bold mb-1">Jawaban Benar:</p>
+                                            <p className="text-lg text-green-700 arabic mb-3">{q.options[q.answer]}</p>
+                                            
+                                            <div className="border-t border-green-200 pt-3 mt-2">
+                                                <p className="text-sm font-bold text-gray-600 mb-1">💡 Penjelasan:</p>
+                                                <p className="text-gray-700 text-sm leading-relaxed">{q.explanation}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {wrongAnswers.length === 0 && (
+                                    <div className="text-center p-8 bg-white rounded-xl shadow">
+                                        <p className="text-gray-500">Hebat! Kamu menjawab semua soal dengan benar.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
