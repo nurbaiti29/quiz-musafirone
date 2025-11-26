@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Ceria PAI - Hijrah Nabi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #fdf2f8; /* Pink-50 */
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbcfe8' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 4px solid #f9a8d4; /* Pink-300 */
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.4);
+            border-radius: 24px;
+        }
+        .glass-header {
+             background: rgba(255, 255, 255, 0.9);
+             backdrop-filter: blur(5px);
+             border-bottom: 2px solid #f9a8d4;
+        }
+        .btn-pink {
+            background: linear-gradient(to bottom, #f472b6, #db2777);
+            border-bottom: 4px solid #9d174d;
+            transition: all 0.1s;
+        }
+        .btn-pink:active {
+            transform: translateY(2px);
+            border-bottom: 0px solid #9d174d;
+        }
+        .btn-level {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-level:hover {
+            transform: scale(1.03);
+        }
+        .option-label {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-radio:checked + .option-content {
+            background-color: #fce7f3;
+            border-color: #db2777;
+            color: #be185d;
+        }
+        .correct-answer {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+        }
+        .wrong-answer {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+        }
+        /* Sticky Footer for Buttons */
+        .sticky-footer {
+            position: sticky;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-top: 2px solid #fbcfe8;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 1rem 1rem 0 0;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+        /* Animation */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen">
+
+    <div class="w-full max-w-4xl mx-auto p-4 md:p-8 pb-32">
+        
+        <!-- HEADER -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-pink-600 drop-shadow-sm mb-2">✨ Kuis Hijrah Nabi ✨</h1>
+            <p class="text-pink-400 text-lg">Pendidikan Agama Islam - Kelas 4 SD</p>
+        </header>
+
+        <!-- SCREEN 1: LOGIN -->
+        <div id="screen-login" class="glass-card p-8 md:p-12 text-center max-w-lg mx-auto animate-slide-up my-10">
+            <div class="mb-6">
+                <span class="text-6xl">🕌</span>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-700 mb-6">Assalamualaikum! <br>Siapa namamu?</h2>
+            <input type="text" id="input-name" placeholder="Ketik namamu..." class="w-full p-4 rounded-xl border-2 border-pink-200 focus:border-pink-500 focus:outline-none text-center text-xl mb-6 bg-pink-50 placeholder-pink-300 text-pink-600 font-bold">
+            <button onclick="goToCategory()" class="btn-pink w-full py-4 rounded-xl text-white font-bold text-xl shadow-lg hover:brightness-110">Lanjut Pilih Soal 🚀</button>
+        </div>
+
+        <!-- SCREEN 2: PILIH KATEGORI -->
+        <div id="screen-category" class="hidden glass-card p-8 max-w-2xl mx-auto animate-slide-up my-10">
+            <h2 class="text-2xl font-bold text-center text-gray-700 mb-2">Hai, <span id="display-name-cat" class="text-pink-600">Teman</span>! 👋</h2>
+            <p class="text-center text-gray-500 mb-8">Pilih tingkat kesulitan soal yang ingin kamu kerjakan:</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Level Mudah -->
+                <div onclick="startQuiz('mudah')" class="btn-level bg-green-50 border-2 border-green-200 p-6 rounded-2xl text-center hover:bg-green-100 hover:border-green-400">
+                    <div class="text-4xl mb-2">🌱</div>
+                    <h3 class="text-xl font-bold text-green-600">MUDAH</h3>
+                    <p class="text-sm text-green-500 mt-1">20 Soal Dasar</p>
+                </div>
+                
+                <!-- Level Sedang -->
+                <div onclick="startQuiz('sedang')" class="btn-level bg-yellow-50 border-2 border-yellow-200 p-6 rounded-2xl text-center hover:bg-yellow-100 hover:border-yellow-400">
+                    <div class="text-4xl mb-2">⭐</div>
+                    <h3 class="text-xl font-bold text-yellow-600">SEDANG</h3>
+                    <p class="text-sm text-yellow-500 mt-1">20 Soal Menengah</p>
+                </div>
+
+                <!-- Level Sulit -->
+                <div onclick="startQuiz('sulit')" class="btn-level bg-red-50 border-2 border-red-200 p-6 rounded-2xl text-center hover:bg-red-100 hover:border-red-400">
+                    <div class="text-4xl mb-2">🔥</div>
+                    <h3 class="text-xl font-bold text-red-600">SULIT</h3>
+                    <p class="text-sm text-red-500 mt-1">20 Soal Tantangan</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p class="text-sm text-gray-400">Kamu bisa mencoba level lain setelah selesai.</p>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: QUIZ -->
+        <div id="screen-quiz" class="hidden relative">
+            
+            <!-- Sticky Info Bar -->
+            <div class="sticky top-2 z-40 mb-6 mx-2">
+                <div class="glass-header rounded-full px-4 py-3 shadow-md flex justify-between items-center">
+                    <div class="text-sm md:text-base">
+                        📂 <span id="quiz-category-label" class="font-bold uppercase hidden md:inline"></span>
+                        <span class="md:hidden font-bold uppercase" id="quiz-category-label-mobile"></span>
+                    </div>
+                    <div class="text-sm md:text-base bg-pink-100 px-3 py-1 rounded-full text-pink-700">
+                        📄 Hal <span id="page-indicator" class="font-bold">1/4</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="questions-container" class="space-y-6 pb-4">
+                <!-- Soal akan muncul di sini -->
+            </div>
+
+            <!-- Sticky Bottom Navigation Buttons -->
+            <div class="sticky-footer flex justify-between items-center gap-4">
+                <button id="btn-prev" onclick="prevPage()" class="hidden bg-gray-200 text-gray-600 px-4 md:px-6 py-3 rounded-xl font-bold hover:bg-gray-300 w-1/3 md:w-auto">⬅️ Kembali</button>
+                <div class="flex-grow hidden md:block"></div>
+                <button id="btn-next" onclick="nextPage()" class="btn-pink px-4 md:px-8 py-3 rounded-xl text-white font-bold shadow-lg hover:brightness-110 w-full md:w-auto text-lg">Lanjut ➡️</button>
+                <button id="btn-finish" onclick="finishQuiz()" class="hidden bg-green-500 border-b-4 border-green-700 text-white px-4 md:px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-green-400 w-full md:w-auto text-lg">Selesai ✅</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: RESULT -->
+        <div id="screen-result" class="hidden glass-card p-8 text-center animate-slide-up my-10">
+            <div class="mb-4">
+                <span id="result-emoji" class="text-8xl">🎉</span>
+            </div>
+            <h2 id="result-title" class="text-3xl font-bold text-pink-600 mb-2">Alhamdulillah!</h2>
+            <p class="text-gray-600 mb-6">Kamu telah menyelesaikan kategori <span id="result-category" class="font-bold uppercase"></span>.</p>
+            
+            <div class="bg-pink-50 rounded-2xl p-6 mb-8 inline-block min-w-[300px]">
+                <p class="text-sm text-gray-500 uppercase tracking-wide font-bold mb-1">Nilai Akhir Kamu</p>
+                <div id="score-display" class="text-6xl font-bold text-pink-600">0</div>
+                <div class="text-sm text-gray-400 mt-2">Dari 100 poin</div>
+            </div>
+
+            <div id="appreciation-msg" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8 rounded text-left">
+                <p class="font-bold">🌟 Masya Allah, Luar Biasa!</p>
+                <p>Kamu menjawab SEMUA soal dengan benar! Kamu pasti belajar dengan sangat rajin. Pertahankan prestasimu ya!</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-3 justify-center mb-8">
+                <button onclick="toggleReview()" class="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-600 shadow-md">🔍 Lihat Pembahasan</button>
+                <button onclick="backToCategory()" class="bg-purple-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-purple-600 shadow-md">🏠 Pilih Level Lain</button>
+                <button onclick="retryQuiz()" class="bg-gray-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-600 shadow-md">🔄 Ulangi Level Ini</button>
+            </div>
+
+            <div id="review-section" class="hidden text-left space-y-6 border-t-2 border-pink-100 pt-8 pb-10">
+                <h3 class="text-2xl font-bold text-gray-700 text-center">Pembahasan Jawaban</h3>
+                <div id="review-container">
+                    <!-- Review items -->
+                </div>
+                <div class="text-center mt-6">
+                    <button onclick="backToResultTop()" class="bg-gray-200 text-gray-600 px-6 py-2 rounded-lg font-bold">⬆️ Kembali ke Atas</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DATA SCRIPT -->
+    <script>
+        // --- DATABASE SOAL LENGKAP (60 SOAL) ---
+        const fullDatabase = {
+            mudah: [
+                { q: "Apa arti kata 'Hijrah' secara bahasa?", opts: ["Berperang", "Berpindah/Memutuskan", "Berwisata", "Berdiam diri"], a: 1, exp: "Hijrah secara bahasa berarti berpindah tempat atau memutuskan untuk meninggalkan sesuatu." },
+                { q: "Nabi Muhammad saw. hijrah dari kota Makkah ke kota ...", opts: ["Thaif", "Yaman", "Madinah", "Mesir"], a: 2, exp: "Tujuan hijrah Nabi Muhammad saw. adalah kota Madinah (dahulu bernama Yasrib)." },
+                { q: "Nama kota Madinah sebelum kedatangan Nabi adalah ...", opts: ["Yasrib", "Syam", "Babel", "Quba"], a: 0, exp: "Sebelum Nabi datang, kota Madinah dikenal dengan nama Yasrib." },
+                { q: "Siapakah sahabat yang menemani Nabi Muhammad saw. berhijrah?", opts: ["Umar bin Khattab", "Ali bin Abi Thalib", "Abu Bakar Ash-Shiddiq", "Usman bin Affan"], a: 2, exp: "Sahabat setia yang menemani Nabi selama perjalanan hijrah adalah Abu Bakar Ash-Shiddiq." },
+                { q: "Di gua manakah Nabi dan Abu Bakar bersembunyi?", opts: ["Gua Hira", "Gua Tsur", "Gua Kahfi", "Gua Uhud"], a: 1, exp: "Mereka bersembunyi di Gua Tsur untuk menghindari kejaran kaum kafir Quraisy." },
+                { q: "Berapa lama Nabi dan Abu Bakar bersembunyi di dalam gua?", opts: ["1 hari", "3 hari", "1 minggu", "1 bulan"], a: 1, exp: "Mereka berdiam di dalam Gua Tsur selama 3 hari (Malam Jumat, Sabtu, dan Ahad)." },
+                { q: "Hewan apa yang membuat sarang di mulut gua untuk melindungi Nabi?", opts: ["Laba-laba", "Burung Elang", "Lebah", "Ular"], a: 0, exp: "Allah memerintahkan laba-laba membuat sarang di mulut gua agar dikira tidak ada orang di dalamnya." },
+                { q: "Siapakah yang tidur di tempat tidur Nabi untuk mengelabui musuh?", opts: ["Zaid bin Haritsah", "Ali bin Abi Thalib", "Bilal bin Rabah", "Abdullah bin Mas'ud"], a: 1, exp: "Ali bin Abi Thalib dengan berani tidur di kasur Nabi memakai selimut beliau." },
+                { q: "Penduduk Madinah yang menolong Nabi disebut kaum ...", opts: ["Muhajirin", "Ansar", "Quraisy", "Badui"], a: 1, exp: "Ansar artinya 'Penolong', sebutan bagi penduduk Madinah yang menyambut Nabi." },
+                { q: "Orang-orang yang ikut hijrah dari Makkah ke Madinah disebut kaum ...", opts: ["Ansar", "Muhajirin", "Musyrikin", "Munafik"], a: 1, exp: "Muhajirin artinya 'Orang-orang yang berhijrah'." },
+                { q: "Masjid pertama yang dibangun Nabi saat hijrah adalah Masjid ...", opts: ["Masjidil Haram", "Masjid Nabawi", "Masjid Quba", "Masjid Aqsa"], a: 2, exp: "Masjid Quba adalah masjid pertama yang dibangun Nabi saat singgah di Quba sebelum masuk Madinah." },
+                { q: "Nabi tiba di Madinah disambut dengan perasaan ...", opts: ["Sedih", "Marah", "Gembira", "Takut"], a: 2, exp: "Penduduk Madinah menyambut Nabi dengan sangat gembira dan meriah." },
+                { q: "Apa nama unta yang ditunggangi Nabi saat hijrah?", opts: ["Buraq", "Qaswa", "Duldul", "Syam"], a: 1, exp: "Unta Nabi bernama Al-Qaswa. Unta ini dibiarkan berjalan sendiri untuk menentukan tempat tinggal Nabi." },
+                { q: "Gelar Asma binti Abu Bakar adalah Zat an-Nitaqain yang artinya ...", opts: ["Pemilik dua pedang", "Pemilik dua ikat pinggang", "Pemilik dua rumah", "Pemilik dua unta"], a: 1, exp: "Ia merobek ikat pinggangnya menjadi dua untuk mengikat bekal makanan Nabi." },
+                { q: "Siapakah nama ayah dari Aisyah r.a.?", opts: ["Umar bin Khattab", "Abu Bakar Ash-Shiddiq", "Ali bin Abi Thalib", "Usman bin Affan"], a: 1, exp: "Ayah Aisyah adalah Abu Bakar Ash-Shiddiq, sahabat Nabi." },
+                { q: "Nabi Muhammad saw. hijrah karena perintah dari ...", opts: ["Malaikat", "Ketua Suku", "Allah Swt.", "Sahabat"], a: 2, exp: "Hijrah dilakukan semata-mata karena perintah Allah Swt. untuk menyelamatkan agama." },
+                { q: "Kaum kafir yang memusuhi Nabi di Makkah disebut kafir ...", opts: ["Quraisy", "Madinah", "Thaif", "Yaman"], a: 0, exp: "Kaum kafir Quraisy adalah penentang utama dakwah Nabi di Makkah." },
+                { q: "Tanggal berapa Nabi tiba di Quba menurut kalender Masehi?", opts: ["1 Januari", "17 Agustus", "23 September", "25 Desember"], a: 2, exp: "Nabi tiba di Quba sekitar tanggal 23 September 622 M." },
+                { q: "Apa yang dilakukan Ali bin Abi Thalib setelah Nabi pergi?", opts: ["Ikut menyusul segera", "Mengembalikan barang titipan", "Pergi berdagang", "Tidur terus"], a: 1, exp: "Ali bertugas mengembalikan barang-barang titipan orang Makkah yang ada pada Nabi." },
+                { q: "Siapa yang bertugas menghapus jejak kaki dengan gembala kambing?", opts: ["Abdullah bin Uraiqit", "Amir bin Fuhairah", "Suraqah", "Abu Jahal"], a: 1, exp: "Amir bin Fuhairah menggiring kambing untuk menghapus jejak kaki rombongan Nabi." }
+            ],
+            sedang: [
+                { q: "Mengapa Nabi mengambil jalan ke arah Selatan (Gua Tsur) padahal Madinah di Utara?", opts: ["Tersesat", "Mencari makan", "Strategi mengecoh musuh", "Menjemput teman"], a: 2, exp: "Ini adalah strategi cerdas Nabi untuk mengecoh musuh yang pasti mencari ke arah Utara." },
+                { q: "Apa peran Abdullah bin Abu Bakar dalam peristiwa hijrah?", opts: ["Membawa makanan", "Menjadi penunjuk jalan", "Mencari informasi (mata-mata)", "Menjaga rumah Nabi"], a: 2, exp: "Abdullah bin Abu Bakar bertugas mendengarkan rencana kaum Quraisy di siang hari dan melapor ke Nabi di malam hari." },
+                { q: "Siapakah Abdullah bin Uraiqit?", opts: ["Seorang muslim yang saleh", "Penunjuk jalan yang ahli (pemandu)", "Musuh Nabi", "Saudara Nabi"], a: 1, exp: "Abdullah bin Uraiqit adalah penunjuk jalan profesional non-muslim yang disewa Abu Bakar." },
+                { q: "Nabi Muhammad saw. keluar rumah sambil membaca surah ...", opts: ["Al-Fatihah", "Yasin ayat 9", "Al-Baqarah", "Al-Ikhlas"], a: 1, exp: "Nabi membaca QS Yasin ayat 9 yang membuat kaum kafir tertidur/tidak bisa melihat beliau." },
+                { q: "Apa yang diucapkan Nabi kepada Abu Bakar saat ketakutan di dalam gua?", opts: ["La tahzan, innallaha ma'ana", "Subhanallah", "Allahu Akbar", "Alhamdulillah"], a: 0, exp: "Artinya: 'Jangan bersedih, sesungguhnya Allah bersama kita.'" },
+                { q: "Kaum kafir mengadakan sayembara. Apa hadiah bagi yang menemukan Nabi?", opts: ["100 keping emas", "100 ekor unta", "Istana mewah", "Jabatan tinggi"], a: 1, exp: "Mereka menjanjikan 100 ekor unta, hadiah yang sangat besar saat itu." },
+                { q: "Siapakah Suraqah bin Malik?", opts: ["Sahabat Nabi", "Pengejar Nabi yang kudanya terperosok", "Raja Madinah", "Pedagang kaya"], a: 1, exp: "Suraqah mengejar Nabi demi hadiah, tapi kudanya terperosok ke pasir berkali-kali hingga ia menyerah." },
+                { q: "Peristiwa Baiat 'Aqabah adalah perjanjian setia antara Nabi dengan penduduk ...", opts: ["Makkah", "Yasrib (Madinah)", "Thaif", "Palestina"], a: 1, exp: "Baiat Aqabah menjadi salah satu sebab kuat Nabi hijrah karena penduduk Madinah siap melindungi beliau." },
+                { q: "Berapa hari Nabi tinggal di Quba sebelum masuk ke pusat kota Madinah?", opts: ["1 hari", "2 hari", "4 hari", "10 hari"], a: 2, exp: "Nabi tinggal di Quba selama 4 hari (Senin, Selasa, Rabu, Kamis)." },
+                { q: "Apa yang dilakukan Nabi pertama kali saat untanya berhenti di Madinah?", opts: ["Membangun pasar", "Membangun masjid Nabawi", "Membangun rumah mewah", "Membangun benteng"], a: 1, exp: "Di tempat unta berhenti, Nabi memerintahkan pembangunan Masjid Nabawi." },
+                { q: "Lagu syair apa yang dinyanyikan penduduk Madinah saat menyambut Nabi?", opts: ["Ya Nabi Salam Alaika", "Thola'al Badru 'Alaina", "Sholawat Badar", "Sidnan Nabi"], a: 1, exp: "Syair 'Thola'al Badru 'Alaina' (Telah terbit bulan purnama kepada kami) dinyanyikan dengan gembira." },
+                { q: "Rumah siapakah yang ditempati Nabi saat pertama kali tiba di Madinah?", opts: ["Abu Bakar", "Abu Ayyub al-Ansari", "Umar bin Khattab", "Ali bin Abi Thalib"], a: 1, exp: "Abu Ayyub al-Ansari beruntung karena unta Nabi berhenti di depan rumahnya." },
+                { q: "Apa hikmah persaudaraan antara Muhajirin dan Ansar?", opts: ["Agar bisa berperang", "Menciptakan persatuan yang kokoh", "Agar Muhajirin menjadi kaya", "Supaya Ansar berkuasa"], a: 1, exp: "Nabi mempersaudarakan mereka untuk menciptakan persatuan umat Islam yang kokoh." },
+                { q: "Kalender Islam (Hijriah) dimulai perhitungannya sejak peristiwa ...", opts: ["Kelahiran Nabi", "Nabi wafat", "Turunnya Al-Qur'an", "Hijrah Nabi ke Madinah"], a: 3, exp: "Khalifah Umar menetapkan peristiwa Hijrah sebagai tahun ke-1 Kalender Hijriah." },
+                { q: "Mengapa Abu Bakar membeli dua ekor unta sebelum hijrah?", opts: ["Untuk dijual lagi", "Untuk persiapan perjalanan hijrah", "Untuk dikurbankan", "Untuk hadiah raja"], a: 1, exp: "Abu Bakar sudah mempersiapkan dua unta jauh-jauh hari untuk kendaraan hijrah." },
+                { q: "Apa warna selimut yang dipakai Ali bin Abi Thalib saat menggantikan Nabi?", opts: ["Merah", "Putih", "Hijau", "Hitam"], a: 2, exp: "Ali memakai selimut (burdah) berwarna hijau buatan Hadramaut milik Nabi." },
+                { q: "Di manakah Nabi melaksanakan Salat Jumat yang pertama kali?", opts: ["Di Masjidil Haram", "Di Lembah Ranuna", "Di Masjid Nabawi", "Di rumah Abu Bakar"], a: 1, exp: "Salat Jumat pertama dilaksanakan di perkampungan Bani Salim bin Auf di Lembah Ranuna." },
+                { q: "Salah satu hikmah hijrah adalah mengajarkan sikap ...", opts: ["Sombong", "Putus asa", "Tawakal dan Ikhtiar", "Masa bodoh"], a: 2, exp: "Hijrah mengajarkan keseimbangan antara usaha (ikhtiar) maksimal dan berserah diri (tawakal) pada Allah." },
+                { q: "Siapa nama putri Nabi yang ikut menyusul hijrah ke Madinah?", opts: ["Fatimah dan Ummu Kulsum", "Zainab dan Ruqayyah", "Aisyah", "Hafsah"], a: 0, exp: "Fatimah dan Ummu Kulsum menyusul hijrah bersama rombongan keluarga Nabi lainnya." },
+                { q: "Apa nama kabilah (suku) keluarga ibu Nabi di Madinah?", opts: ["Bani Hasyim", "Bani Najjar", "Bani Qainuqa", "Bani Nadir"], a: 1, exp: "Keluarga ibu Nabi (Aminah) berasal dari Bani Najjar di Madinah." }
+            ],
+            sulit: [
+                { q: "Strategi Nabi tidak langsung ke Madinah tapi bersembunyi di gua dulu disebut strategi ...", opts: ["Menyerang", "Bertahan", "Mengelabui/Diversi", "Konfrontasi"], a: 2, exp: "Ini adalah taktik mengelabui musuh dengan melakukan hal yang tidak terduga." },
+                { q: "Dalam Surah Yasin ayat 9, Allah menggambarkan kaum kafir seperti ...", opts: ["Orang yang buta matanya", "Orang yang tertutup dinding depan dan belakang", "Orang yang tuli", "Orang yang lumpuh"], a: 1, exp: "Ayat itu berbunyi: 'Dan Kami jadikan di hadapan mereka sekat dan di belakang mereka sekat...'." },
+                { q: "Mengapa Nabi menolak hadiah unta dari Abu Bakar dan memilih membelinya?", opts: ["Nabi tidak suka untanya", "Nabi ingin mengajarkan kemandirian dalam perjuangan", "Untanya sakit", "Harganya terlalu murah"], a: 1, exp: "Nabi ingin berjuang dengan harta sendiri agar pahalanya sempurna dan mengajarkan kemandirian." },
+                { q: "Apa isi piagam Madinah yang dibuat setelah hijrah?", opts: ["Peraturan perang", "Perjanjian damai antar suku dan agama di Madinah", "Daftar nama sahabat", "Peta kota Madinah"], a: 1, exp: "Piagam Madinah adalah konstitusi tertulis pertama yang mengatur kerukunan umat Islam dan non-muslim." },
+                { q: "Sikap Suraqah berubah dari ingin membunuh menjadi melindungi karena ...", opts: ["Dibayar mahal", "Melihat mukjizat (kuda terperosok)", "Diancam Nabi", "Diajak masuk Islam"], a: 1, exp: "Setelah kudanya terperosok 3 kali saat mendekati Nabi, ia sadar Nabi orang yang dilindungi Tuhan." },
+                { q: "Gelar 'As-Shiddiq' bagi Abu Bakar semakin kuat saat peristiwa hijrah karena ...", opts: ["Ia paling kaya", "Ia membenarkan Isra Miraj", "Ia membenarkan dan mempercayai Nabi sepenuhnya dalam bahaya", "Ia paling tua"], a: 2, exp: "Kepercayaan penuh Abu Bakar menemani Nabi dalam bahaya maut membuktikan kebenaran imannya." },
+                { q: "Pelajaran dari Asma binti Abu Bakar yang sedang hamil tua tapi naik turun gunung mengantar bekal adalah ...", opts: ["Kita harus olahraga", "Pengorbanan wanita dalam dakwah", "Ibu hamil harus kuat", "Gunung itu tinggi"], a: 1, exp: "Ini menunjukkan peran wanita sangat vital dan penuh pengorbanan dalam sejarah Islam." },
+                { q: "Apa makna 'La Tahzan' yang diucapkan Nabi?", opts: ["Jangan takut", "Jangan bersedih/khawatir", "Jangan marah", "Jangan lari"], a: 1, exp: "Kesedihan dan kekhawatiran berlebihan dilarang karena Allah bersama orang beriman." },
+                { q: "Mengapa kaum kafir Quraisy sangat ingin membunuh Nabi sebelum hijrah?", opts: ["Karena benci pribadi", "Takut Islam berkembang besar di Madinah", "Ingin menguasai harta Nabi", "Balas dendam perang"], a: 1, exp: "Mereka takut jika Nabi pindah ke Madinah, Islam akan menjadi kekuatan besar yang mengancam Makkah." },
+                { q: "Rencana pembunuhan Nabi melibatkan pemuda dari semua suku agar ...", opts: ["Lebih cepat", "Bani Hasyim tidak bisa menuntut balas (diyat) kepada satu suku saja", "Terlihat kompak", "Semua dapat hadiah"], a: 1, exp: "Taktik politik agar keluarga Nabi tidak sanggup melawan seluruh suku Arab sekaligus." },
+                { q: "Siapakah yang ditugaskan menyusul keluarga Nabi ke Madinah setelah situasi aman?", opts: ["Zaid bin Haritsah dan Abu Rafi", "Ali dan Abu Bakar", "Umar dan Usman", "Bilal dan Ammar"], a: 0, exp: "Zaid bin Haritsah dan Abu Rafi diutus kembali ke Makkah untuk menjemput keluarga Nabi." },
+                { q: "Apa nama tempat Nabi berbaiat dengan orang Madinah sebelum Hijrah?", opts: ["Marwa", "Mina", "Aqabah", "Arafah"], a: 2, exp: "Bukit Aqabah di Mina adalah tempat terjadinya Baiat Aqabah I dan II." },
+                { q: "Nabi mempersaudarakan Abdurrahman bin Auf (Muhajirin) dengan ... (Ansar)", opts: ["Sa'ad bin Rabi", "Muadz bin Jabal", "Ubay bin Ka'ab", "Zaid bin Tsabit"], a: 0, exp: "Sa'ad bin Rabi menawarkan separuh hartanya, namun Abdurrahman bin Auf hanya minta ditunjukkan pasar." },
+                { q: "Hijrah mengajarkan bahwa 'Tawakal' (berserah diri) harus dilakukan setelah ...", opts: ["Berdoa saja", "Diam saja", "Ikhtiar (usaha) yang matang", "Putus asa"], a: 2, exp: "Nabi merencanakan detail (usaha) baru kemudian berserah diri di gua (tawakal)." },
+                { q: "Tanggal keberangkatan Nabi dari Gua Tsur menuju Madinah adalah ...", opts: ["1 Muharram", "1 Rabiul Awal", "27 Rajab", "17 Ramadhan"], a: 1, exp: "Nabi berangkat dari Gua Tsur pada tanggal 1 Rabiul Awal." },
+                { q: "Salah satu fungsi Masjid Nabawi selain tempat salat di masa Nabi adalah ...", opts: ["Tempat wisata", "Pusat pemerintahan dan musyawarah", "Tempat tidur", "Gudang senjata"], a: 1, exp: "Masjid berfungsi sebagai pusat kegiatan sosial, politik, pendidikan, dan pemerintahan." },
+                { q: "Apa nama lembah tempat Nabi singgah sebelum masuk Madinah?", opts: ["Lembah Fatimah", "Lembah Ranuna", "Lembah Bakkah", "Lembah Sinai"], a: 1, exp: "Lembah Ranuna adalah lokasi salat Jumat pertama." },
+                { q: "Sikap optimis Nabi di dalam gua menunjukkan sifat ...", opts: ["Takabur", "Kamil", "Syaja'ah (Pemberani) dan Yakin pada Allah", "Nekat"], a: 2, exp: "Keyakinan kuat bahwa Allah menolong adalah bentuk tauhid yang sempurna." },
+                { q: "Madinah sebelumnya daerah yang penuh wabah penyakit. Penyakit apa itu?", opts: ["Kolera", "Demam/Humma", "Cacar", "Flu"], a: 1, exp: "Nabi berdoa agar demam di Madinah dipindahkan ke Juhfah, sehingga Madinah menjadi kota yang sehat." },
+                { q: "Apa arti 'Madinatul Munawwarah'?", opts: ["Kota yang Panas", "Kota yang Bercahaya", "Kota Petani", "Kota Pedagang"], a: 1, exp: "Setelah Nabi datang, Yasrib berubah menjadi Madinatul Munawwarah (Kota yang disinari cahaya iman)." }
+            ]
+        };
+
+        // --- STATE VARIABLES ---
+        let currentQuestions = [];
+        let userAnswers = []; // reset per kategori
+        let currentQuestionIndex = 0;
+        let userName = "";
+        let selectedCategory = "";
+        const questionsPerPage = 5;
+
+        // --- LOGIC ---
+
+        function goToCategory() {
+            const input = document.getElementById('input-name');
+            if (input.value.trim() === "") {
+                alert("Tulis dulu namamu ya! 😊");
+                return;
+            }
+            userName = input.value.trim();
+            document.getElementById('display-name-cat').innerText = userName;
+            
+            document.getElementById('screen-login').classList.add('hidden');
+            document.getElementById('screen-category').classList.remove('hidden');
+        }
+
+        function startQuiz(category) {
+            selectedCategory = category;
+            currentQuestions = fullDatabase[category];
+            userAnswers = new Array(currentQuestions.length).fill(undefined);
+            currentQuestionIndex = 0;
+            
+            // Set Label
+            document.getElementById('quiz-category-label').innerText = category;
+            document.getElementById('quiz-category-label-mobile').innerText = category;
+            
+            const labelColor = category === 'mudah' ? 'text-green-600' : (category === 'sedang' ? 'text-yellow-600' : 'text-red-600');
+            document.getElementById('quiz-category-label').className = `font-bold uppercase hidden md:inline ${labelColor}`;
+            document.getElementById('quiz-category-label-mobile').className = `font-bold uppercase md:hidden ${labelColor}`;
+
+            document.getElementById('screen-category').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = "";
+            
+            const start = currentQuestionIndex;
+            const end = Math.min(start + questionsPerPage, currentQuestions.length);
+
+            // Update Page Indicator
+            const totalPages = Math.ceil(currentQuestions.length / questionsPerPage);
+            const currentPage = Math.floor(start / questionsPerPage) + 1;
+            document.getElementById('page-indicator').innerText = `${currentPage}/${totalPages}`;
+
+            for (let i = start; i < end; i++) {
+                const q = currentQuestions[i];
+                const savedAns = userAnswers[i];
+                
+                let optionsHTML = "";
+                q.opts.forEach((opt, idx) => {
+                    const isChecked = savedAns === idx ? "checked" : "";
+                    optionsHTML += `
+                        <label class="option-label block relative group">
+                            <input type="radio" name="q-${i}" value="${idx}" class="option-radio hidden" onchange="saveAnswer(${i}, ${idx})" ${isChecked}>
+                            <div class="option-content p-4 rounded-xl border-2 border-pink-100 bg-white hover:border-pink-300 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full border-2 border-pink-300 flex items-center justify-center text-pink-500 font-bold bg-pink-50 group-hover:bg-pink-200 shrink-0">
+                                    ${String.fromCharCode(65 + idx)}
+                                </div>
+                                <span class="font-medium text-gray-700">${opt}</span>
+                            </div>
+                        </label>
+                    `;
+                });
+
+                const questionCard = `
+                    <div class="glass-card p-6 animate-slide-up">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex gap-2 items-center">
+                                <span class="bg-pink-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">${i + 1}</span>
+                            </div>
+                        </div>
+                        <p class="text-lg font-bold text-gray-800 mb-6">${q.q}</p>
+                        <div class="space-y-3">
+                            ${optionsHTML}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questionCard;
+            }
+
+            // Buttons Logic
+            document.getElementById('btn-prev').classList.toggle('hidden', start === 0);
+            if (end === currentQuestions.length) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-finish').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-finish').classList.add('hidden');
+            }
+            
+            // Scroll to Top of Questions (Not Page)
+            document.getElementById('screen-quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function saveAnswer(qIndex, answerIndex) {
+            userAnswers[qIndex] = answerIndex;
+        }
+
+        function nextPage() {
+            // Validation
+            const start = currentQuestionIndex;
+            const end = Math.min(start + questionsPerPage, currentQuestions.length);
+            let allAnswered = true;
+            for(let i = start; i < end; i++){
+                if(userAnswers[i] === undefined) allAnswered = false;
+            }
+
+            if(!allAnswered){
+                alert("Ops! Jawab dulu semua soal di halaman ini ya! 😉");
+                return;
+            }
+            
+            currentQuestionIndex += questionsPerPage;
+            renderQuestions();
+        }
+
+        function prevPage() {
+            currentQuestionIndex -= questionsPerPage;
+            renderQuestions();
+        }
+
+        function finishQuiz() {
+             const start = currentQuestionIndex;
+             const end = currentQuestions.length;
+             let allAnswered = true;
+             for(let i = start; i < end; i++){
+                 if(userAnswers[i] === undefined) allAnswered = false;
+             }
+ 
+             if(!allAnswered){
+                 alert("Ops! Jawab dulu semua soal terakhir ya! 😉");
+                 return;
+             }
+
+             calculateResult();
+        }
+
+        function calculateResult() {
+            let correctCount = 0;
+            let reviewHTML = "";
+
+            currentQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.a;
+                if (isCorrect) correctCount++;
+
+                const statusClass = isCorrect ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200";
+                const icon = isCorrect ? "✅ Benar" : "❌ Salah";
+                const yourAnswerText = q.opts[userAns];
+                const correctAnswerText = q.opts[q.a];
+
+                reviewHTML += `
+                    <div class="border-2 rounded-xl p-4 ${statusClass}">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-bold text-gray-500">Soal No. ${idx + 1}</span>
+                            <span class="font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${icon}</span>
+                        </div>
+                        <p class="font-bold text-gray-800 mb-2">${q.q}</p>
+                        ${!isCorrect ? `<p class="text-red-500 text-sm">Jawabanmu: ${yourAnswerText}</p>` : ''}
+                        <p class="text-green-600 text-sm font-bold">Jawaban Benar: ${correctAnswerText}</p>
+                        <div class="bg-white p-3 mt-2 rounded-lg border border-gray-100 text-sm text-gray-600">
+                            <strong>💡 Penjelasan:</strong> ${q.exp}
+                        </div>
+                    </div>
+                `;
+            });
+
+            const finalScore = Math.round((correctCount / currentQuestions.length) * 100);
+
+            // Show Result Screen
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+            
+            // Scroll to Top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            animateValue("score-display", 0, finalScore, 1000);
+            
+            document.getElementById('result-category').innerText = selectedCategory;
+            document.getElementById('review-container').innerHTML = reviewHTML;
+
+            const resultTitle = document.getElementById('result-title');
+            const resultEmoji = document.getElementById('result-emoji');
+            document.getElementById('appreciation-msg').classList.add('hidden');
+
+            if (finalScore === 100) {
+                resultTitle.innerText = `Sempurna, ${userName}!`;
+                resultEmoji.innerText = "🏆";
+                document.getElementById('appreciation-msg').classList.remove('hidden');
+                triggerConfetti();
+            } else if (finalScore >= 80) {
+                resultTitle.innerText = `Hebat Sekali, ${userName}!`;
+                resultEmoji.innerText = "🌟";
+            } else if (finalScore >= 60) {
+                resultTitle.innerText = `Bagus, ${userName}!`;
+                resultEmoji.innerText = "👍";
+            } else {
+                resultTitle.innerText = `Tetap Semangat, ${userName}!`;
+                resultEmoji.innerText = "💪";
+            }
+        }
+
+        function toggleReview() {
+            const section = document.getElementById('review-section');
+            section.classList.toggle('hidden');
+            if (!section.classList.contains('hidden')) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        function backToResultTop() {
+            document.getElementById('screen-result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function backToCategory() {
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-category').classList.remove('hidden');
+            document.getElementById('review-section').classList.add('hidden');
+        }
+
+        function retryQuiz() {
+            startQuiz(selectedCategory);
+        }
+
+        // Utils
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function triggerConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
+
