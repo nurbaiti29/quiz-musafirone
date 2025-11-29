@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Matematika Kelas 4 - Bimbel Musafir One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#bae6fd 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom Shapes for Geometry */
+        .triangle-up {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid #f59e0b;
+        }
+        .square {
+            width: 50px;
+            height: 50px;
+            background-color: #3b82f6;
+        }
+        .pentagon {
+            position: relative;
+            width: 54px;
+            box-sizing: content-box;
+            border-width: 50px 18px 0;
+            border-style: solid;
+            border-color: #ef4444 transparent;
+        }
+        .pentagon:before {
+            content: "";
+            position: absolute;
+            height: 0;
+            width: 0;
+            top: -85px;
+            left: -18px;
+            border-width: 0 45px 35px;
+            border-style: solid;
+            border-color: transparent transparent #ef4444;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-gradient-to-r from-blue-500 to-cyan-400 text-white p-8 text-center rounded-b-[3rem] shadow-lg mb-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-block bg-white text-blue-600 px-4 py-1 rounded-full text-sm font-bold mb-2 shadow-sm">
+                <i class="fas fa-school mr-2"></i>Bimbel Musafir One
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Rangkuman Matematika 🧮</h1>
+            <p class="text-xl opacity-90">Persiapan Penilaian Sumatif Akhir Semester (SAS) Ganjil - Kelas 4</p>
+            <div class="mt-6 flex justify-center gap-4 text-sm font-semibold">
+                <span class="bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">📚 Kurikulum Merdeka</span>
+                <span class="bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">⏰ TA 2025/2026</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 pb-12 space-y-12">
+
+        <!-- BAB 1: BILANGAN -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-white text-2xl shadow-md">
+                    <i class="fas fa-sort-numeric-up"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-800">1. Bilangan Cacah & Operasi</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Kelipatan & Faktor -->
+                <div class="card bg-white p-6 rounded-2xl border-l-8 border-yellow-400 shadow-sm">
+                    <h3 class="text-xl font-bold text-yellow-600 mb-3">A. Kelipatan & Faktor</h3>
+                    <ul class="space-y-3">
+                        <li class="bg-yellow-50 p-3 rounded-lg">
+                            <strong>Kelipatan:</strong> Bilangan yang didapat dari perkalian suatu bilangan dengan bilangan asli.
+                            <br><em class="text-sm text-slate-500">Contoh Kelipatan 3: 3, 6, 9, 12, 15...</em>
+                        </li>
+                        <li class="bg-yellow-50 p-3 rounded-lg">
+                            <strong>Faktor:</strong> Bilangan-bilangan yang dapat membagi habis suatu bilangan.
+                            <br><em class="text-sm text-slate-500">Contoh Faktor 6: 1, 2, 3, 6.</em>
+                        </li>
+                        <li class="flex items-start gap-2 text-sm bg-orange-100 p-2 rounded text-orange-800">
+                            <i class="fas fa-lightbulb mt-1"></i>
+                            <span><strong>Tips Soal:</strong> Cari kata kunci "urutan bilangan" atau "deret" untuk soal kelipatan.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Nilai Tempat & Operasi -->
+                <div class="card bg-white p-6 rounded-2xl border-l-8 border-green-400 shadow-sm">
+                    <h3 class="text-xl font-bold text-green-600 mb-3">B. Bilangan sampai 10.000</h3>
+                    <div class="bg-slate-100 p-4 rounded-xl mb-4 text-center font-mono text-lg tracking-widest border border-slate-200">
+                        <span class="text-red-500">4</span>.<span class="text-blue-500">5</span><span class="text-green-500">2</span><span class="text-purple-500">8</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-sm mb-4">
+                        <div class="bg-red-100 p-2 rounded text-center">4 = Ribuan</div>
+                        <div class="bg-blue-100 p-2 rounded text-center">5 = Ratusan</div>
+                        <div class="bg-green-100 p-2 rounded text-center">2 = Puluhan</div>
+                        <div class="bg-purple-100 p-2 rounded text-center">8 = Satuan</div>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Operasi Hitung:</strong></p>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                        <li>Perkalian bilangan puluhan & satuan.</li>
+                        <li>Pembagian dua bilangan.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- BAB 2: GEOMETRI -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl shadow-md">
+                    <i class="fas fa-shapes"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-800">2. Geometri (Bangun Datar)</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Segitiga -->
+                <div class="card bg-white p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <i class="fas fa-play fa-3x rotate-[-90deg]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-600 mb-4">Segitiga</h3>
+                    <div class="flex justify-center mb-4">
+                        <div class="triangle-up"></div>
+                    </div>
+                    <ul class="text-sm space-y-2">
+                        <li><strong>Sama Sisi:</strong> Semua sisi sama panjang.</li>
+                        <li><strong>Sama Kaki:</strong> 2 sisi sama panjang.</li>
+                        <li><strong>Siku-siku:</strong> Salah satu sudutnya 90°.</li>
+                        <li><strong>Sembarang:</strong> Tidak ada sisi yang sama.</li>
+                    </ul>
+                </div>
+
+                <!-- Segi Banyak -->
+                <div class="card bg-white p-6 rounded-2xl shadow-sm">
+                    <h3 class="text-xl font-bold text-blue-600 mb-4">Segi Banyak</h3>
+                    <div class="flex justify-around items-center mb-4">
+                        <div class="square"></div>
+                        <div class="pentagon scale-50"></div>
+                    </div>
+                    <p class="text-sm mb-2"><strong>Beraturan:</strong> Sisi sama panjang, sudut sama besar (Contoh: Persegi).</p>
+                    <p class="text-sm"><strong>Tidak Beraturan:</strong> Sisi/sudut tidak sama (Contoh: Persegi Panjang, Trapesium).</p>
+                </div>
+
+                <!-- Dekomposisi -->
+                <div class="card bg-white p-6 rounded-2xl shadow-sm border border-dashed border-blue-300">
+                    <h3 class="text-xl font-bold text-blue-600 mb-2">Dekomposisi</h3>
+                    <p class="text-xs text-slate-500 mb-4">Mengurai bangun gabungan menjadi bangun sederhana.</p>
+                    <div class="bg-blue-50 p-3 rounded-lg text-center">
+                        <span class="block text-4xl mb-2">🏠</span>
+                        <p class="text-sm">Rumah = <br><strong>Segitiga</strong> (Atap) + <br><strong>Persegi</strong> (Dinding)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BAB 3: PENGOLAHAN DATA -->
+        <section>
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white text-2xl shadow-md">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-slate-800">3. Data & Diagram</h2>
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-pink-100">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-pink-600 mb-4">Jenis Diagram</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 bg-pink-50 p-4 rounded-xl">
+                                <i class="fas fa-table text-pink-400 text-2xl"></i>
+                                <div>
+                                    <h4 class="font-bold">Tabel Frekuensi</h4>
+                                    <p class="text-sm text-slate-600">Menggunakan turus (IIII) untuk menghitung jumlah.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-pink-50 p-4 rounded-xl">
+                                <i class="fas fa-chart-bar text-pink-400 text-2xl"></i>
+                                <div>
+                                    <h4 class="font-bold">Diagram Batang</h4>
+                                    <p class="text-sm text-slate-600">Tinggi batang menunjukkan jumlah data.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 bg-pink-50 p-4 rounded-xl">
+                                <i class="fas fa-icons text-pink-400 text-2xl"></i>
+                                <div>
+                                    <h4 class="font-bold">Diagram Gambar</h4>
+                                    <p class="text-sm text-slate-600">Satu gambar mewakili jumlah tertentu (misal: 1 😊 = 5 orang).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Chart Simulation -->
+                    <div class="bg-slate-800 text-white p-6 rounded-2xl">
+                        <h4 class="text-center font-bold mb-6">Contoh Diagram Batang: Hobi Siswa</h4>
+                        <div class="flex items-end justify-around h-40 gap-2">
+                            <!-- Bar 1 -->
+                            <div class="w-16 flex flex-col items-center group">
+                                <div class="text-xs mb-1 opacity-0 group-hover:opacity-100 transition">10</div>
+                                <div class="w-full bg-blue-400 rounded-t-md hover:bg-blue-300 transition-all duration-500" style="height: 60%;"></div>
+                                <div class="text-xs mt-2">Bola</div>
+                            </div>
+                            <!-- Bar 2 -->
+                            <div class="w-16 flex flex-col items-center group">
+                                <div class="text-xs mb-1 opacity-0 group-hover:opacity-100 transition">15</div>
+                                <div class="w-full bg-red-400 rounded-t-md hover:bg-red-300 transition-all duration-500" style="height: 90%;"></div>
+                                <div class="text-xs mt-2">Renang</div>
+                            </div>
+                            <!-- Bar 3 -->
+                            <div class="w-16 flex flex-col items-center group">
+                                <div class="text-xs mb-1 opacity-0 group-hover:opacity-100 transition">5</div>
+                                <div class="w-full bg-green-400 rounded-t-md hover:bg-green-300 transition-all duration-500" style="height: 30%;"></div>
+                                <div class="text-xs mt-2">Lari</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Motivasi Footer -->
+        <footer class="text-center mt-12 py-8 border-t border-slate-200">
+            <p class="text-slate-600 mb-2">Semangat Belajar untuk PAS Ganjil! 💪</p>
+            <p class="text-xs text-slate-400">Dibuat oleh <strong>Bimbel Musafir One</strong> • Kelas 4</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Simple animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
