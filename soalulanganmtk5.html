@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Matematika Kelas 5 - Bimbel Musafir One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .fraction { display: inline-block; text-align: center; vertical-align: middle; margin: 0 2px; font-size: 0.9em; }
+        .fraction > span { display: block; padding: 0 2px; }
+        .fraction span.numerator { border-bottom: 2px solid #374151; }
+        .fraction span.denominator { display: block; }
+        .option-label { transition: all 0.2s; }
+        .option-input:checked + .option-label { background-color: #dbeafe; border-color: #2563eb; color: #1e40af; }
+        .hidden-page { display: none; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane text-2xl text-yellow-400"></i>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Bimbel Musafir One</h1>
+                    <p class="text-xs text-blue-200">Ujian Sumatif Matematika Kelas 5</p>
+                </div>
+            </div>
+            <div id="timer-display" class="hidden bg-white text-blue-800 px-3 py-1 rounded-full font-mono font-bold text-lg shadow-sm">
+                00:00:00
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+
+        <!-- SCREEN 1: LOGIN -->
+        <div id="login-screen" class="bg-white rounded-2xl shadow-xl p-8 max-w-lg mx-auto border-t-8 border-blue-500">
+            <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">Selamat Datang!</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="student-name" placeholder="Tulis namamu di sini..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Pilih Paket Soal</label>
+                    <select id="package-select" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                        <option value="A">Paket A (Soal Standar)</option>
+                        <option value="B">Paket B (Soal Variasi)</option>
+                    </select>
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800">
+                    <p><i class="fa-solid fa-circle-info mr-2"></i><strong>Petunjuk:</strong></p>
+                    <ul class="list-disc ml-5 mt-1 space-y-1">
+                        <li>Jumlah soal: 40 butir pilihan ganda.</li>
+                        <li>Waktu pengerjaan: 90 menit.</li>
+                        <li>Paket A dan B memiliki soal yang berbeda.</li>
+                    </ul>
+                </div>
+                <button onclick="startQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-md transition transform hover:scale-[1.02]">
+                    Mulai Mengerjakan <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: QUIZ -->
+        <div id="quiz-screen" class="hidden">
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <div id="questions-container" class="space-y-6"></div>
+
+            <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                <button id="prev-btn" onclick="changePage(-1)" class="hidden px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Sebelumnya
+                </button>
+                <span id="page-indicator" class="text-sm font-semibold text-gray-500"></span>
+                <button id="next-btn" onclick="changePage(1)" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-md">
+                    Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" onclick="finishQuiz()" class="hidden px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md animate-pulse">
+                    Selesai & Kumpul <i class="fa-solid fa-check ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULT -->
+        <div id="result-screen" class="hidden max-w-2xl mx-auto text-center">
+            <div class="bg-white rounded-2xl shadow-xl p-8 border-t-8 border-green-500">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-trophy text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Hasil Ujian</h2>
+                <p class="text-gray-500 mb-6">Siswa: <span id="result-name" class="font-bold text-blue-600"></span> | Paket: <span id="result-package" class="font-bold"></span></p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <p class="text-sm text-gray-500">Skor Akhir</p>
+                        <p id="final-score" class="text-4xl font-bold text-blue-600">0</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <p class="text-sm text-gray-500">Benar / Salah</p>
+                        <p class="text-xl font-bold"><span id="correct-count" class="text-green-600">0</span> / <span id="wrong-count" class="text-red-500">0</span></p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="location.reload()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold text-gray-600">
+                        Coba Lagi
+                    </button>
+                    <button onclick="showDiscussion()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold shadow-md">
+                        Lihat Pembahasan Salah
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: DISCUSSION -->
+        <div id="discussion-screen" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Pembahasan Soal</h2>
+                <button onclick="document.getElementById('discussion-screen').classList.add('hidden'); document.getElementById('result-screen').classList.remove('hidden');" class="text-blue-600 hover:underline">
+                    &larr; Kembali ke Skor
+                </button>
+            </div>
+            <div id="discussion-container" class="space-y-6"></div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="text-center text-sm">
+            <p>&copy; 2025 Bimbel Musafir One.</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC JAVASCRIPT -->
+    <script>
+        const fr = (n, d) => `<div class="fraction"><span class="numerator">${n}</span><span class="denominator">${d}</span></div>`;
+
+        // === DATABASE PAKET A (40 Soal) ===
+        const dataPaketA = [
+            // Indikator 1-7: Desimal
+            { q: "Tanda perbandingan yang tepat untuk 0,45 ... 0,6 adalah:", opt: ["<", ">", "=", "≥"], ans: 0, exp: "0,45 < 0,60." },
+            { q: "Urutan bilangan 0,7; 0,25; 1,2; 0,09 dari terkecil:", opt: ["0,09; 0,25; 0,7; 1,2", "0,25; 0,09; 0,7; 1,2", "1,2; 0,7; 0,25; 0,09", "0,09; 0,7; 0,25; 1,2"], ans: 0, exp: "Urutan: 0,09 < 0,25 < 0,70 < 1,20." },
+            { q: "Hasil dari 12 x 0,5 adalah:", opt: ["60", "6", "0,6", "0,06"], ans: 1, exp: "12 x 0,5 = 6." },
+            { q: "Hasil dari 3,5 x 0,4 adalah:", opt: ["1,4", "1,2", "14", "0,14"], ans: 0, exp: "3,5 x 0,4 = 1,40 = 1,4." },
+            { q: "5 karung beras, tiap karung 12,5 kg. Total berat:", opt: ["60,5 kg", "62,5 kg", "65,5 kg", "52,5 kg"], ans: 1, exp: "5 x 12,5 = 62,5." },
+            { q: "3,75 dibulatkan ke satuan terdekat:", opt: ["3", "3,7", "3,8", "4"], ans: 3, exp: "3,75 mendekati 4." },
+            { q: "Hasil 0,15 x 100:", opt: ["1,5", "15", "150", "0,015"], ans: 1, exp: "Koma geser 2 kanan = 15." },
+            // Indikator 8-17: KPK FPB
+            { q: "Kelipatan persekutuan 3 dan 4 kurang dari 30:", opt: ["12, 24", "12, 18, 24", "6, 12, 24", "12, 20"], ans: 0, exp: "KPK 12. Kelipatan: 12, 24." },
+            { q: "Faktor dari 18:", opt: ["1,2,3,6,9,18", "1,2,3,4,6,18", "2,3,6,9", "1,2,9,18"], ans: 0, exp: "Faktor 18 lengkap: 1,2,3,6,9,18." },
+            { q: "Faktorisasi prima 20:", opt: ["2 x 10", "2² x 5", "2 x 5²", "4 x 5"], ans: 1, exp: "20 = 4x5 = 2² x 5." },
+            { q: "Faktorisasi prima 36:", opt: ["2² x 3", "2 x 3²", "2² x 3²", "2³ x 3"], ans: 2, exp: "36 = 2² x 3²." },
+            { q: "FPB dari 24 dan 32:", opt: ["4", "6", "8", "12"], ans: 2, exp: "FPB(24,32) = 8." },
+            { q: "KPK dari 6 dan 8:", opt: ["12", "16", "24", "48"], ans: 2, exp: "KPK(6,8) = 24." },
+            { q: "Lampu A 4 detik, B 6 detik. Menyala bersama detik ke:", opt: ["10", "12", "18", "24"], ans: 1, exp: "KPK(4,6) = 12." },
+            { q: "12 donat, 18 bolu dibagikan sama rata. Berapa kotak?", opt: ["2", "3", "6", "9"], ans: 2, exp: "FPB(12,18) = 6." },
+            { q: "Prima antara 10 dan 20:", opt: ["11,13,15,17", "11,13,17,19", "11,15,17,19", "13,17,19"], ans: 1, exp: "11, 13, 17, 19." },
+            { q: "FPB 15 dan 25:", opt: ["5", "15", "3", "25"], ans: 0, exp: "FPB(15,25) = 5." },
+            // Indikator 18-27: Pecahan
+            { q: `${fr(2,5)} + ${fr(1,5)} =`, opt: [fr(3,10), fr(3,5), fr(2,25), fr(3,25)], ans: 1, exp: "2/5 + 1/5 = 3/5." },
+            { q: `${fr(1,2)} + ${fr(1,4)} =`, opt: [fr(2,6), fr(3,4), fr(2,4), fr(1,8)], ans: 1, exp: "2/4 + 1/4 = 3/4." },
+            { q: `Pecahan biasa dari 2${fr(1,3)}:`, opt: [fr(5,3), fr(7,3), fr(6,3), fr(2,3)], ans: 1, exp: "(2x3)+1 = 7/3." },
+            { q: `Desimal dari ${fr(3,4)}:`, opt: ["0,34", "0,43", "0,75", "0,80"], ans: 2, exp: "3:4 = 0,75." },
+            { q: `${fr(5,6)} - ${fr(1,3)} =`, opt: [fr(4,3), fr(3,6), fr(1,2), fr(2,3)], ans: 2, exp: "5/6 - 2/6 = 3/6 = 1/2." },
+            { q: `1${fr(1,2)} + ${fr(1,2)} =`, opt: ["2", "1,5", "3", "2,5"], ans: 0, exp: "1,5 + 0,5 = 2." },
+            { q: `Pecahan senilai ${fr(2,3)}:`, opt: [fr(4,5), fr(4,6), fr(3,2), fr(5,6)], ans: 1, exp: "2/3 = 4/6." },
+            { q: "Pecahan paling besar:", opt: [fr(1,2), fr(1,3), fr(1,4), fr(1,5)], ans: 0, exp: "1/2 paling besar." },
+            { q: `${fr(3,4)} - ${fr(1,2)} =`, opt: [fr(1,4), fr(2,4), fr(1,2), fr(2,2)], ans: 0, exp: "3/4 - 2/4 = 1/4." },
+            { q: `Membeli ${fr(1,2)} kg gula dan ${fr(1,4)} kg tepung. Total:`, opt: [fr(2,6), fr(3,4), "1 kg", fr(1,8)], ans: 1, exp: "3/4 kg." },
+            // Indikator 28-40: Geometri
+            { q: "3 sisi sama panjang, 3 sudut sama besar:", opt: ["Sama Kaki", "Siku-siku", "Sama Sisi", "Sembarang"], ans: 2, exp: "Segitiga Sama Sisi." },
+            { q: "Segitiga ketiga sisinya berbeda panjang:", opt: ["Sama Sisi", "Sama Kaki", "Sembarang", "Siku-siku"], ans: 2, exp: "Segitiga Sembarang." },
+            { q: "Simetri lipat segitiga sama kaki:", opt: ["1", "2", "3", "0"], ans: 0, exp: "1 simetri lipat." },
+            { q: "Sepasang sisi sejajar tapi tidak sama panjang:", opt: ["Persegi", "Jajar Genjang", "Trapesium", "Layang-layang"], ans: 2, exp: "Trapesium." },
+            { q: "Sudut dalam segitiga totalnya:", opt: ["90°", "180°", "270°", "360°"], ans: 1, exp: "180 derajat." },
+            { q: "Segitiga yang salah satu sudutnya 90°:", opt: ["Tumpul", "Lancip", "Siku-siku", "Sembarang"], ans: 2, exp: "Siku-siku." },
+            { q: "Sumbu simetri persegi panjang:", opt: ["1", "2", "3", "4"], ans: 1, exp: "2 sumbu simetri." },
+            { q: "Bangun TANPA simetri lipat:", opt: ["Persegi", "Lingkaran", "Jajar Genjang", "Layang-layang"], ans: 2, exp: "Jajar Genjang." },
+            { q: "KPK 10 dan 15:", opt: ["30", "60", "25", "150"], ans: 0, exp: "KPK(10,15) = 30." },
+            { q: "Melipat bangun hingga saling menutupi disebut:", opt: ["Simetri Putar", "Simetri Lipat", "Sumbu X", "Keliling"], ans: 1, exp: "Simetri Lipat." },
+            { q: "Segitiga tumpul, sudutnya:", opt: ["< 90°", "= 90°", "> 90°", "180°"], ans: 2, exp: "Lebih dari 90 derajat." },
+            { q: "Ciri Trapesium Sama Kaki:", opt: ["Sisi miring sama panjang", "4 sisi sama", "4 sudut siku", "Tak punya simetri"], ans: 0, exp: "Sisi yang tidak sejajar (kaki) sama panjang." },
+            { q: "Banyak simetri lipat lingkaran:", opt: ["0", "2", "4", "Tak Hingga"], ans: 3, exp: "Lingkaran punya tak hingga simetri lipat." },
+            { q: "Bangun datar dengan 4 sisi sama panjang dan 4 sudut siku-siku:", opt: ["Persegi", "Persegi Panjang", "Belah Ketupat", "Trapesium"], ans: 0, exp: "Persegi." }
+        ];
+
+        // === DATABASE PAKET B (40 Soal - BENAR-BENAR BEDA) ===
+        const dataPaketB = [
+             // Desimal (Indikator 1-7) - BEDA ANGKA
+            { q: "Tanda yang tepat untuk 0,8 ... 0,79 adalah:", opt: ["<", ">", "=", "≤"], ans: 1, exp: "0,8 = 0,80. Karena 80 > 79, maka 0,8 > 0,79." },
+            { q: "Urutan 0,5; 0,15; 0,05; 1,1 dari yang terkecil:", opt: ["0,05; 0,15; 0,5; 1,1", "0,5; 0,15; 0,05; 1,1", "0,05; 0,5; 0,15; 1,1", "1,1; 0,5; 0,15; 0,05"], ans: 0, exp: "Urutan: 0,05 < 0,15 < 0,50 < 1,10." },
+            { q: "Hasil dari 15 x 0,2 adalah:", opt: ["30", "3", "0,3", "0,03"], ans: 1, exp: "15 x 2 = 30. Satu desimal, jadi 3,0." },
+            { q: "Hasil dari 0,6 x 0,3 adalah:", opt: ["1,8", "0,18", "18", "0,018"], ans: 1, exp: "6 x 3 = 18. Dua desimal (0,6 dan 0,3), jadi 0,18." },
+            { q: "Ali membeli 4 buku tulis. Harga satu buku Rp 2.500,50. Total bayar (dibulatkan):", opt: ["Rp 10.000", "Rp 10.002", "Rp 10.500", "Rp 11.000"], ans: 1, exp: "4 x 2500,5 = 10002." },
+            { q: "Bilangan 8,23 dibulatkan ke satuan terdekat:", opt: ["8", "9", "8,2", "8,3"], ans: 0, exp: "Angka persepuluhan 2 (<5), jadi tetap 8." },
+            { q: "Hasil dari 2,45 x 10 adalah:", opt: ["245", "24,5", "0,245", "2,45"], ans: 1, exp: "Dikali 10, koma geser 1 kali ke kanan." },
+            
+            // KPK FPB (Indikator 8-17) - BEDA ANGKA & KONTEKS
+            { q: "Kelipatan persekutuan 2 dan 5 di bawah 25:", opt: ["10, 20", "5, 10, 15", "10, 15, 20", "10, 20, 30"], ans: 0, exp: "KPK 2 dan 5 = 10. Kelipatan: 10, 20." },
+            { q: "Faktor dari bilangan 12 adalah:", opt: ["1,2,3,4,6,12", "1,2,3,4,8,12", "2,3,4,6", "1,6,12"], ans: 0, exp: "1x12, 2x6, 3x4." },
+            { q: "Faktorisasi prima dari 24:", opt: ["2 x 12", "2³ x 3", "2² x 6", "3 x 8"], ans: 1, exp: "24 = 8 x 3 = 2³ x 3." },
+            { q: "Faktorisasi prima dari 50:", opt: ["2 x 25", "2 x 5²", "5 x 10", "2² x 5"], ans: 1, exp: "50 = 2 x 25 = 2 x 5²." },
+            { q: "FPB dari 20 dan 30:", opt: ["5", "10", "15", "20"], ans: 1, exp: "Faktor bersama terbesar adalah 10." },
+            { q: "KPK dari 4 dan 5:", opt: ["10", "15", "20", "25"], ans: 2, exp: "Kelipatan 4 dan 5 bertemu di 20." },
+            { q: "Adi berenang 3 hari sekali, Budi 5 hari sekali. Mereka berenang bersama setiap:", opt: ["8 hari", "10 hari", "15 hari", "20 hari"], ans: 2, exp: "KPK 3 dan 5 adalah 15." },
+            { q: "Ibu punya 10 apel dan 15 jeruk. Dibagi ke piring sama banyak. Jumlah piring terbanyak:", opt: ["2", "3", "5", "10"], ans: 2, exp: "FPB 10 dan 15 adalah 5." },
+            { q: "Bilangan prima terkecil adalah:", opt: ["1", "2", "3", "5"], ans: 1, exp: "2 adalah satu-satunya bilangan prima genap dan terkecil." },
+            { q: "FPB dari 18 dan 27:", opt: ["3", "6", "9", "18"], ans: 2, exp: "Faktor 18: 1,2,3,6,9,18. Faktor 27: 1,3,9,27. FPB = 9." },
+
+            // Pecahan (Indikator 18-27) - BEDA ANGKA
+            { q: `${fr(3,7)} + ${fr(2,7)} =`, opt: [fr(5,7), fr(5,14), fr(6,7), fr(1,7)], ans: 0, exp: "Penyebut sama, 3+2=5. Jadi 5/7." },
+            { q: `${fr(1,3)} + ${fr(1,6)} =`, opt: [fr(2,6), fr(3,6), fr(4,6), fr(1,9)], ans: 1, exp: "1/3 = 2/6. Maka 2/6 + 1/6 = 3/6 (setengah)." },
+            { q: `Bentuk pecahan campuran dari ${fr(11,4)}:`, opt: [`2${fr(3,4)}`, `2${fr(1,4)}`, `3${fr(1,4)}`, `2${fr(2,4)}`], ans: 0, exp: "11 dibagi 4 dapat 2 sisa 3." },
+            { q: `Bentuk desimal dari ${fr(1,5)}:`, opt: ["0,1", "0,2", "0,5", "0,25"], ans: 1, exp: "1 dibagi 5 = 0,2." },
+            { q: `${fr(4,5)} - ${fr(1,2)} =`, opt: [fr(3,3), fr(3,10), fr(2,5), fr(1,5)], ans: 1, exp: "KPK 10. 8/10 - 5/10 = 3/10." },
+            { q: `Hasil dari 2 - ${fr(1,4)} =`, opt: [fr(3,4), `1${fr(3,4)}`, `1${fr(1,4)}`, "1,5"], ans: 1, exp: "2 itu 8/4. 8/4 - 1/4 = 7/4 = 1 3/4." },
+            { q: `Pecahan yang senilai dengan ${fr(3,5)} adalah:`, opt: [fr(6,10), fr(5,3), fr(9,10), fr(6,15)], ans: 0, exp: "Kali 2 atas bawah: 6/10." },
+            { q: "Urutan pecahan dari terkecil: 1/2, 1/4, 1/3:", opt: ["1/2, 1/3, 1/4", "1/4, 1/3, 1/2", "1/4, 1/2, 1/3", "1/3, 1/4, 1/2"], ans: 1, exp: "1/4 (0,25) < 1/3 (0,33) < 1/2 (0,5)." },
+            { q: `${fr(7,8)} - ${fr(3,8)} =`, opt: [fr(4,8), fr(10,8), fr(4,0), fr(5,8)], ans: 0, exp: "7-3=4. Jadi 4/8 atau 1/2." },
+            { q: `Tali merah ${fr(3,4)} m, tali biru ${fr(1,8)} m. Selisih panjangnya:`, opt: [fr(2,8), fr(5,8), fr(4,8), fr(6,8)], ans: 1, exp: "3/4 = 6/8. Selisih: 6/8 - 1/8 = 5/8." },
+
+            // Geometri (Indikator 28-40) - VARIASI SOAL
+            { q: "Segitiga dengan dua sisi sama panjang disebut:", opt: ["Sama Sisi", "Sama Kaki", "Siku-siku", "Sembarang"], ans: 1, exp: "Definisi segitiga sama kaki." },
+            { q: "Jumlah simetri lipat persegi:", opt: ["1", "2", "3", "4"], ans: 3, exp: "Persegi punya 4 simetri lipat." },
+            { q: "Bangun datar yang punya 4 sisi, sisi berhadapan sejajar dan sama panjang, sudut bukan siku-siku:", opt: ["Persegi Panjang", "Jajar Genjang", "Trapesium", "Layang-layang"], ans: 1, exp: "Ciri Jajar Genjang." },
+            { q: "Trapesium siku-siku memiliki:", opt: ["2 sudut siku-siku", "4 sudut siku-siku", "1 simetri lipat", "Semua sisi sama"], ans: 0, exp: "Punya sepasang sudut siku-siku (atas dan bawah pada sisi tegak)." },
+            { q: "Besar setiap sudut pada segitiga sama sisi adalah:", opt: ["45°", "60°", "90°", "100°"], ans: 1, exp: "180 dibagi 3 = 60 derajat." },
+            { q: "Garis yang membagi bangun menjadi dua bagian sama besar disebut:", opt: ["Sumbu Simetri", "Garis Tepi", "Diagonal", "Diameter"], ans: 0, exp: "Definisi Sumbu Simetri." },
+            { q: "Layang-layang memiliki ... sumbu simetri.", opt: ["1", "2", "3", "4"], ans: 0, exp: "Hanya 1 (vertikal)." },
+            { q: "KPK dari 8 dan 12:", opt: ["16", "24", "32", "48"], ans: 1, exp: "Kelipatan 8: 8,16,24. Kelipatan 12: 12,24." },
+            { q: "Segitiga yang salah satu sudutnya > 90 derajat:", opt: ["Lancip", "Tumpul", "Siku-siku", "Sama Sisi"], ans: 1, exp: "Segitiga Tumpul." },
+            { q: "Manakah yang merupakan bangun segi banyak beraturan?", opt: ["Persegi", "Persegi Panjang", "Layang-layang", "Trapesium"], ans: 0, exp: "Persegi (semua sisi & sudut sama)." },
+            { q: "Faktorisasi prima dari 100:", opt: ["2 x 50", "10 x 10", "2² x 5²", "4 x 25"], ans: 2, exp: "100 = 10² = (2x5)² = 2² x 5²." },
+            { q: "Jika sebuah bangun dilipat dan tidak saling menutupi, artinya bangun itu:", opt: ["Simetris", "Tidak Simetris", "Beraturan", "Sama Kaki"], ans: 1, exp: "Tidak memiliki simetri lipat." },
+            { q: "Sudut siku-siku besarnya:", opt: ["90°", "180°", "45°", "60°"], ans: 0, exp: "Tepat 90 derajat." },
+            { q: "Benda berbentuk lingkaran contohnya:", opt: ["Papan Tulis", "Uang Koin", "Buku", "Pintu"], ans: 1, exp: "Uang koin berbentuk lingkaran." }
+        ];
+
+        // --- GLOBAL VARS ---
+        let currentQuestions = [];
+        let currentPage = 0;
+        const questionsPerPage = 10;
+        let userAnswers = {}; 
+        let timerInterval;
+        let totalSeconds = 90 * 60; 
+
+        // --- FUNCTIONS ---
+        function startQuiz() {
+            const name = document.getElementById('student-name').value;
+            const pkg = document.getElementById('package-select').value;
+            
+            if (!name.trim()) {
+                alert("Mohon isi nama terlebih dahulu!");
+                return;
+            }
+
+            // Set Data
+            document.getElementById('result-name').innerText = name;
+            document.getElementById('result-package').innerText = pkg === 'A' ? "Paket A" : "Paket B";
+            
+            // LOAD SELECTED PACKAGE
+            currentQuestions = (pkg === 'A') ? dataPaketA : dataPaketB;
+            
+            // Reset State
+            currentPage = 0;
+            userAnswers = {};
+            
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('timer-display').classList.remove('hidden');
+
+            renderQuestions();
+            startTimer();
+            updateNavigation();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            const start = currentPage * questionsPerPage;
+            const end = Math.min(start + questionsPerPage, currentQuestions.length);
+
+            for (let i = start; i < end; i++) {
+                const q = currentQuestions[i];
+                const savedAns = userAnswers[i];
+                
+                let optionsHtml = '';
+                q.opt.forEach((opt, idx) => {
+                    const labels = ['A', 'B', 'C', 'D'];
+                    const isChecked = savedAns === idx ? 'checked' : '';
+                    optionsHtml += `
+                        <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 option-label">
+                            <input type="radio" name="q-${i}" value="${idx}" class="option-input hidden" onchange="saveAnswer(${i}, ${idx})" ${isChecked}>
+                            <div class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full mr-3 text-sm font-bold text-gray-700 peer-checked:bg-blue-600 peer-checked:text-white">
+                                ${labels[idx]}
+                            </div>
+                            <div class="text-gray-700">${opt}</div>
+                        </label>
+                    `;
+                });
+
+                const questionHtml = `
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="flex gap-4 mb-4">
+                            <div class="bg-blue-100 text-blue-800 font-bold w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0">
+                                ${i + 1}
+                            </div>
+                            <div class="text-lg font-medium text-gray-800 pt-1">${q.q}</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 ml-12">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questionHtml;
+            }
+            window.scrollTo(0,0);
+        }
+
+        function saveAnswer(qIndex, ansIndex) {
+            userAnswers[qIndex] = ansIndex;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            const total = currentQuestions.length;
+            const percent = (answered / total) * 100;
+            document.getElementById('progress-bar').style.width = percent + '%';
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            renderQuestions();
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const totalPages = Math.ceil(currentQuestions.length / questionsPerPage);
+            document.getElementById('page-indicator').innerText = `Halaman ${currentPage + 1} dari ${totalPages}`;
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+
+            prevBtn.classList.toggle('hidden', currentPage === 0);
+            
+            if (currentPage === totalPages - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function startTimer() {
+            const display = document.getElementById('timer-display');
+            timerInterval = setInterval(() => {
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                display.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+                totalSeconds--;
+            }, 1000);
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            let correct = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.ans) correct++;
+            });
+            const wrong = currentQuestions.length - correct;
+            const score = Math.round((correct / currentQuestions.length) * 100);
+
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('correct-count').innerText = correct;
+            document.getElementById('wrong-count').innerText = wrong;
+
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('timer-display').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            prepareDiscussion();
+        }
+
+        function prepareDiscussion() {
+            const container = document.getElementById('discussion-container');
+            container.innerHTML = '';
+            let hasWrong = false;
+
+            currentQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.ans;
+                const labels = ['A', 'B', 'C', 'D'];
+
+                if (!isCorrect) {
+                    hasWrong = true;
+                    const userAnswerText = userAns !== undefined ? labels[userAns] + ". " + q.opt[userAns] : "Tidak dijawab";
+                    
+                    const item = `
+                        <div class="bg-white p-6 rounded-xl border-l-4 border-red-500 shadow-sm">
+                            <div class="flex gap-2 mb-2">
+                                <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">Soal No ${idx + 1}</span>
+                                <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">Salah</span>
+                            </div>
+                            <p class="font-medium text-gray-800 mb-3">${q.q}</p>
+                            <div class="bg-red-50 p-3 rounded mb-2 text-sm">
+                                <span class="font-bold text-red-700">Jawaban Kamu:</span> ${userAnswerText}
+                            </div>
+                            <div class="bg-green-50 p-3 rounded mb-3 text-sm">
+                                <span class="font-bold text-green-700">Jawaban Benar:</span> ${labels[q.ans]}. ${q.opt[q.ans]}
+                            </div>
+                            <div class="text-sm text-gray-600 border-t pt-2 mt-2">
+                                <strong><i class="fa-solid fa-lightbulb text-yellow-500"></i> Pembahasan:</strong><br>
+                                ${q.exp}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += item;
+                }
+            });
+
+            if (!hasWrong) {
+                container.innerHTML = `
+                    <div class="text-center py-10">
+                        <i class="fa-solid fa-star text-5xl text-yellow-400 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-700">Luar Biasa!</h3>
+                        <p>Kamu menjawab semua soal dengan benar.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showDiscussion() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('discussion-screen').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>
+
+
