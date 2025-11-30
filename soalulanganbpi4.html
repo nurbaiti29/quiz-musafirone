@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal BPI Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4; /* Light Green */
+            background-image: radial-gradient(#dcfce7 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        h1, h2, h3 {
+            font-family: 'Quicksand', sans-serif;
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(22, 163, 74, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(20, 83, 45, 0.1);
+        }
+        .option-radio:checked + div {
+            background-color: #dcfce7;
+            border-color: #16a34a;
+            color: #14532d;
+        }
+        /* Loading Animation */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #16a34a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 50px;">
+            <div class="loader"></div>
+            <p class="text-green-800 font-bold">Memuat Soal BPI...</p>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- IKON SVG INTERNAL ---
+        const Icons = {
+            Moon: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>,
+            BookOpen: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+            CheckCircle: ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+            XCircle: ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
+            ChevronRight: ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+            Award: () => <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="orange" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+            User: () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+            RefreshCcw: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>,
+            Timer: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        };
+
+        // --- DATABASE SOAL (35 SOAL per Paket) ---
+        const generateQuestions = (packageType) => {
+            const isA = packageType === 'A';
+            
+            // Helper untuk membuat variasi teks
+            const v = (a, b) => isA ? a : b;
+
+            return [
+                // 1. Tujuan Amal Ibadah (Ikhlas)
+                {
+                    id: 1,
+                    q: `Tujuan utama seorang muslim dalam melakukan amal ibadah hanyalah mengharap ...`,
+                    options: isA ? ["Pujian teman", "Ridha Allah Swt.", "Hadiah orang tua", "Nilai bagus"] : ["Imbalan uang", "Penghargaan guru", "Ridha Allah Swt.", "Ketenaran"],
+                    answer: "Ridha Allah Swt.",
+                    explain: "Ikhlas berarti memurnikan niat hanya untuk mencari keridhaan Allah Swt."
+                },
+                // 2. Makna Hadis Ikhlas
+                {
+                    id: 2,
+                    q: `Perhatikan sabda Nabi Saw.: 'Sesungguhnya segala amal perbuatan itu tergantung pada ...'`,
+                    options: ["Hasilnya", "Niatnya", "Waktunya", "Tempatnya"],
+                    answer: "Niatnya",
+                    explain: "Hadis riwayat Bukhari Muslim: 'Innamal a'malu binniyat' (Amal itu tergantung niatnya)."
+                },
+                // 3. Contoh Sikap Ikhlas
+                {
+                    id: 3,
+                    q: `Contoh perilaku ikhlas dalam beramal adalah ...`,
+                    options: isA ? 
+                        ["Ahmad bersedekah diam-diam agar tidak diketahui orang lain", "Budi shalat agar dipuji Pak Guru", "Siti membantu ibu karena ingin uang jajan", "Dodi puasa karena takut dimarahi ayah"] : 
+                        ["Rina meminjamkan pensil tanpa mengharap balasan", "Doni menyumbang agar namanya disebut panitia", "Lani rajin mengaji supaya dibilang anak sholeh", "Eko membersihkan kelas karena disuruh guru"],
+                    answer: isA ? "Ahmad bersedekah diam-diam agar tidak diketahui orang lain" : "Rina meminjamkan pensil tanpa mengharap balasan",
+                    explain: "Orang yang ikhlas tidak mengharapkan pujian atau balasan dari manusia."
+                },
+                // 4. Ciri-ciri Ikhlas
+                {
+                    id: 4,
+                    q: `Berikut ini yang merupakan ciri-ciri orang yang ikhlas adalah ...`,
+                    options: ["Kecewa jika tidak dipuji", "Beramal saat dilihat orang saja", "Tidak mengungkit-ungkit kebaikan yang dilakukan", "Marah jika tidak diberi imbalan"],
+                    answer: "Tidak mengungkit-ungkit kebaikan yang dilakukan",
+                    explain: "Orang ikhlas melupakan kebaikan yang telah diperbuatnya, seperti membuang kotoran."
+                },
+                // 5. Cara Menumbuhkan Ikhlas
+                {
+                    id: 5,
+                    q: `Salah satu cara melatih diri agar ikhlas adalah ...`,
+                    options: ["Sering menceritakan amal baik di media sosial", "Menyembunyikan amal ibadah seperti menyembunyikan aib", "Meminta tanda terima setiap beramal", "Menghitung berapa banyak pahala yang didapat"],
+                    answer: "Menyembunyikan amal ibadah seperti menyembunyikan aib",
+                    explain: "Menyembunyikan amal membantu menjaga hati dari riya' (pamer)."
+                },
+                // 6. Ikhlas di Sekolah
+                {
+                    id: 6,
+                    q: `Saat piket kelas, ${v("Andi", "Fatimah")} membersihkan papan tulis padahal guru belum datang. Sikap ikhlas ditunjukkan dengan ...`,
+                    options: ["Berhenti bekerja saat teman datang", "Melakukannya dengan senang hati demi kebersihan", "Mengeluh karena teman lain belum datang", "Mengerjakan sambil cemberut"],
+                    answer: "Melakukannya dengan senang hati demi kebersihan",
+                    explain: "Ikhlas di sekolah berarti menjalankan tugas tanggung jawab dengan hati yang lapang."
+                },
+                // 7. Istilah Berbagi
+                {
+                    id: 7,
+                    q: `Memberikan sebagian harta yang kita miliki kepada orang lain yang membutuhkan semata-mata karena Allah disebut ...`,
+                    options: ["Berbagi/Sedekah", "Berhemat", "Berfoya-foya", "Bekerja"],
+                    answer: "Berbagi/Sedekah",
+                    explain: "Berbagi atau sedekah adalah bukti kepedulian sosial seorang muslim."
+                },
+                // 8. Keutamaan Amal Ibadah (Ayat Quran)
+                {
+                    id: 8,
+                    q: `Allah Swt. berfirman bahwa orang yang menafkahkan hartanya di jalan Allah seperti sebutir biji yang menumbuhkan ...`,
+                    options: ["7 tangkai", "100 tangkai", "1 tangkai", "5 tangkai"],
+                    answer: "7 tangkai",
+                    explain: "QS. Al-Baqarah: 261. Satu biji menumbuhkan 7 tangkai, tiap tangkai 100 biji (total 700x lipat)."
+                },
+                // 9. Analisis Situasi Berbagi
+                {
+                    id: 9,
+                    q: `${v("Budi melihat pengemis tua yang kelaparan.", "Siti melihat temannya lupa membawa bekal.")} Tindakan yang paling tepat adalah ...`,
+                    options: isA ? ["Menertawakannya", "Memberi sebagian uang jajan dengan sopan", "Memarahinya karena malas bekerja", "Pura-pura tidak melihat"] : ["Membiarkannya", "Berbagi bekal makanannya dengan tulus", "Menyuruhnya pulang", "Mengejeknya karena pelupa"],
+                    answer: isA ? "Memberi sebagian uang jajan dengan sopan" : "Berbagi bekal makanannya dengan tulus",
+                    explain: "Sikap peduli adalah segera membantu saat melihat orang lain kesulitan."
+                },
+                // 10. Keutamaan Ibadah
+                {
+                    id: 10,
+                    q: `Salah satu keutamaan rajin beribadah kepada Allah adalah ...`,
+                    options: ["Hati menjadi tenang", "Mendapat banyak mainan", "Ditakuti teman", "Badan menjadi sakit"],
+                    answer: "Hati menjadi tenang",
+                    explain: "Ala bidzikrillahi tathmainnul qulub (Hanya dengan mengingat Allah hati menjadi tenang)."
+                },
+                // 11. Kondisi Beramal
+                {
+                    id: 11,
+                    q: `Seorang muslim yang baik akan tetap berbuat baik dalam kondisi ...`,
+                    options: ["Saat kaya saja", "Saat miskin saja", "Lapang maupun sempit", "Saat diawasi orang tua"],
+                    answer: "Lapang maupun sempit",
+                    explain: "Ciri orang bertaqwa adalah berinfak/berbuat baik di waktu lapang maupun sempit."
+                },
+                // 12. Respons Emosional (Malu)
+                {
+                    id: 12,
+                    q: `Jika kita melakukan kesalahan atau dosa, perasaan yang seharusnya muncul adalah ...`,
+                    options: ["Bangga", "Biasa saja", "Malu dan takut kepada Allah", "Senang"],
+                    answer: "Malu dan takut kepada Allah",
+                    explain: "Rasa malu adalah sebagian dari iman. Malu berbuat dosa adalah akhlak terpuji."
+                },
+                // 13. Nasihat Ulama tentang Malu
+                {
+                    id: 13,
+                    q: `"Jika engkau tidak malu, maka berbuatlah sesukamu." Maksud nasihat tersebut adalah ...`,
+                    options: ["Kita bebas melakukan apa saja", "Rasa malu adalah pengendali akhlak manusia", "Tidak perlu punya rasa malu", "Malu itu menghambat kesuksesan"],
+                    answer: "Rasa malu adalah pengendali akhlak manusia",
+                    explain: "Ini adalah peringatan. Jika rasa malu hilang, manusia akan berbuat buruk tanpa ragu."
+                },
+                // 14. Alasan Munculnya Takut & Malu
+                {
+                    id: 14,
+                    q: `Seorang siswa tidak jadi menyontek saat ujian meskipun pengawas keluar kelas. Ia merasa takut dan malu karena ...`,
+                    options: ["Ada CCTV", "Takut teman mengadu", "Yakin Allah Maha Melihat", "Soalnya terlalu mudah"],
+                    answer: "Yakin Allah Maha Melihat",
+                    explain: "Ihsan adalah beribadah seolah melihat Allah, atau yakin Allah melihat kita."
+                },
+                // 15. Sifat Malu Melanggar Larangan
+                {
+                    id: 15,
+                    q: `Contoh perilaku malu melanggar larangan Allah adalah ...`,
+                    options: ["Malu jika tidak memakai baju mahal", "Malu untuk berkata jujur", "Malu jika meninggalkan shalat lima waktu", "Malu menyapa guru"],
+                    answer: "Malu jika meninggalkan shalat lima waktu",
+                    explain: "Malu yang benar adalah malu meninggalkan kewajiban atau melanggar larangan Allah."
+                },
+                // 16. Mengabaikan Kewajiban
+                {
+                    id: 16,
+                    q: `Fulan asyik bermain game hingga melewatkan waktu Ashar. Pendapatmu tentang perilaku Fulan adalah ...`,
+                    options: ["Wajar karena masih anak-anak", "Tidak patut ditiru karena melalaikan kewajiban", "Hebat karena jago main game", "Boleh saja asal menang"],
+                    answer: "Tidak patut ditiru karena melalaikan kewajiban",
+                    explain: "Kewajiban kepada Allah harus didahulukan daripada bermain."
+                },
+                // 17. Birrul Walidain (Sikap)
+                {
+                    id: 17,
+                    q: `Sikap berbakti kepada orang tua (Birrul Walidain) ditunjukkan dengan cara ...`,
+                    options: ["Berbicara dengan nada tinggi", "Mentaati perintahnya selama tidak maksiat", "Pura-pura tidak mendengar saat dipanggil", "Meminta uang dengan paksa"],
+                    answer: "Mentaati perintahnya selama tidak maksiat",
+                    explain: "Taat kepada orang tua adalah kewajiban utama setelah taat kepada Allah."
+                },
+                // 18. Berbakti pada Kondisi Tertentu
+                {
+                    id: 18,
+                    q: `Jika orang tua sedang sakit, sikap kita yang paling tepat adalah ...`,
+                    options: ["Pergi bermain di rumah teman", "Merawat dan mendoakannya", "Membiarkannya istirahat sendiri", "Menonton TV dengan keras"],
+                    answer: "Merawat dan mendoakannya",
+                    explain: "Merawat orang tua sakit adalah ladang pahala yang sangat besar."
+                },
+                // 19. Ayat Quran Birrul Walidain
+                {
+                    id: 19,
+                    q: `Dalam Al-Qur'an (QS. Al-Isra), Allah melarang kita berkata ... kepada orang tua.`,
+                    options: ["Ah", "Ya", "Baik", "Siap"],
+                    answer: "Ah",
+                    explain: "Berkata 'Ah' (membentak ringan) saja dilarang, apalagi memukul atau berkata kasar."
+                },
+                // 20. Menyikapi Keadaan Orang Tua
+                {
+                    id: 20,
+                    q: `Jika orang tua kita sudah tua renta dan mulai pikun, sikap kita adalah ...`,
+                    options: ["Memarahinya karena merepotkan", "Menitipkannya ke panti jompo", "Bersabar dan merawatnya dengan penuh kasih sayang", "Mendiamkannya"],
+                    answer: "Bersabar dan merawatnya dengan penuh kasih sayang",
+                    explain: "Sebagaimana mereka merawat kita dengan sabar sewaktu kecil."
+                },
+                // 21. Doa Sehari-hari
+                {
+                    id: 21,
+                    q: `Doa: "Rabbighfirli waliwalidayya warhamhuma kamaa rabbayaani shaghira" adalah doa untuk ...`,
+                    options: ["Kebaikan dunia akhirat", "Kedua orang tua", "Keselamatan di perjalanan", "Mau tidur"],
+                    answer: "Kedua orang tua",
+                    explain: "Artinya: Ya Tuhanku, ampunilah aku dan kedua orang tuaku..."
+                },
+                // 22. Perilaku Santun
+                {
+                    id: 22,
+                    q: `Saat berjalan melewati orang tua yang sedang duduk, sebaiknya kita ...`,
+                    options: ["Berlari kencang", "Membungkukkan badan dan permisi", "Meludah", "Cuek saja"],
+                    answer: "Membungkukkan badan dan permisi",
+                    explain: "Adab sopan santun (Tata krama) terhadap orang yang lebih tua."
+                },
+                // 23. Lafadz Hadis Arbain
+                {
+                    id: 23,
+                    q: `Hadis Arbain adalah kumpulan hadis yang dikumpulkan oleh Imam ...`,
+                    options: ["Bukhari", "Nawawi", "Muslim", "Tirmidzi"],
+                    answer: "Nawawi",
+                    explain: "Kitab Al-Arba'in An-Nawawiyah adalah karya Imam An-Nawawi."
+                },
+                // 24. Makna Hadis Arbain
+                {
+                    id: 24,
+                    q: `Hadis "Ad-Deenu Nasihat" (Agama adalah Nasihat) mengajarkan kita untuk ...`,
+                    options: ["Saling menasehati dalam kebaikan", "Saling mengejek", "Menang sendiri", "Berdiam diri"],
+                    answer: "Saling menasehati dalam kebaikan",
+                    explain: "Agama Islam tegak dengan saling menasehati untuk Allah, Rasul, Kitab, Pemimpin, dan sesama muslim."
+                },
+                // 25. Memanfaatkan Waktu
+                {
+                    id: 25,
+                    q: `"Demi masa. Sesungguhnya manusia itu benar-benar dalam kerugian." Adalah arti dari Surah ...`,
+                    options: ["Al-Ikhlas", "Al-Asr", "Al-Falaq", "An-Nas"],
+                    answer: "Al-Asr",
+                    explain: "Surah Al-Asr menjelaskan pentingnya waktu."
+                },
+                // 26. Contoh Sikap Memanfaatkan Waktu
+                {
+                    id: 26,
+                    q: `Contoh memanfaatkan waktu luang dengan baik adalah ...`,
+                    options: ["Melamun", "Membaca buku bermanfaat", "Mengganggu teman", "Tidur seharian"],
+                    answer: "Membaca buku bermanfaat",
+                    explain: "Waktu luang adalah nikmat yang sering dilalaikan. Isi dengan hal positif."
+                },
+                // 27. Peristiwa Sebelum Kelahiran Nabi
+                {
+                    id: 27,
+                    q: `Peristiwa besar yang terjadi menjelang kelahiran Nabi Muhammad Saw. adalah ...`,
+                    options: ["Banjir bandang Nuh", "Penyerangan tentara Gajah ke Ka'bah", "Turunnya Al-Qur'an", "Perang Badar"],
+                    answer: "Penyerangan tentara Gajah ke Ka'bah",
+                    explain: "Tahun kelahiran Nabi disebut Tahun Gajah (Amul Fil)."
+                },
+                // 28. Nama Orang Tua Nabi
+                {
+                    id: 28,
+                    q: `Ayahanda Nabi Muhammad Saw. bernama ...`,
+                    options: ["Abdul Muthalib", "Abu Thalib", "Abdullah", "Hamzah"],
+                    answer: "Abdullah",
+                    explain: "Ayahnya Abdullah, Ibunya Aminah."
+                },
+                // 29. Tujuan Mukjizat
+                {
+                    id: 29,
+                    q: `Mukjizat diberikan Allah kepada para Nabi bertujuan untuk ...`,
+                    options: ["Pamer kekuatan", "Menakuti manusia", "Membuktikan kebenaran kenabian", "Mencari kekayaan"],
+                    answer: "Membuktikan kebenaran kenabian",
+                    explain: "Mukjizat adalah kejadian luar biasa untuk melemahkan musuh dan bukti kenabian."
+                },
+                // 30. Mukjizat Nabi
+                {
+                    id: 30,
+                    q: `Salah satu mukjizat Nabi Muhammad Saw. yang terbesar dan masih ada sampai sekarang adalah ...`,
+                    options: ["Membelah bulan", "Tongkat menjadi ular", "Al-Qur'an", "Perahu besar"],
+                    answer: "Al-Qur'an",
+                    explain: "Al-Qur'an adalah mukjizat abadi."
+                },
+                // 31. Misi Dakwah
+                {
+                    id: 31,
+                    q: `Misi utama dakwah Nabi Muhammad Saw. adalah untuk menyempurnakan ...`,
+                    options: ["Bangunan Ka'bah", "Akhlak manusia", "Kekayaan bangsa Arab", "Wilayah kekuasaan"],
+                    answer: "Akhlak manusia",
+                    explain: "Hadis: 'Innama bu'itstu li utammima makarimal akhlaq'."
+                },
+                // 32. Kitab Suci
+                {
+                    id: 32,
+                    q: `Kitab suci yang diturunkan kepada Nabi Muhammad Saw. sebagai penyempurna kitab-kitab sebelumnya adalah ...`,
+                    options: ["Taurat", "Zabur", "Injil", "Al-Qur'an"],
+                    answer: "Al-Qur'an",
+                    explain: "Al-Qur'an adalah kitab suci terakhir."
+                },
+                // 33. Nama Surah Kelahiran Nabi
+                {
+                    id: 33,
+                    q: `Kisah pasukan bergajah yang dihancurkan Allah saat kelahiran Nabi diceritakan dalam Surah ...`,
+                    options: ["Al-Fil", "Al-Quraish", "Al-Kautsar", "Al-Ma'un"],
+                    answer: "Al-Fil",
+                    explain: "Al-Fil artinya Gajah."
+                },
+                // 34. Misi Dakwah Umat
+                {
+                    id: 34,
+                    q: `Sebagai umat Nabi Muhammad, kita bertugas melanjutkan dakwah dengan cara ...`,
+                    options: ["Memaksa orang lain masuk Islam", "Memberikan contoh akhlak yang baik (Uswatun Hasanah)", "Berperang terus menerus", "Mengurung diri di masjid"],
+                    answer: "Memberikan contoh akhlak yang baik (Uswatun Hasanah)",
+                    explain: "Dakwah terbaik adalah dengan keteladanan akhlak mulia."
+                },
+                // 35. Keteladanan Nabi
+                {
+                    id: 35,
+                    q: `Gelar "Al-Amin" yang diberikan penduduk Mekkah kepada Nabi Muhammad Saw. berarti ...`,
+                    options: ["Yang Cerdas", "Yang Terpercaya/Jujur", "Yang Kaya", "Yang Kuat"],
+                    answer: "Yang Terpercaya/Jujur",
+                    explain: "Nabi dikenal sangat jujur dan amanah sejak muda."
+                }
+            ];
+        };
+
+        // --- APP KOMPONEN UTAMA ---
+        const App = () => {
+            const [step, setStep] = useState('login'); 
+            const [userData, setUserData] = useState({ name: '', package: '' });
+            const [questions, setQuestions] = useState([]);
+            const [answers, setAnswers] = useState({});
+            const [currentPage, setCurrentPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 Menit
+
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, [currentPage, step]);
+            
+            const startQuiz = (pkg) => {
+                setUserData(prev => ({ ...prev, package: pkg }));
+                const generated = generateQuestions(pkg);
+                // Untuk Paket B, kita acak sedikit urutan opsi atau ubah sedikit pertanyaan jika perlu variasi
+                // Di sini saya gunakan set soal yang sama namun logikanya bisa dikembangkan.
+                // Agar 'beda', kita bisa mengacak urutan soal (shuffle) untuk Paket B.
+                if (pkg === 'B') {
+                    // Simple shuffle for variety
+                    const shuffled = [...generated].sort(() => Math.random() - 0.5);
+                    // Re-assign ID to keep track (optional, but better keep original ID for keys)
+                    setQuestions(shuffled);
+                } else {
+                    setQuestions(generated);
+                }
+                
+                setStep('quiz');
+                setCurrentPage(0);
+                setAnswers({});
+                setTimeLeft(60 * 60);
+            };
+
+            // Timer Logic
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    finishQuiz();
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const formatTime = (seconds) => {
+                const m = Math.floor(seconds / 60);
+                const s = seconds % 60;
+                return `${m}:${s < 10 ? '0' : ''}${s}`;
+            };
+
+            const handleAnswer = (qId, val) => {
+                setAnswers(prev => ({ ...prev, [qId]: val }));
+            };
+
+            const finishQuiz = () => {
+                setStep('result');
+            };
+
+            // Pagination Logic (10, 10, 10, 5)
+            const questionsPerPage = 10;
+            const displayedQuestions = useMemo(() => {
+                const start = currentPage * questionsPerPage;
+                return questions.slice(start, start + questionsPerPage);
+            }, [questions, currentPage]);
+
+            const totalPages = Math.ceil(questions.length / questionsPerPage);
+
+            const calculateScore = () => {
+                let correct = 0;
+                questions.forEach(q => {
+                    if (answers[q.id] === q.answer) correct++;
+                });
+                return Math.round((correct / questions.length) * 100);
+            };
+
+            return (
+                <div className="min-h-screen pb-10">
+                    {/* Navbar */}
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-700 text-white p-4 shadow-lg sticky top-0 z-50">
+                        <div className="container mx-auto flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <Icons.BookOpen />
+                                <h1 className="text-xl font-bold font-sans">Bimbel Musafir One</h1>
+                            </div>
+                            {step === 'quiz' && (
+                                <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full border border-green-300">
+                                    <Icons.Timer />
+                                    <span className="font-mono font-bold">{formatTime(timeLeft)}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="container mx-auto px-4 mt-8 max-w-3xl">
+                        
+                        {/* LOGIN */}
+                        {step === 'login' && (
+                            <div className="glass-panel p-8 rounded-2xl max-w-md mx-auto text-center animate-fade-in">
+                                <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-green-700 border-2 border-green-200">
+                                    <Icons.User />
+                                </div>
+                                <h2 className="text-2xl font-bold text-green-900 mb-2 font-sans">Ahlan Wa Sahlan!</h2>
+                                <p className="text-gray-600 mb-6">Ujian BPI (Bina Pribadi Islami) Kelas 4</p>
+                                <div className="text-left mb-1 text-sm font-bold text-gray-500 pl-1">Nama Lengkap:</div>
+                                <input 
+                                    type="text" 
+                                    placeholder="Tulis Namamu di sini..." 
+                                    className="w-full p-3 border-2 border-green-200 rounded-xl focus:border-green-500 focus:outline-none mb-6 text-lg bg-white/80"
+                                    value={userData.name}
+                                    onChange={(e) => setUserData({...userData, name: e.target.value})}
+                                />
+                                <button 
+                                    disabled={!userData.name}
+                                    onClick={() => setStep('selection')}
+                                    className="w-full btn-primary py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-green-200"
+                                >
+                                    Masuk <Icons.ChevronRight size={20}/>
+                                </button>
+                            </div>
+                        )}
+
+                        {/* SELECTION */}
+                        {step === 'selection' && (
+                            <div className="glass-panel p-8 rounded-2xl animate-fade-in">
+                                <h2 className="text-2xl font-bold text-green-900 mb-6 text-center font-sans">Halo, {userData.name}! 👋 <br/>Pilih Paket Soal</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <button onClick={() => startQuiz('A')} className="p-6 border-2 border-green-100 rounded-xl hover:border-green-500 hover:bg-green-50 transition group text-left relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 p-4 opacity-10"><Icons.Moon /></div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded font-bold">PAKET A</span>
+                                            <Icons.ChevronRight size={20} className="text-gray-400 group-hover:text-green-600"/>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800">Latihan A</h3>
+                                        <p className="text-sm text-gray-500 mt-1">35 Soal • Materi BPI</p>
+                                    </button>
+                                    <button onClick={() => startQuiz('B')} className="p-6 border-2 border-yellow-100 rounded-xl hover:border-yellow-500 hover:bg-yellow-50 transition group text-left relative overflow-hidden">
+                                         <div className="absolute top-0 right-0 p-4 opacity-10 text-yellow-600"><Icons.Moon /></div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="bg-yellow-500 text-white text-xs px-2 py-1 rounded font-bold">PAKET B</span>
+                                            <Icons.ChevronRight size={20} className="text-gray-400 group-hover:text-yellow-600"/>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-800">Latihan B</h3>
+                                        <p className="text-sm text-gray-500 mt-1">35 Soal • Materi BPI</p>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* QUIZ */}
+                        {step === 'quiz' && (
+                            <div className="animate-fade-in">
+                                <div className="mb-4 flex justify-between items-end">
+                                    <span className="text-green-800 font-bold bg-green-100 px-3 py-1 rounded-lg">Halaman {currentPage + 1} / {totalPages}</span>
+                                    <span className="text-sm text-gray-500 font-semibold">{userData.name} - Paket {userData.package}</span>
+                                </div>
+                                
+                                <div className="space-y-6">
+                                    {displayedQuestions.map((q, idx) => (
+                                        <div key={q.id} className="glass-panel p-6 rounded-xl relative hover:shadow-md transition duration-300">
+                                            <span className="absolute top-4 left-4 bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
+                                                {(currentPage * questionsPerPage) + idx + 1}
+                                            </span>
+                                            <div className="ml-10">
+                                                <p className="text-gray-800 text-lg font-medium mb-4 leading-relaxed">{q.q}</p>
+                                                
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {q.options.map((opt, i) => (
+                                                        <label key={i} className="cursor-pointer relative group">
+                                                            <input 
+                                                                type="radio" 
+                                                                name={`q-${q.id}`} 
+                                                                value={opt}
+                                                                checked={answers[q.id] === opt}
+                                                                onChange={() => handleAnswer(q.id, opt)}
+                                                                className="option-radio sr-only"
+                                                            />
+                                                            <div className="p-4 border-2 border-green-50 rounded-lg hover:border-green-300 transition flex items-center gap-3 bg-white/60">
+                                                                <div className={`w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center shrink-0 ${answers[q.id] === opt ? 'border-green-600' : ''}`}>
+                                                                    {answers[q.id] === opt && <div className="w-2.5 h-2.5 bg-green-600 rounded-full"></div>}
+                                                                </div>
+                                                                <span className="text-gray-700 font-medium">{opt}</span>
+                                                            </div>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="flex justify-between mt-8 mb-12">
+                                    <button 
+                                        onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+                                        disabled={currentPage === 0}
+                                        className="px-6 py-2 rounded-lg bg-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-300 font-bold transition"
+                                    >
+                                        Kembali
+                                    </button>
+                                    
+                                    {currentPage < totalPages - 1 ? (
+                                        <button 
+                                            onClick={() => setCurrentPage(prev => prev + 1)}
+                                            className="px-6 py-2 rounded-lg btn-primary font-bold flex items-center gap-2 shadow-lg shadow-green-200"
+                                        >
+                                            Selanjutnya <Icons.ChevronRight size={18} />
+                                        </button>
+                                    ) : (
+                                        <button 
+                                            onClick={finishQuiz}
+                                            className="px-8 py-2 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 font-bold flex items-center gap-2 shadow-lg shadow-yellow-200"
+                                        >
+                                            Selesai & Lihat Nilai <Icons.CheckCircle size={18} />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* RESULT */}
+                        {step === 'result' && (
+                            <div className="animate-fade-in max-w-2xl mx-auto pb-20">
+                                <div className="glass-panel p-8 rounded-2xl text-center mb-8 border-t-4 border-green-500 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 w-full h-full bg-green-50 opacity-30 z-0"></div>
+                                    <div className="relative z-10">
+                                        <div className="flex justify-center mb-4">
+                                            <Icons.Award />
+                                        </div>
+                                        <h2 className="text-3xl font-bold text-gray-800 mb-2 font-sans">Hasil Ujian</h2>
+                                        <p className="text-gray-500 mb-6">Paket {userData.package} - {userData.name}</p>
+                                        
+                                        <div className="text-7xl font-black text-green-600 mb-2">{calculateScore()}</div>
+                                        <div className="text-sm text-gray-400 font-bold uppercase tracking-wider">Nilai Akhir</div>
+                                        
+                                        <div className="mt-8 flex justify-center gap-4 text-sm">
+                                            <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold border border-green-200">
+                                                Benar: {questions.filter(q => answers[q.id] === q.answer).length}
+                                            </div>
+                                            <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold border border-red-200">
+                                                Salah: {questions.length - questions.filter(q => answers[q.id] === q.answer).length}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mb-6 flex items-center gap-2">
+                                    <h3 className="text-xl font-bold text-gray-800 font-sans">Pembahasan Jawaban Salah</h3>
+                                    <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-bold">Evaluasi</span>
+                                </div>
+
+                                {questions.filter(q => answers[q.id] !== q.answer).length === 0 ? (
+                                    <div className="text-center p-8 bg-white rounded-xl border-2 border-dashed border-green-300">
+                                        <p className="text-green-600 font-bold text-lg">Masya Allah! Nilaimu Sempurna! 🎉</p>
+                                        <p className="text-green-500 text-sm">Pertahankan prestasimu ya.</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {questions.map((q, idx) => {
+                                            if (answers[q.id] === q.answer) return null;
+                                            return (
+                                                <div key={q.id} className="bg-white p-6 rounded-xl border border-red-100 shadow-sm">
+                                                    <div className="flex gap-3 mb-3">
+                                                        <span className="bg-red-100 text-red-600 h-6 w-6 rounded flex items-center justify-center text-xs font-bold shrink-0">{idx + 1}</span>
+                                                        <p className="font-medium text-gray-800">{q.q}</p>
+                                                    </div>
+                                                    
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mt-4">
+                                                        <div className="bg-red-50 p-3 rounded-lg border border-red-100">
+                                                            <p className="text-xs text-red-500 font-bold mb-1">JAWABANMU:</p>
+                                                            <div className="flex items-center gap-2 text-red-700 font-semibold">
+                                                                <Icons.XCircle size={16}/> {answers[q.id] || "Tidak dijawab"}
+                                                            </div>
+                                                        </div>
+                                                        <div className="bg-green-50 p-3 rounded-lg border border-green-100">
+                                                            <p className="text-xs text-green-500 font-bold mb-1">KUNCI JAWABAN:</p>
+                                                            <div className="flex items-center gap-2 text-green-700 font-semibold">
+                                                                <Icons.CheckCircle size={16}/> {q.answer}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="mt-4 p-4 bg-blue-50 rounded-lg text-sm text-blue-800 border-l-4 border-blue-400">
+                                                        <span className="font-bold mr-1">💡 Penjelasan:</span> {q.explain}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+
+                                <div className="mt-10 text-center">
+                                    <button 
+                                        onClick={() => {
+                                            setStep('login');
+                                            setUserData({name: '', package: ''});
+                                        }}
+                                        className="bg-gray-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-700 flex items-center justify-center gap-2 mx-auto transition shadow-lg"
+                                    >
+                                        <Icons.RefreshCcw /> Kerjakan Ulang
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        
+                        <footer className="mt-12 text-center text-green-700/50 text-sm pb-8 font-sans">
+                            &copy; 2025 Bimbel Musafir One. <br/>Dibuat dengan ❤️ untuk generasi Rabbani.
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
