@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latihan Soal Matematika Kelas 4 - Bimbel Musafir One</title>
     
-    <!-- React & ReactDOM (Versi Stabil) -->
+    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Babel (Untuk menerjemahkan kode React) -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Tailwind CSS (Desain) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font -->
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -37,10 +37,9 @@
             border-color: #0284c7;
             color: #0c4a6e;
         }
-        /* Loading Animation */
         .loader {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            border-top: 4px solid #0284c7;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -57,21 +56,21 @@
     <div id="root">
         <div style="text-align: center; padding-top: 50px;">
             <div class="loader"></div>
-            <p>Memuat Soal...</p>
+            <p>Memuat Soal Matematika...</p>
         </div>
     </div>
 
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
-        // --- IKON SVG (Internal agar tidak error) ---
+        // --- IKON SVG INTERNAL ---
         const Icons = {
             Timer: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
             BookOpen: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
             CheckCircle: ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
             XCircle: ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
             ChevronRight: ({size=20}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
-            Award: () => <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+            Award: () => <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="orange" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
             User: () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
             RefreshCcw: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
         };
@@ -79,303 +78,311 @@
         // --- DATABASE SOAL ---
         const generateQuestions = (packageType) => {
             const isA = packageType === 'A';
-            const n = (a, b) => isA ? a : b; 
+            
+            // Helper n(a, b) tetap digunakan untuk variasi kecil, tapi struktur soal akan dibedakan dengan ternary operator yang lebih besar
+            const n = (a, b) => isA ? a : b;
 
             return [
                 {
                     id: 1,
-                    q: `Bilangan kelipatan ${n(6, 8)} yang kurang dari ${n(25, 30)} adalah ...`,
-                    options: isA ? ["6, 12, 18, 24", "6, 12, 18", "6, 12, 20", "6, 12, 16"] : ["8, 16, 24", "8, 16, 32", "8, 12, 24", "8, 16, 28"],
-                    answer: isA ? "6, 12, 18, 24" : "8, 16, 24",
-                    explain: `Kelipatan ${n(6,8)} dikalikan 1, 2, 3, dst selama hasilnya di bawah batas.`
+                    q: isA ? "Bilangan kelipatan 6 yang kurang dari 25 adalah ..." : "Bilangan kelipatan 7 yang terletak di antara 10 dan 30 adalah ...",
+                    options: isA ? ["6, 12, 18, 24", "6, 12, 18", "6, 12, 20", "6, 12, 16"] : ["14, 21, 28", "14, 21", "7, 14, 21", "14, 24, 28"],
+                    answer: isA ? "6, 12, 18, 24" : "14, 21, 28",
+                    explain: isA ? "Kelipatan 6: 6, 12, 18, 24 (semua < 25)." : "Kelipatan 7: 7 (tidak masuk), 14, 21, 28, 35 (tidak masuk)."
                 },
                 {
                     id: 2,
-                    q: `Perhatikan deret bilangan berikut: ${n("4, 8, ..., 16, 20", "7, 14, ..., 28, 35")}. Angka yang tepat untuk mengisi titik-titik adalah ...`,
-                    options: isA ? ["10", "12", "14", "15"] : ["20", "21", "22", "24"],
-                    answer: isA ? "12" : "21",
-                    explain: `Pola bilangan tersebut adalah penjumlahan ${n(4,7)} (kelipatan).`
+                    q: isA ? "Perhatikan deret: 4, 8, ..., 16, 20. Angka yang tepat adalah ..." : "Lengkapi deret bilangan loncat 5 berikut: 50, 55, ..., 65, 70.",
+                    options: isA ? ["10", "12", "14", "15"] : ["60", "58", "56", "59"],
+                    answer: isA ? "12" : "60",
+                    explain: isA ? "Pola tambah 4." : "Pola tambah 5: 55 + 5 = 60."
                 },
                 {
                     id: 3,
-                    q: `Tiga kelipatan pertama dari ${n(9, 7)} adalah ...`,
-                    options: isA ? ["9, 18, 27", "9, 19, 29", "9, 18, 28", "1, 9, 18"] : ["7, 14, 21", "7, 14, 28", "7, 11, 21", "1, 7, 14"],
-                    answer: isA ? "9, 18, 27" : "7, 14, 21",
-                    explain: "Cukup kalikan angka tersebut dengan 1, 2, dan 3."
+                    q: isA ? "Tiga kelipatan pertama dari 9 adalah ..." : "Bilangan berikut yang BUKAN kelipatan 4 adalah ...",
+                    options: isA ? ["9, 18, 27", "9, 19, 29", "9, 18, 28", "1, 9, 18"] : ["18", "12", "16", "24"],
+                    answer: isA ? "9, 18, 27" : "18",
+                    explain: isA ? "9x1, 9x2, 9x3." : "18 tidak bisa dibagi habis oleh 4."
                 },
                 {
                     id: 4,
-                    q: `Faktor dari bilangan ${n(12, 15)} adalah ...`,
-                    options: isA ? ["1, 2, 3, 4, 6, 12", "1, 2, 3, 6, 12", "2, 3, 4, 6", "1, 6, 12"] : ["1, 3, 5, 15", "1, 3, 5", "3, 5, 15", "1, 5, 15"],
-                    answer: isA ? "1, 2, 3, 4, 6, 12" : "1, 3, 5, 15",
-                    explain: "Faktor adalah bilangan yang dapat membagi habis bilangan tersebut."
+                    q: isA ? "Faktor dari bilangan 12 adalah ..." : "Bilangan 18 dapat dibagi habis oleh bilangan-bilangan berikut, KECUALI ...",
+                    options: isA ? ["1, 2, 3, 4, 6, 12", "1, 2, 3, 6, 12", "2, 3, 4, 6", "1, 6, 12"] : ["5", "2", "3", "9"],
+                    answer: isA ? "1, 2, 3, 4, 6, 12" : "5",
+                    explain: isA ? "Faktor 12 adalah pembagi habis 12." : "18 tidak bisa dibagi 5."
                 },
                 {
                     id: 5,
-                    q: `Faktor persekutuan dari ${n("8 dan 12", "10 dan 20")} adalah ...`,
-                    options: isA ? ["1, 2, 4", "2, 4", "1, 2, 3", "4, 8"] : ["1, 2, 5, 10", "1, 2, 5", "2, 5, 10", "1, 10"],
+                    q: isA ? "Faktor persekutuan dari 8 dan 12 adalah ..." : "Faktor yang sama dimiliki oleh bilangan 10 dan 20 adalah ...",
+                    options: isA ? ["1, 2, 4", "2, 4", "1, 2, 3", "4, 8"] : ["1, 2, 5, 10", "2, 5, 10", "1, 5, 10", "5, 10"],
                     answer: isA ? "1, 2, 4" : "1, 2, 5, 10",
-                    explain: "Carilah angka yang sama dari faktor kedua bilangan tersebut."
+                    explain: "Cari angka yang menjadi faktor kedua bilangan tersebut."
                 },
                 {
                     id: 6,
-                    q: `Ani memiliki ${n(10, 6)} permen dan ${n(15, 9)} cokelat. Ia ingin membaginya ke dalam kantong dengan jumlah sama. Faktor persekutuan terbesar yang mungkin untuk jumlah kantong adalah ...`,
-                    options: isA ? ["5", "3", "10", "15"] : ["3", "6", "9", "1"],
-                    answer: isA ? "5" : "3",
-                    explain: "Ini adalah konsep FPB sederhana (Faktor Persekutuan Terbesar)."
+                    q: isA ? "Ani membagi 10 permen dan 15 cokelat ke kantong sama rata. Jumlah kantong terbanyak adalah ..." : "Ibu punya 20 jeruk dan 30 apel. Paling banyak bisa dibuat berapa paket buah?",
+                    options: isA ? ["5", "3", "10", "15"] : ["10", "5", "6", "4"],
+                    answer: isA ? "5" : "10",
+                    explain: isA ? "FPB dari 10 dan 15 adalah 5." : "FPB dari 20 dan 30 adalah 10."
                 },
                 {
                     id: 7,
-                    imgType: "blok_dienes",
-                    q: `Perhatikan gambar ilustrasi kubus satuan (Dienes). Jika terdapat ${n(2, 3)} kubus ribuan, ${n(3, 1)} kubus ratusan, dan ${n(5, 4)} kubus satuan. Bilangan tersebut adalah ...`,
-                    options: isA ? ["2.305", "2.350", "2.035", "2.530"] : ["3.104", "3.140", "3.014", "3.410"],
-                    answer: isA ? "2.305" : "3.104",
-                    explain: "Perhatikan nilai tempat: Ribuan, Ratusan, Puluhan (0), Satuan."
+                    imgType: isA ? "blok_dienes_a" : "blok_dienes_b",
+                    q: isA ? "Perhatikan gambar. Jika terdapat 2 ribuan, 3 ratusan, dan 5 satuan. Bilangan itu adalah ..." : "Lihat gambar Dienes. Jika ada 1 Ribuan dan 4 Puluhan, lambang bilangannya adalah ...",
+                    options: isA ? ["2.305", "2.350", "2.035", "2.530"] : ["1.040", "1.400", "1.004", "1.044"],
+                    answer: isA ? "2.305" : "1.040",
+                    explain: isA ? "2 Ribuan + 3 Ratusan + 0 Puluhan + 5 Satuan." : "1 Ribuan + 0 Ratusan + 4 Puluhan + 0 Satuan."
                 },
                 {
                     id: 8,
-                    q: `Lambang bilangan dari "${n('Dua ribu empat ratus lima puluh', 'Tiga ribu tujuh ratus delapan')}" adalah ...`,
-                    options: isA ? ["2.450", "2.405", "2.540", "2.045"] : ["3.708", "3.780", "3.078", "3.870"],
-                    answer: isA ? "2.450" : "3.708",
-                    explain: "Tulis angka sesuai nilai tempat yang disebutkan."
+                    q: isA ? `Lambang bilangan "Dua ribu empat ratus lima puluh" adalah ...` : `Nama bilangan dari 7.050 adalah ...`,
+                    options: isA ? ["2.450", "2.405", "2.540", "2.045"] : ["Tujuh ribu lima puluh", "Tujuh ribu lima ratus", "Tujuh ratus lima puluh", "Tujuh nol lima nol"],
+                    answer: isA ? "2.450" : "Tujuh ribu lima puluh",
+                    explain: "Perhatikan nilai tempatnya dengan teliti."
                 },
                 {
                     id: 9,
-                    q: `Nilai tempat angka ${n(5, 8)} pada bilangan ${n(3524, 8129)} adalah ...`,
+                    q: isA ? "Nilai tempat angka 5 pada bilangan 3.524 adalah ..." : "Angka 9 pada bilangan 9.210 menempati nilai tempat ...",
                     options: isA ? ["Ratusan", "Puluhan", "Ribuan", "Satuan"] : ["Ribuan", "Ratusan", "Puluhan", "Satuan"],
                     answer: isA ? "Ratusan" : "Ribuan",
-                    explain: isA ? "Pada 3.524, angka 5 berada di posisi ratusan." : "Pada 8.129, angka 8 berada di posisi ribuan."
+                    explain: isA ? "5 ada di posisi ratusan." : "9 ada di posisi ribuan."
                 },
                 {
                     id: 10,
-                    q: `Pak Budi memanen ${n(1.250, 2.100)} kg jagung dan ${n(1.100, 1.400)} kg padi. Berapa total hasil panen Pak Budi?`,
-                    options: isA ? ["2.350 kg", "2.250 kg", "2.450 kg", "3.350 kg"] : ["3.500 kg", "3.400 kg", "3.600 kg", "3.550 kg"],
-                    answer: isA ? "2.350 kg" : "3.500 kg",
-                    explain: "Lakukan penjumlahan bersusun ke bawah."
+                    q: isA ? "Pak Budi panen 1.250 kg jagung dan 1.100 kg padi. Totalnya?" : "Di perpustakaan ada 2.100 buku cerita dan 1.500 buku pelajaran. Jumlah total buku adalah ...",
+                    options: isA ? ["2.350 kg", "2.250 kg", "2.450 kg", "3.350 kg"] : ["3.600", "3.500", "2.600", "3.700"],
+                    answer: isA ? "2.350 kg" : "3.600",
+                    explain: "Lakukan penjumlahan bersusun."
                 },
                 {
                     id: 11,
-                    q: `Selisih antara bilangan ${n(5.678, 8.900)} dan ${n(2.345, 3.400)} adalah ...`,
-                    options: isA ? ["3.333", "3.433", "3.323", "3.343"] : ["5.500", "5.400", "5.600", "4.500"],
+                    q: isA ? "Selisih 5.678 dan 2.345 adalah ..." : "Berapa beda antara 8.500 dan 3.000?",
+                    options: isA ? ["3.333", "3.433", "3.323", "3.343"] : ["5.500", "5.000", "4.500", "5.550"],
                     answer: isA ? "3.333" : "5.500",
-                    explain: "Kurangi bilangan besar dengan bilangan kecil."
+                    explain: "Kurangkan bilangan yang lebih besar dengan yang lebih kecil."
                 },
                 {
                     id: 12,
-                    q: `Nama bilangan untuk ${n(7.009, 6.050)} adalah ...`,
-                    options: isA ? ["Tujuh ribu sembilan", "Tujuh ribu sembilan puluh", "Tujuh ribu sembilan ratus", "Tujuh sembilan nol"] : ["Enam ribu lima puluh", "Enam ribu lima ratus", "Enam nol lima nol", "Enam ratus lima puluh"],
-                    answer: isA ? "Tujuh ribu sembilan" : "Enam ribu lima puluh",
-                    explain: "Baca angka sesuai nilai tempatnya. 0 di ratusan/puluhan tidak dibaca."
+                    q: isA ? "Nama bilangan 7.009 adalah ..." : "Lambang bilangan 'Lima ribu dua belas' adalah ...",
+                    options: isA ? ["Tujuh ribu sembilan", "Tujuh ribu sembilan puluh", "Tujuh ribu sembilan ratus", "Tujuh nol nol sembilan"] : ["5.012", "5.120", "5.210", "5.002"],
+                    answer: isA ? "Tujuh ribu sembilan" : "5.012",
+                    explain: "Perhatikan posisi nol (0)."
                 },
                 {
                     id: 13,
-                    q: `Urutan bilangan berikut dari yang terkecil adalah: ${n("3.500, 3.200, 3.700", "1.100, 1.050, 1.200")}`,
-                    options: isA ? ["3.200, 3.500, 3.700", "3.700, 3.500, 3.200", "3.200, 3.700, 3.500", "3.500, 3.200, 3.700"] : ["1.050, 1.100, 1.200", "1.200, 1.100, 1.050", "1.100, 1.050, 1.200", "1.050, 1.200, 1.100"],
-                    answer: isA ? "3.200, 3.500, 3.700" : "1.050, 1.100, 1.200",
-                    explain: "Bandingkan mulai dari angka ribuan, lalu ratusan, dst."
+                    q: isA ? "Urutan dari terkecil: 3.500, 3.200, 3.700" : "Urutan dari yang terbesar: 1.100, 1.500, 1.300",
+                    options: isA ? ["3.200, 3.500, 3.700", "3.700, 3.500, 3.200", "3.200, 3.700, 3.500", "3.500, 3.200, 3.700"] : ["1.500, 1.300, 1.100", "1.100, 1.300, 1.500", "1.500, 1.100, 1.300", "1.300, 1.500, 1.100"],
+                    answer: isA ? "3.200, 3.500, 3.700" : "1.500, 1.300, 1.100",
+                    explain: isA ? "3.200 paling kecil." : "1.500 paling besar."
                 },
                 {
                     id: 14,
-                    q: `Ibu membeli beras ${n(2.500, 1.500)} gram dan gula ${n(1.500, 2.200)} gram. Berapa gram total belanjaan Ibu?`,
-                    options: isA ? ["4.000", "3.000", "5.000", "3.500"] : ["3.700", "3.500", "3.800", "4.700"],
-                    answer: isA ? "4.000" : "3.700",
-                    explain: "Jumlahkan kedua berat barang tersebut."
+                    q: isA ? "Ibu beli 2.500 gr beras dan 1.500 gr gula. Totalnya?" : "Truk A bawa 3.000 batu bata, Truk B bawa 2.000 batu bata. Total batu bata?",
+                    options: isA ? ["4.000", "3.000", "5.000", "3.500"] : ["5.000", "6.000", "4.000", "1.000"],
+                    answer: isA ? "4.000" : "5.000",
+                    explain: "Penjumlahan sederhana."
                 },
                 {
                     id: 15,
-                    q: `Hasil dari ${n(24, 32)} x ${n(3, 4)} adalah ...`,
-                    options: isA ? ["72", "62", "82", "74"] : ["128", "118", "138", "126"],
-                    answer: isA ? "72" : "128",
-                    explain: "Gunakan perkalian bersusun atau penjumlahan berulang."
+                    q: isA ? "Hasil 24 x 3 = ..." : "Hitunglah 45 x 2 = ...",
+                    options: isA ? ["72", "62", "82", "74"] : ["90", "80", "85", "95"],
+                    answer: isA ? "72" : "90",
+                    explain: isA ? "20x3 + 4x3 = 60+12 = 72" : "40x2 + 5x2 = 80+10 = 90"
                 },
                 {
                     id: 16,
-                    q: `Hasil dari ${n(15, 25)} x ${n(10, 10)} adalah ...`,
-                    options: isA ? ["150", "105", "1500", "510"] : ["250", "205", "2500", "520"],
-                    answer: isA ? "150" : "250",
-                    explain: "Perkalian dengan 10 cukup menambahkan nol di belakang bilangan."
+                    q: isA ? "Hasil 15 x 10 = ..." : "Jika 25 dikalikan 100, hasilnya ...",
+                    options: isA ? ["150", "105", "1500", "510"] : ["2.500", "250", "25.000", "520"],
+                    answer: isA ? "150" : "2.500",
+                    explain: "Perkalian 10 atau 100 tinggal tambah nol."
                 },
                 {
                     id: 17,
-                    q: `Hasil pembagian dari ${n(48, 64)} : ${n(4, 8)} adalah ...`,
-                    options: isA ? ["12", "14", "11", "13"] : ["8", "6", "9", "7"],
-                    answer: isA ? "12" : "8",
-                    explain: "Gunakan pembagian porogapit atau pengurangan berulang."
+                    q: isA ? "48 : 4 = ..." : "Berapa hasil dari 60 dibagi 5?",
+                    options: isA ? ["12", "14", "11", "13"] : ["12", "10", "15", "11"],
+                    answer: "12",
+                    explain: isA ? "40:4=10, 8:4=2. Jadi 12." : "50:5=10, 10:5=2. Jadi 12."
                 },
                 {
                     id: 18,
-                    q: `Bilangan yang tepat untuk melengkapi persamaan ${n("6 x ... = 42", "7 x ... = 56")} adalah ...`,
+                    q: isA ? "6 x ... = 42" : "... x 9 = 72. Angka yang hilang adalah?",
                     options: isA ? ["7", "6", "8", "9"] : ["8", "7", "9", "6"],
                     answer: isA ? "7" : "8",
-                    explain: isA ? "Karena 6 x 7 = 42" : "Karena 7 x 8 = 56"
+                    explain: "Gunakan tabel perkalian."
                 },
                 {
                     id: 19,
-                    imgType: "kotak_perkalian",
-                    q: `Jika satu kotak berisi ${n(12, 14)} pensil, maka jumlah pensil dalam ${n(3, 2)} kotak adalah ...`,
-                    options: isA ? ["36", "24", "48", "30"] : ["28", "24", "32", "26"],
-                    answer: isA ? "36" : "28",
-                    explain: "Kalikan jumlah isi per kotak dengan jumlah kotak."
+                    imgType: isA ? "kotak_perkalian_a" : "kotak_perkalian_b",
+                    q: isA ? "Satu kotak isi 12 pensil. Jika 3 kotak jumlahnya ..." : "Ada 2 kotak kapur. Tiap kotak isi 20 kapur. Total kapur?",
+                    options: isA ? ["36", "24", "48", "30"] : ["40", "30", "50", "22"],
+                    answer: isA ? "36" : "40",
+                    explain: isA ? "12 x 3 = 36" : "20 x 2 = 40"
                 },
                 {
                     id: 20,
-                    q: `Bu Guru memiliki ${n(30, 40)} buku tulis. Buku tersebut akan dibagikan kepada ${n(5, 8)} siswa sama banyak. Setiap siswa mendapat ... buku.`,
-                    options: isA ? ["6", "5", "7", "4"] : ["5", "4", "6", "8"],
-                    answer: isA ? "6" : "5",
-                    explain: "Bagikan total buku dengan jumlah siswa."
+                    q: isA ? "Bu Guru bagi 30 buku ke 5 siswa. Tiap siswa dapat ..." : "Ayah punya 24 permen dibagi ke 3 anaknya. Masing-masing dapat?",
+                    options: isA ? ["6", "5", "7", "4"] : ["8", "6", "7", "9"],
+                    answer: isA ? "6" : "8",
+                    explain: "Pembagian rata."
                 },
                 {
                     id: 21,
-                    q: `Ayah membawa ${n(12, 16)} apel. Apel tersebut dibagi menjadi 2 bagian sama rata untuk kakak dan adik. Berapa apel yang diterima kakak?`,
-                    options: isA ? ["6", "5", "7", "4"] : ["8", "7", "9", "6"],
-                    answer: isA ? "6" : "8",
-                    explain: "Bagi total apel dengan 2."
+                    q: isA ? "12 apel dibagi 2 bagian sama rata. Kakak dapat?" : "Uang Rp 10.000 dibagi dua untuk adik dan kakak. Adik dapat?",
+                    options: isA ? ["6", "5", "7", "4"] : ["Rp 5.000", "Rp 4.000", "Rp 6.000", "Rp 2.000"],
+                    answer: isA ? "6" : "Rp 5.000",
+                    explain: "Konsep setengah atau bagi dua."
                 },
                 {
                     id: 22,
-                    imgType: "persegi",
-                    q: `Perhatikan gambar di atas. Bangun datar tersebut memiliki ... sisi yang sama panjang.`,
-                    options: isA ? ["4", "3", "2", "5"] : ["4", "3", "2", "6"],
-                    answer: "4",
-                    explain: "Persegi memiliki 4 sisi yang sama panjang."
+                    imgType: isA ? "persegi" : "persegi_panjang",
+                    q: isA ? "Bangun datar persegi memiliki ... sisi sama panjang." : "Gambar di atas adalah Persegi Panjang. Sifatnya adalah ...",
+                    options: isA ? ["4", "3", "2", "5"] : ["Sisi yang berhadapan sama panjang", "Semua sisi sama panjang", "Hanya punya 3 sudut", "Tidak punya sudut siku-siku"],
+                    answer: isA ? "4" : "Sisi yang berhadapan sama panjang",
+                    explain: isA ? "Persegi semua sisinya sama." : "Persegi panjang beda dengan persegi, hanya sisi hadap yang sama."
                 },
                 {
                     id: 23,
                     imgType: "segitiga_samasisi",
-                    q: `Segitiga yang memiliki ketiga sisi sama panjang disebut segitiga ...`,
-                    options: isA ? ["Sama sisi", "Sama kaki", "Siku-siku", "Sembarang"] : ["Sama sisi", "Tumpul", "Siku-siku", "Lancip"],
-                    answer: "Sama sisi",
-                    explain: "Ciri segitiga sama sisi adalah ketiga sisinya sama panjang."
+                    q: isA ? "Segitiga ketiga sisi sama panjang disebut ..." : "Jika keliling segitiga sama sisi adalah 30 cm, panjang satu sisinya adalah...",
+                    options: isA ? ["Sama sisi", "Sama kaki", "Siku-siku", "Sembarang"] : ["10 cm", "15 cm", "5 cm", "3 cm"],
+                    answer: isA ? "Sama sisi" : "10 cm",
+                    explain: isA ? "Definisi segitiga sama sisi." : "30 bagi 3 sisi = 10."
                 },
                 {
                     id: 24,
                     imgType: "segitiga_siku",
-                    q: `Gambar di atas adalah segitiga siku-siku. Salah satu sudutnya besarnya adalah ...`,
-                    options: isA ? ["90 derajat", "45 derajat", "60 derajat", "180 derajat"] : ["90 derajat", "30 derajat", "100 derajat", "120 derajat"],
+                    q: isA ? "Besar sudut siku-siku adalah ..." : "Segitiga siku-siku punya satu sudut yang besarnya ...",
+                    options: isA ? ["90 derajat", "45 derajat", "60 derajat", "180 derajat"] : ["90 derajat", "100 derajat", "60 derajat", "45 derajat"],
                     answer: "90 derajat",
-                    explain: "Sudut siku-siku besarnya selalu 90 derajat."
+                    explain: "Sudut tegak lurus (siku-siku) selalu 90 derajat."
                 },
                 {
                     id: 25,
-                    q: `Aku adalah bangun datar. Aku punya 2 pasang sisi sejajar dan 4 sudut siku-siku. Sisi yang berhadapan sama panjang. Aku adalah ...`,
-                    options: isA ? ["Persegi Panjang", "Trapesium", "Jajargenjang", "Layang-layang"] : ["Persegi Panjang", "Belah Ketupat", "Segitiga", "Lingkaran"],
-                    answer: "Persegi Panjang",
-                    explain: "Ciri-ciri tersebut milik persegi panjang."
+                    q: isA ? "Ciri: 4 sisi, sisi hadap sama, 4 sudut siku. Bangun apa?" : "Aku bangun datar 4 sisi, tapi tidak punya sudut siku-siku. Aku mirip ketupat. Aku adalah...",
+                    options: isA ? ["Persegi Panjang", "Trapesium", "Jajargenjang", "Layang-layang"] : ["Belah Ketupat", "Persegi", "Persegi Panjang", "Lingkaran"],
+                    answer: isA ? "Persegi Panjang" : "Belah Ketupat",
+                    explain: isA ? "Definisi Persegi Panjang." : "Belah ketupat mirip persegi miring."
                 },
                 {
                     id: 26,
                     imgType: "segi_lima",
-                    q: `Bangun datar di atas adalah Segi Lima. Jumlah sudut yang dimiliki adalah ...`,
-                    options: isA ? ["5", "4", "6", "3"] : ["5", "6", "8", "10"],
-                    answer: "5",
-                    explain: "Segi lima (pentagon) memiliki 5 sisi dan 5 sudut."
+                    q: isA ? "Segi Lima memiliki jumlah sudut ..." : "Bangun segi lima disebut juga dengan istilah ...",
+                    options: isA ? ["5", "4", "6", "3"] : ["Pentagon", "Hexagon", "Octagon", "Trigon"],
+                    answer: isA ? "5" : "Pentagon",
+                    explain: "Penta artinya lima."
                 },
                 {
                     id: 27,
-                    q: `Dalam Al-Qur'an, Ka'bah sering menjadi pusat arah kiblat. Bentuk dasar bangunan Ka'bah menyerupai bangun ruang kubus yang sisi-sisinya berbentuk ...`,
-                    options: isA ? ["Persegi", "Persegi Panjang", "Segitiga", "Lingkaran"] : ["Persegi", "Trapesium", "Jajargenjang", "Belah ketupat"],
-                    answer: "Persegi",
-                    explain: "Sisi kubus berbentuk persegi (bujur sangkar)."
+                    q: isA ? "Ka'bah menyerupai kubus, sisi-sisinya berbentuk ..." : "Al-Qur'an menyebutkan keindahan langit. Matahari dan bulan berbentuk bulat seperti bangun datar...",
+                    options: isA ? ["Persegi", "Persegi Panjang", "Segitiga", "Lingkaran"] : ["Lingkaran", "Segitiga", "Persegi", "Trapesium"],
+                    answer: isA ? "Persegi" : "Lingkaran",
+                    explain: isA ? "Kubus terdiri dari persegi." : "Benda langit bulat nampak seperti lingkaran 2D."
                 },
                 {
                     id: 28,
-                    imgType: "gabungan_rumah",
-                    q: `Gambar rumah di atas terbentuk dari gabungan dua bangun datar, yaitu ...`,
-                    options: isA ? ["Segitiga dan Persegi", "Lingkaran dan Persegi", "Segitiga dan Lingkaran", "Persegi dan Persegi Panjang"] : ["Segitiga dan Persegi Panjang", "Trapesium dan Lingkaran", "Jajargenjang dan Segitiga", "Persegi dan Belah Ketupat"],
-                    answer: isA ? "Segitiga dan Persegi" : "Segitiga dan Persegi Panjang",
-                    explain: "Atap berbentuk segitiga, dinding berbentuk persegi/persegi panjang."
+                    imgType: isA ? "gabungan_rumah" : "gabungan_rumah", // Use same SVG but different question
+                    q: isA ? "Gambar rumah gabungan dari ..." : "Bagian atap rumah pada gambar berbentuk ...",
+                    options: isA ? ["Segitiga & Persegi", "Lingkaran & Persegi", "Segitiga & Lingkaran", "Persegi & Persegi"] : ["Segitiga", "Persegi", "Lingkaran", "Trapesium"],
+                    answer: isA ? "Segitiga & Persegi" : "Segitiga",
+                    explain: "Lihat bentuk atapnya."
                 },
                 {
                     id: 29,
-                    imgType: "tabel_nilai",
-                    q: `Berdasarkan tabel di atas, berapa banyak siswa yang mendapat nilai ${n(80, 90)}?`,
-                    options: isA ? ["8 Siswa", "5 Siswa", "10 Siswa", "12 Siswa"] : ["4 Siswa", "8 Siswa", "10 Siswa", "6 Siswa"],
-                    answer: isA ? "8 Siswa" : "4 Siswa",
-                    explain: "Lihat kolom frekuensi lurus dengan nilai tersebut."
+                    imgType: isA ? "tabel_nilai_a" : "tabel_nilai_b", // New SVG for B
+                    q: isA ? "Berapa siswa dapat nilai 80?" : "Lihat tabel B. Berapa siswa yang mendapat nilai 90?",
+                    options: isA ? ["8 Siswa", "5 Siswa", "10 Siswa", "12 Siswa"] : ["10 Siswa", "5 Siswa", "8 Siswa", "2 Siswa"],
+                    answer: isA ? "8 Siswa" : "10 Siswa",
+                    explain: isA ? "Tabel A baris 80 = 8." : "Tabel B baris 90 = 10."
                 },
                 {
                     id: 30,
-                    imgType: "tabel_nilai",
-                    q: `Kelompok nilai yang paling banyak diperoleh siswa adalah nilai ...`,
-                    options: isA ? ["70", "80", "90", "100"] : ["70", "80", "90", "60"],
-                    answer: "70",
-                    explain: "Cari angka terbesar pada kolom 'Banyak Siswa' (Frekuensi)."
+                    imgType: isA ? "tabel_nilai_a" : "tabel_nilai_b",
+                    q: isA ? "Nilai yang paling banyak diperoleh siswa?" : "Nilai yang paling sedikit diperoleh siswa di tabel B?",
+                    options: isA ? ["70", "80", "90", "100"] : ["100", "70", "80", "90"],
+                    answer: isA ? "70" : "100",
+                    explain: isA ? "70 frekuensinya tertinggi (12)." : "100 frekuensinya terendah (2)."
                 },
                 {
                     id: 31,
-                    imgType: "diagram_panen",
-                    q: `Berdasarkan diagram batang di atas, hasil panen paling banyak terjadi pada tahun ...`,
-                    options: isA ? ["2023", "2022", "2021", "2020"] : ["2023", "2022", "2020", "2021"],
-                    answer: "2023",
-                    explain: "Lihat batang yang paling tinggi."
+                    imgType: isA ? "diagram_panen_a" : "diagram_panen_b", // New SVG for B
+                    q: isA ? "Hasil panen paling banyak tahun ..." : "Perhatikan diagram B. Panen tahun 2021 sebanyak...",
+                    options: isA ? ["2023", "2022", "2021", "2020"] : ["50 ton", "20 ton", "30 ton", "60 ton"],
+                    answer: isA ? "2023" : "50 ton",
+                    explain: isA ? "Batang 2023 tertinggi (50)." : "Lihat batang tahun 2021 di diagram B."
                 },
                 {
                     id: 32,
-                    imgType: "diagram_panen",
-                    q: `Pada tahun 2021, hasil panen mengalami ... dibandingkan tahun 2020.`,
-                    options: isA ? ["Penurunan", "Kenaikan", "Tetap", "Tidak ada data"] : ["Penurunan", "Kenaikan", "Stabil", "Hilang"],
-                    answer: "Penurunan",
-                    explain: "Lihat tinggi batang tahun 2021 lebih rendah dari 2020."
+                    imgType: isA ? "diagram_panen_a" : "diagram_panen_b",
+                    q: isA ? "Tahun 2021 panen mengalami ... dibanding 2020." : "Dari tahun 2022 ke 2023 di diagram B, panen mengalami...",
+                    options: isA ? ["Penurunan", "Kenaikan", "Tetap", "Hilang"] : ["Kenaikan", "Penurunan", "Tetap", "Rugi"],
+                    answer: isA ? "Penurunan" : "Kenaikan",
+                    explain: isA ? "2020(40) ke 2021(30) turun." : "2022(30) ke 2023(60) naik."
                 },
                 {
                     id: 33,
-                    imgType: "diagram_panen",
-                    q: `Data yang sesuai dengan diagram batang tersebut adalah ...`,
-                    options: isA ? ["Tahun 2023 = 50 ton", "Tahun 2023 = 20 ton", "Tahun 2020 = 10 ton", "Tahun 2022 = 100 ton"] : ["Tahun 2023 = 50 ton", "Tahun 2021 = 50 ton", "Tahun 2020 = 60 ton", "Tahun 2022 = 10 ton"],
-                    answer: "Tahun 2023 = 50 ton",
-                    explain: "Baca sumbu vertikal (y) untuk tahun 2023."
+                    imgType: isA ? "diagram_panen_a" : "diagram_panen_b",
+                    q: isA ? "Pernyataan yang benar sesuai diagram A?" : "Pernyataan yang benar untuk diagram B?",
+                    options: isA ? 
+                        ["A. Hasil panen 2023 = 50 ton (Benar)", "B. Hasil 2021 = 50 ton (Salah)", "C. Hasil 2020 = 10 ton (Salah)", "D. Hasil 2022 = 100 ton (Salah)"] : 
+                        ["A. Hasil panen 2023 = 60 ton (Benar)", "B. Panen terendah tahun 2021 (Salah)", "C. Selalu turun setiap tahun (Salah)", "D. Panen 2020 paling tinggi (Salah)"],
+                    answer: isA ? "A. Hasil panen 2023 = 50 ton (Benar)" : "A. Hasil panen 2023 = 60 ton (Benar)",
+                    explain: isA ? "Cek data diagram A." : "Di Diagram B, 2023 puncaknya di 60."
                 },
                 {
                     id: 34,
-                    imgType: "diagram_panen",
-                    q: `Kelompok tahun yang memiliki hasil panen di atas 30 ton adalah ...`,
-                    options: isA ? ["2020, 2022, 2023", "2021 saja", "2021 dan 2020", "2023 saja"] : ["2020, 2022, 2023", "Semua tahun", "2021 saja", "Tidak ada"],
-                    answer: "2020, 2022, 2023",
-                    explain: "Lihat batang yang tingginya melewati angka 30."
+                    imgType: isA ? "diagram_panen_a" : "diagram_panen_b",
+                    q: isA ? "Kelompok tahun dengan panen > 30 ton?" : "Total hasil panen tahun 2020 dan 2021 di diagram B adalah...",
+                    options: isA ? 
+                        ["A. 2020, 2022, 2023", "B. 2021 saja", "C. 2021 dan 2020", "D. 2023 saja"] : 
+                        ["A. 70 ton (20+50)", "B. 60 ton", "C. 80 ton", "D. 50 ton"],
+                    answer: isA ? "A. 2020, 2022, 2023" : "A. 70 ton (20+50)",
+                    explain: isA ? "2021 cuma 30 (tidak lebih)." : "2020(20) + 2021(50) = 70."
                 },
                 {
                     id: 35,
-                    imgType: "diagram_panen",
-                    q: `Selisih hasil panen tahun 2023 dan 2021 adalah ...`,
-                    options: isA ? ["20 ton", "30 ton", "10 ton", "40 ton"] : ["20 ton", "25 ton", "15 ton", "50 ton"],
-                    answer: "20 ton",
-                    explain: "50 ton (2023) - 30 ton (2021) = 20 ton."
+                    imgType: isA ? "diagram_panen_a" : "diagram_panen_b",
+                    q: isA ? "Selisih panen 2023 dan 2021?" : "Berapa selisih panen tertinggi dan terendah di diagram B?",
+                    options: isA ? 
+                        ["A. 20 ton", "B. 30 ton", "C. 10 ton", "D. 40 ton"] : 
+                        ["A. 40 ton (60-20)", "B. 30 ton", "C. 50 ton", "D. 20 ton"],
+                    answer: isA ? "A. 20 ton" : "A. 40 ton (60-20)",
+                    explain: isA ? "50 - 30 = 20." : "Tertinggi 60, terendah 20. Beda 40."
                 },
                 {
                     id: 36,
-                    q: `Kelipatan persekutuan dari 3 dan 4 adalah ...`,
-                    options: isA ? ["12, 24, 36", "12, 18, 24", "6, 8, 12", "12, 16, 20"] : ["12, 24, 48", "12, 16, 24", "12, 24, 30", "8, 12, 16"],
-                    answer: isA ? "12, 24, 36" : "12, 24, 48",
-                    explain: "Cari angka yang bisa dibagi 3 DAN 4."
+                    q: isA ? "Kelipatan persekutuan 3 dan 4?" : "Kelipatan persekutuan dari 2 dan 5 adalah...",
+                    options: isA ? ["12, 24, 36", "12, 18, 24", "6, 8, 12", "12, 16, 20"] : ["10, 20, 30", "5, 10, 15", "2, 4, 6", "10, 15, 25"],
+                    answer: isA ? "12, 24, 36" : "10, 20, 30",
+                    explain: isA ? "KPK 3 & 4 = 12." : "KPK 2 & 5 = 10."
                 },
                 {
                     id: 37,
-                    q: `Urutan bilangan cacah loncat ${n(5, 10)} dari 50 adalah ...`,
-                    options: isA ? ["50, 55, 60, 65", "50, 60, 70, 80", "50, 51, 52, 53", "50, 52, 54, 56"] : ["50, 60, 70, 80", "50, 55, 60, 65", "50, 100, 150", "50, 52, 54"],
-                    answer: isA ? "50, 55, 60, 65" : "50, 60, 70, 80",
-                    explain: `Tambahkan ${n(5, 10)} pada setiap bilangan sebelumnya.`
+                    q: isA ? "Loncat 5 dari 50: ..." : "Loncat 10 dari 100: ...",
+                    options: isA ? ["50, 55, 60, 65", "50, 60, 70, 80", "50, 51, 52, 53", "50, 52, 54, 56"] : ["100, 110, 120, 130", "100, 105, 110, 115", "100, 200, 300", "100, 101, 102"],
+                    answer: isA ? "50, 55, 60, 65" : "100, 110, 120, 130",
+                    explain: "Tambahkan sesuai pola."
                 },
                 {
                     id: 38,
-                    q: `Hasil dari 120 x 4 adalah ...`,
-                    options: isA ? ["480", "440", "280", "580"] : ["480", "408", "840", "400"],
-                    answer: "480",
-                    explain: "12 x 4 = 48, tambahkan 0 di belakangnya."
+                    q: isA ? "120 x 4 = ..." : "200 x 3 = ...",
+                    options: isA ? ["480", "440", "280", "580"] : ["600", "500", "700", "800"],
+                    answer: isA ? "480" : "600",
+                    explain: "Perkalian ratusan."
                 },
                 {
                     id: 39,
                     imgType: "trapesium_siku",
-                    q: `Bangun datar trapesium siku-siku di atas jika dipotong (dekomposisi) bisa menjadi dua bangun datar yaitu ...`,
-                    options: isA ? ["Persegi panjang dan Segitiga", "Persegi dan Persegi", "Segitiga dan Segitiga", "Lingkaran dan Persegi"] : ["Persegi panjang dan Segitiga", "Persegi dan Lingkaran", "Dua Segitiga", "Dua Persegi"],
-                    answer: "Persegi panjang dan Segitiga",
-                    explain: "Jika ditarik garis lurus dari sudut atas, akan terbentuk persegi panjang dan segitiga."
+                    q: isA ? "Trapesium siku-siku dipotong jadi?" : "Jika trapesium dipotong tegak lurus, bagian kotak disebut...",
+                    options: isA ? ["Persegi panjang & Segitiga", "Persegi & Persegi", "Segitiga & Segitiga", "Lingkaran & Persegi"] : ["Persegi Panjang", "Segitiga", "Lingkaran", "Jajargenjang"],
+                    answer: isA ? "Persegi panjang & Segitiga" : "Persegi Panjang",
+                    explain: "Lihat garis putus-putus pada gambar."
                 },
                 {
                     id: 40,
-                    q: `Data nilai ulangan: 7, 8, 7, 9, 8, 10. Jika dibuat diagram batang, batang yang paling tinggi adalah nilai ...`,
-                    options: isA ? ["7 dan 8", "9", "10", "7 saja"] : ["7 dan 8", "8 saja", "10", "9"],
-                    answer: "7 dan 8",
-                    explain: "Hitung frekuensinya: Nilai 7 (2 orang), 8 (2 orang). Keduanya paling banyak muncul."
+                    q: isA ? "Data: 7, 8, 7, 9, 8, 10. Batang tertinggi?" : "Data: Merah, Biru, Merah, Kuning, Merah. Warna terbanyak?",
+                    options: isA ? ["7 dan 8", "9", "10", "7 saja"] : ["Merah", "Biru", "Kuning", "Hijau"],
+                    answer: isA ? "7 dan 8" : "Merah",
+                    explain: isA ? "7 & 8 muncul 2 kali." : "Merah muncul 3 kali."
                 }
             ];
         };
@@ -386,126 +393,120 @@
             const boxStyle = "my-4 p-4 bg-white rounded-lg border border-gray-200 flex justify-center items-center shadow-sm overflow-x-auto";
             
             switch (type) {
-                case "blok_dienes":
+                case "blok_dienes_a":
                     return (
                         <div className={boxStyle}>
+                             {/* 2 Ribuan, 3 Ratusan, 5 Satuan */}
                             <svg width="200" height="80" viewBox="0 0 200 80">
-                                <rect x="10" y="20" width="40" height="40" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
-                                <text x="20" y="75" fontSize="10" fill="#78350f">Ribuan</text>
-                                <rect x="60" y="30" width="30" height="30" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
-                                <text x="65" y="75" fontSize="8" fill="#78350f">Ratusan</text>
-                                <rect x="100" y="40" width="10" height="20" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
-                                <rect x="120" y="50" width="10" height="10" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
+                                <rect x="10" y="20" width="40" height="40" fill="#fbbf24" stroke="#d97706" strokeWidth="2" /><text x="20" y="75" fontSize="10">2 Ribuan</text>
+                                <rect x="60" y="30" width="30" height="30" fill="#fbbf24" stroke="#d97706" strokeWidth="2" /><text x="65" y="75" fontSize="10">3 Ratusan</text>
+                                <rect x="120" y="50" width="10" height="10" fill="#fbbf24" stroke="#d97706" strokeWidth="2" /><text x="120" y="75" fontSize="10">5 Satuan</text>
                             </svg>
                         </div>
                     );
-                case "kotak_perkalian":
+                case "blok_dienes_b":
                     return (
                         <div className={boxStyle}>
-                            <div className="flex gap-4">
-                                <div className="border-2 border-orange-400 p-2 rounded bg-orange-50 text-center w-16 h-16 flex items-center justify-center font-bold text-orange-800 text-xs">12 Pensil</div>
-                                <div className="border-2 border-orange-400 p-2 rounded bg-orange-50 text-center w-16 h-16 flex items-center justify-center font-bold text-orange-800 text-xs">12 Pensil</div>
-                                <div className="border-2 border-orange-400 p-2 rounded bg-orange-50 text-center w-16 h-16 flex items-center justify-center font-bold text-orange-800 text-xs">12 Pensil</div>
+                            {/* 1 Ribuan, 4 Puluhan */}
+                            <svg width="200" height="80" viewBox="0 0 200 80">
+                                <rect x="10" y="20" width="40" height="40" fill="#38bdf8" stroke="#0284c7" strokeWidth="2" /><text x="15" y="75" fontSize="10">1 Ribuan</text>
+                                <rect x="70" y="40" width="10" height="20" fill="#38bdf8" stroke="#0284c7" strokeWidth="2" /><text x="65" y="75" fontSize="10">4 Puluhan</text>
+                            </svg>
+                        </div>
+                    );
+                case "kotak_perkalian_a":
+                     return (
+                        <div className={boxStyle}>
+                             <div className="flex gap-2 text-xs">
+                                <div className="border p-2 bg-orange-100">12</div><div className="border p-2 bg-orange-100">12</div><div className="border p-2 bg-orange-100">12</div>
+                            </div>
+                        </div>
+                    );
+                case "kotak_perkalian_b":
+                     return (
+                        <div className={boxStyle}>
+                             <div className="flex gap-2 text-xs">
+                                <div className="border p-2 bg-blue-100">20 Kapur</div><div className="border p-2 bg-blue-100">20 Kapur</div>
                             </div>
                         </div>
                     );
                 case "persegi":
                     return (
                         <div className={boxStyle}>
-                             <svg width="100" height="100">
-                                <rect x="10" y="10" width="80" height="80" fill="#bfdbfe" stroke="#2563eb" strokeWidth="3" />
-                                <line x1="10" y1="15" x2="10" y2="25" stroke="black" strokeWidth="2" />
-                            </svg>
+                             <svg width="100" height="100"><rect x="10" y="10" width="80" height="80" fill="#bfdbfe" stroke="#2563eb" strokeWidth="3" /></svg>
+                        </div>
+                    );
+                case "persegi_panjang":
+                     return (
+                        <div className={boxStyle}>
+                             <svg width="120" height="80"><rect x="10" y="20" width="100" height="50" fill="#c4b5fd" stroke="#7c3aed" strokeWidth="3" /></svg>
                         </div>
                     );
                 case "segitiga_samasisi":
                     return (
-                        <div className={boxStyle}>
-                            <svg width="100" height="100" viewBox="0 0 100 100">
-                                <polygon points="50,10 90,90 10,90" fill="#bbf7d0" stroke="#16a34a" strokeWidth="3" />
-                                <line x1="30" y1="50" x2="25" y2="55" stroke="black" />
-                                <line x1="70" y1="50" x2="75" y2="55" stroke="black" />
-                                <line x1="50" y1="90" x2="50" y2="85" stroke="black" />
-                            </svg>
-                        </div>
+                        <div className={boxStyle}><svg width="100" height="100" viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="#bbf7d0" stroke="#16a34a" strokeWidth="3" /></svg></div>
                     );
                 case "segitiga_siku":
                     return (
-                         <div className={boxStyle}>
-                            <svg width="100" height="100" viewBox="0 0 100 100">
-                                <polygon points="20,20 20,80 80,80" fill="#ddd6fe" stroke="#7c3aed" strokeWidth="3" />
-                                <rect x="20" y="70" width="10" height="10" fill="none" stroke="black" />
-                            </svg>
-                        </div>
+                         <div className={boxStyle}><svg width="100" height="100" viewBox="0 0 100 100"><polygon points="20,20 20,80 80,80" fill="#ddd6fe" stroke="#7c3aed" strokeWidth="3" /><rect x="20" y="70" width="10" height="10" fill="none" stroke="black" /></svg></div>
                     );
                 case "segi_lima":
                     return (
-                        <div className={boxStyle}>
-                             <svg width="100" height="100" viewBox="0 0 100 100">
-                                <polygon points="50,10 90,40 75,90 25,90 10,40" fill="#fbcfe8" stroke="#db2777" strokeWidth="3" />
-                            </svg>
-                        </div>
+                        <div className={boxStyle}><svg width="100" height="100" viewBox="0 0 100 100"><polygon points="50,10 90,40 75,90 25,90 10,40" fill="#fbcfe8" stroke="#db2777" strokeWidth="3" /></svg></div>
                     );
                 case "gabungan_rumah":
                     return (
                         <div className={boxStyle}>
-                            <svg width="150" height="150" viewBox="0 0 150 150">
-                                <polygon points="75,20 130,60 20,60" fill="#ef4444" stroke="#991b1b" strokeWidth="2" />
-                                <rect x="35" y="60" width="80" height="70" fill="#3b82f6" stroke="#1e40af" strokeWidth="2" />
-                                <rect x="65" y="90" width="20" height="40" fill="#fcd34d" />
+                            <svg width="100" height="100" viewBox="0 0 100 100">
+                                <polygon points="50,10 90,40 10,40" fill="#ef4444" stroke="#991b1b" strokeWidth="2" />
+                                <rect x="20" y="40" width="60" height="50" fill="#3b82f6" stroke="#1e40af" strokeWidth="2" />
                             </svg>
                         </div>
                     );
-                case "tabel_nilai":
+                case "tabel_nilai_a":
                     return (
                         <div className={`${boxStyle} flex-col`}>
-                            <p className="font-bold mb-2">Tabel Nilai Matematika</p>
-                            <table className="w-full max-w-xs border-collapse border border-gray-400 text-sm">
-                                <thead>
-                                    <tr className="bg-gray-200">
-                                        <th className="border border-gray-400 p-1">Nilai</th>
-                                        <th className="border border-gray-400 p-1">Banyak Siswa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td className="border border-gray-400 p-1 text-center">70</td><td className="border border-gray-400 p-1 text-center">12</td></tr>
-                                    <tr><td className="border border-gray-400 p-1 text-center">80</td><td className="border border-gray-400 p-1 text-center">8</td></tr>
-                                    <tr><td className="border border-gray-400 p-1 text-center">90</td><td className="border border-gray-400 p-1 text-center">5</td></tr>
-                                    <tr><td className="border border-gray-400 p-1 text-center">100</td><td className="border border-gray-400 p-1 text-center">3</td></tr>
-                                </tbody>
-                            </table>
+                            <p className="font-bold mb-2 text-xs">Tabel A</p>
+                            <table className="border text-sm"><thead><tr className="bg-gray-200"><th>Nilai</th><th>Siswa</th></tr></thead><tbody><tr><td>70</td><td>12</td></tr><tr><td>80</td><td>8</td></tr></tbody></table>
                         </div>
                     );
-                 case "diagram_panen":
+                case "tabel_nilai_b":
                     return (
                         <div className={`${boxStyle} flex-col`}>
-                            <p className="font-bold mb-2">Diagram Hasil Panen (Ton)</p>
-                            <div className="flex items-end space-x-4 h-32 border-b-2 border-l-2 border-gray-600 p-2">
-                                <div className="flex flex-col items-center">
-                                    <div className="w-8 bg-green-500 h-20 relative group"><span className="hidden group-hover:block absolute -top-6 text-xs font-bold bg-white p-1 rounded border">40</span></div>
-                                    <span className="text-xs mt-1">2020</span>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div className="w-8 bg-green-500 h-16 relative group"><span className="hidden group-hover:block absolute -top-6 text-xs font-bold bg-white p-1 rounded border">30</span></div>
-                                    <span className="text-xs mt-1">2021</span>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div className="w-8 bg-green-500 h-20 relative group"><span className="hidden group-hover:block absolute -top-6 text-xs font-bold bg-white p-1 rounded border">40</span></div>
-                                    <span className="text-xs mt-1">2022</span>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div className="w-8 bg-green-500 h-24 relative group"><span className="hidden group-hover:block absolute -top-6 text-xs font-bold bg-white p-1 rounded border">50</span></div>
-                                    <span className="text-xs mt-1">2023</span>
-                                </div>
-                            </div>
+                            <p className="font-bold mb-2 text-xs">Tabel B</p>
+                            <table className="border text-sm"><thead><tr className="bg-gray-200"><th>Nilai</th><th>Siswa</th></tr></thead><tbody><tr><td>90</td><td>10</td></tr><tr><td>100</td><td>2</td></tr></tbody></table>
+                        </div>
+                    );
+                 case "diagram_panen_a":
+                    return (
+                        <div className={`${boxStyle} flex-col`}>
+                            <p className="font-bold mb-2 text-xs">Diagram A (Ton)</p>
+                            <svg width="200" height="100" className="bg-white">
+                                <rect x="20" y="40" width="20" height="40" fill="#22c55e" /><text x="30" y="35" fontSize="10" textAnchor="middle">40</text><text x="30" y="90" fontSize="8" textAnchor="middle">2020</text>
+                                <rect x="60" y="50" width="20" height="30" fill="#22c55e" /><text x="70" y="45" fontSize="10" textAnchor="middle">30</text><text x="70" y="90" fontSize="8" textAnchor="middle">2021</text>
+                                <rect x="100" y="40" width="20" height="40" fill="#22c55e" /><text x="110" y="35" fontSize="10" textAnchor="middle">40</text><text x="110" y="90" fontSize="8" textAnchor="middle">2022</text>
+                                <rect x="140" y="30" width="20" height="50" fill="#22c55e" /><text x="150" y="25" fontSize="10" textAnchor="middle">50</text><text x="150" y="90" fontSize="8" textAnchor="middle">2023</text>
+                            </svg>
+                        </div>
+                    );
+                case "diagram_panen_b":
+                    return (
+                        <div className={`${boxStyle} flex-col`}>
+                            <p className="font-bold mb-2 text-xs">Diagram B (Ton)</p>
+                            <svg width="200" height="100" className="bg-white">
+                                <rect x="20" y="60" width="20" height="20" fill="#3b82f6" /><text x="30" y="55" fontSize="10" textAnchor="middle">20</text><text x="30" y="90" fontSize="8" textAnchor="middle">2020</text>
+                                <rect x="60" y="30" width="20" height="50" fill="#3b82f6" /><text x="70" y="25" fontSize="10" textAnchor="middle">50</text><text x="70" y="90" fontSize="8" textAnchor="middle">2021</text>
+                                <rect x="100" y="50" width="20" height="30" fill="#3b82f6" /><text x="110" y="45" fontSize="10" textAnchor="middle">30</text><text x="110" y="90" fontSize="8" textAnchor="middle">2022</text>
+                                <rect x="140" y="20" width="20" height="60" fill="#3b82f6" /><text x="150" y="15" fontSize="10" textAnchor="middle">60</text><text x="150" y="90" fontSize="8" textAnchor="middle">2023</text>
+                            </svg>
                         </div>
                     );
                 case "trapesium_siku":
                      return (
                          <div className={boxStyle}>
-                            <svg width="150" height="100" viewBox="0 0 150 100">
-                                <path d="M20,20 L100,20 L130,80 L20,80 Z" fill="#a78bfa" stroke="#5b21b6" strokeWidth="3" />
-                                <line x1="100" y1="20" x2="100" y2="80" stroke="black" strokeDasharray="4" />
+                            <svg width="150" height="60" viewBox="0 0 150 60">
+                                <path d="M20,10 L100,10 L130,50 L20,50 Z" fill="#a78bfa" stroke="#5b21b6" strokeWidth="2" />
+                                <line x1="100" y1="10" x2="100" y2="50" stroke="black" strokeDasharray="4" />
                             </svg>
                         </div>
                     );
@@ -514,7 +515,6 @@
             }
         };
 
-        // --- APP UTAMA ---
         const App = () => {
             const [step, setStep] = useState('login'); 
             const [userData, setUserData] = useState({ name: '', package: '' });
@@ -523,10 +523,7 @@
             const [currentPage, setCurrentPage] = useState(0);
             const [timeLeft, setTimeLeft] = useState(90 * 60); 
 
-            // Scroll ke atas saat halaman berubah
-            useEffect(() => {
-                window.scrollTo(0, 0);
-            }, [currentPage, step]);
+            useEffect(() => { window.scrollTo(0, 0); }, [currentPage, step]);
             
             const startQuiz = (pkg) => {
                 setUserData(prev => ({ ...prev, package: pkg }));
@@ -542,9 +539,7 @@
                 let timer;
                 if (step === 'quiz' && timeLeft > 0) {
                     timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-                } else if (timeLeft === 0 && step === 'quiz') {
-                    finishQuiz();
-                }
+                } else if (timeLeft === 0 && step === 'quiz') finishQuiz();
                 return () => clearInterval(timer);
             }, [step, timeLeft]);
 
@@ -554,13 +549,8 @@
                 return `${m}:${s < 10 ? '0' : ''}${s}`;
             };
 
-            const handleAnswer = (qId, val) => {
-                setAnswers(prev => ({ ...prev, [qId]: val }));
-            };
-
-            const finishQuiz = () => {
-                setStep('result');
-            };
+            const handleAnswer = (qId, val) => setAnswers(prev => ({ ...prev, [qId]: val }));
+            const finishQuiz = () => setStep('result');
 
             const questionsPerPage = 10;
             const displayedQuestions = useMemo(() => {
@@ -570,9 +560,7 @@
 
             const calculateScore = () => {
                 let correct = 0;
-                questions.forEach(q => {
-                    if (answers[q.id] === q.answer) correct++;
-                });
+                questions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
                 return Math.round((correct / questions.length) * 100);
             };
 
@@ -580,42 +568,19 @@
                 <div className="min-h-screen pb-10">
                     <div className="bg-gradient-to-r from-teal-500 to-cyan-600 text-white p-4 shadow-lg sticky top-0 z-50">
                         <div className="container mx-auto flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                                <Icons.BookOpen />
-                                <h1 className="text-xl font-bold">Bimbel Musafir One</h1>
-                            </div>
-                            {step === 'quiz' && (
-                                <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
-                                    <Icons.Timer />
-                                    <span className="font-mono font-bold">{formatTime(timeLeft)}</span>
-                                </div>
-                            )}
+                            <div className="flex items-center gap-2"><Icons.BookOpen /><h1 className="text-xl font-bold">Bimbel Musafir One</h1></div>
+                            {step === 'quiz' && <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full"><Icons.Timer /><span className="font-mono font-bold">{formatTime(timeLeft)}</span></div>}
                         </div>
                     </div>
 
                     <div className="container mx-auto px-4 mt-8 max-w-3xl">
-                        
                         {step === 'login' && (
                             <div className="glass-panel p-8 rounded-2xl max-w-md mx-auto text-center animate-fade-in">
-                                <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600">
-                                    <Icons.User />
-                                </div>
+                                <div className="bg-teal-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600"><Icons.User /></div>
                                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Selamat Datang!</h2>
                                 <p className="text-gray-600 mb-6">Latihan Soal Matematika Kelas 4</p>
-                                <input 
-                                    type="text" 
-                                    placeholder="Tulis Namamu di sini..." 
-                                    className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none mb-4 text-center text-lg"
-                                    value={userData.name}
-                                    onChange={(e) => setUserData({...userData, name: e.target.value})}
-                                />
-                                <button 
-                                    disabled={!userData.name}
-                                    onClick={() => setStep('selection')}
-                                    className="w-full bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                >
-                                    Masuk <Icons.ChevronRight size={20}/>
-                                </button>
+                                <input type="text" placeholder="Tulis Namamu..." className="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none mb-4 text-center text-lg" value={userData.name} onChange={(e) => setUserData({...userData, name: e.target.value})} />
+                                <button disabled={!userData.name} onClick={() => setStep('selection')} className="w-full bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-xl font-bold transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">Masuk <Icons.ChevronRight size={20}/></button>
                             </div>
                         )}
 
@@ -623,61 +588,27 @@
                             <div className="glass-panel p-8 rounded-2xl animate-fade-in">
                                 <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Halo, {userData.name}! 👋 <br/>Pilih Paket Soal</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <button onClick={() => startQuiz('A')} className="p-6 border-2 border-teal-100 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition group text-left">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="bg-teal-500 text-white text-xs px-2 py-1 rounded">PAKET A</span>
-                                            <Icons.ChevronRight size={20} />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-800">Latihan A</h3>
-                                        <p className="text-sm text-gray-500 mt-1">40 Soal • Tingkat Sedang</p>
-                                    </button>
-                                    <button onClick={() => startQuiz('B')} className="p-6 border-2 border-purple-100 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition group text-left">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded">PAKET B</span>
-                                            <Icons.ChevronRight size={20} />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-800">Latihan B</h3>
-                                        <p className="text-sm text-gray-500 mt-1">40 Soal • Tingkat Sedang</p>
-                                    </button>
+                                    <button onClick={() => startQuiz('A')} className="p-6 border-2 border-teal-100 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition group text-left"><div className="flex justify-between items-center mb-2"><span className="bg-teal-500 text-white text-xs px-2 py-1 rounded">PAKET A</span><Icons.ChevronRight size={20} /></div><h3 className="text-xl font-bold text-gray-800">Latihan A</h3><p className="text-sm text-gray-500 mt-1">40 Soal • Tingkat Sedang</p></button>
+                                    <button onClick={() => startQuiz('B')} className="p-6 border-2 border-purple-100 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition group text-left"><div className="flex justify-between items-center mb-2"><span className="bg-purple-500 text-white text-xs px-2 py-1 rounded">PAKET B</span><Icons.ChevronRight size={20} /></div><h3 className="text-xl font-bold text-gray-800">Latihan B</h3><p className="text-sm text-gray-500 mt-1">40 Soal • Tingkat Sedang</p></button>
                                 </div>
                             </div>
                         )}
 
                         {step === 'quiz' && (
                             <div className="animate-fade-in">
-                                <div className="mb-4 flex justify-between items-end">
-                                    <span className="text-gray-500 font-semibold">Halaman {currentPage + 1} dari {Math.ceil(questions.length/questionsPerPage)}</span>
-                                    <span className="text-sm bg-gray-200 px-3 py-1 rounded-full text-gray-600">{userData.name} - Paket {userData.package}</span>
-                                </div>
-                                
+                                <div className="mb-4 flex justify-between items-end"><span className="text-gray-500 font-semibold">Halaman {currentPage + 1} dari {Math.ceil(questions.length/questionsPerPage)}</span><span className="text-sm bg-gray-200 px-3 py-1 rounded-full text-gray-600">{userData.name} - Paket {userData.package}</span></div>
                                 <div className="space-y-6">
                                     {displayedQuestions.map((q, idx) => (
                                         <div key={q.id} className="glass-panel p-6 rounded-xl relative">
-                                            <span className="absolute top-4 left-4 bg-gray-100 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
-                                                {(currentPage * questionsPerPage) + idx + 1}
-                                            </span>
+                                            <span className="absolute top-4 left-4 bg-gray-100 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">{(currentPage * questionsPerPage) + idx + 1}</span>
                                             <div className="ml-10">
                                                 <p className="text-gray-800 text-lg font-medium mb-4">{q.q}</p>
-                                                
                                                 <VisualAsset type={q.imgType} />
-
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                <div className="grid grid-cols-1 gap-3">
                                                     {q.options.map((opt, i) => (
                                                         <label key={i} className="cursor-pointer relative group">
-                                                            <input 
-                                                                type="radio" 
-                                                                name={`q-${q.id}`} 
-                                                                value={opt}
-                                                                checked={answers[q.id] === opt}
-                                                                onChange={() => handleAnswer(q.id, opt)}
-                                                                className="option-radio sr-only"
-                                                            />
-                                                            <div className="p-3 border-2 border-gray-200 rounded-lg hover:border-teal-300 transition flex items-center gap-2">
-                                                                <div className={`w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center ${answers[q.id] === opt ? 'border-teal-500' : ''}`}>
-                                                                    {answers[q.id] === opt && <div className="w-2 h-2 bg-teal-500 rounded-full"></div>}
-                                                                </div>
-                                                                <span className="text-gray-700">{opt}</span>
-                                                            </div>
+                                                            <input type="radio" name={`q-${q.id}`} value={opt} checked={answers[q.id] === opt} onChange={() => handleAnswer(q.id, opt)} className="option-radio sr-only" />
+                                                            <div className="p-3 border-2 border-gray-200 rounded-lg hover:border-teal-300 transition flex items-center gap-2"><div className={`w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center shrink-0 ${answers[q.id] === opt ? 'border-teal-500' : ''}`}>{answers[q.id] === opt && <div className="w-2 h-2 bg-teal-500 rounded-full"></div>}</div><span className="text-gray-700">{opt}</span></div>
                                                         </label>
                                                     ))}
                                                 </div>
@@ -685,30 +616,12 @@
                                         </div>
                                     ))}
                                 </div>
-
                                 <div className="flex justify-between mt-8 mb-12">
-                                    <button 
-                                        onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
-                                        disabled={currentPage === 0}
-                                        className="px-6 py-2 rounded-lg bg-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-300 font-bold"
-                                    >
-                                        Kembali
-                                    </button>
-                                    
+                                    <button onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))} disabled={currentPage === 0} className="px-6 py-2 rounded-lg bg-gray-200 text-gray-600 disabled:opacity-50 hover:bg-gray-300 font-bold">Kembali</button>
                                     {currentPage < (Math.ceil(questions.length / questionsPerPage) - 1) ? (
-                                        <button 
-                                            onClick={() => setCurrentPage(prev => prev + 1)}
-                                            className="px-6 py-2 rounded-lg bg-teal-500 text-white hover:bg-teal-600 font-bold flex items-center gap-2"
-                                        >
-                                            Selanjutnya <Icons.ChevronRight size={18} />
-                                        </button>
+                                        <button onClick={() => {window.scrollTo(0,0); setCurrentPage(prev => prev + 1);}} className="px-6 py-2 rounded-lg bg-teal-500 text-white hover:bg-teal-600 font-bold flex items-center gap-2">Selanjutnya <Icons.ChevronRight size={18} /></button>
                                     ) : (
-                                        <button 
-                                            onClick={finishQuiz}
-                                            className="px-8 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 font-bold flex items-center gap-2 shadow-lg shadow-red-200"
-                                        >
-                                            Selesai & Lihat Nilai <Icons.CheckCircle size={18} />
-                                        </button>
+                                        <button onClick={finishQuiz} className="px-8 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 font-bold flex items-center gap-2 shadow-lg shadow-red-200">Selesai & Lihat Nilai <Icons.CheckCircle size={18} /></button>
                                     )}
                                 </div>
                             </div>
@@ -717,88 +630,41 @@
                         {step === 'result' && (
                             <div className="animate-fade-in max-w-2xl mx-auto pb-20">
                                 <div className="glass-panel p-8 rounded-2xl text-center mb-8 border-t-4 border-teal-500">
-                                    <div className="flex justify-center mb-4 text-yellow-500">
-                                        <Icons.Award />
-                                    </div>
+                                    <div className="flex justify-center mb-4 text-yellow-500"><Icons.Award /></div>
                                     <h2 className="text-3xl font-bold text-gray-800 mb-2">Hasil Ujian</h2>
                                     <p className="text-gray-500 mb-6">Paket {userData.package} - {userData.name}</p>
-                                    
                                     <div className="text-6xl font-black text-teal-600 mb-2">{calculateScore()}</div>
                                     <div className="text-sm text-gray-400 font-bold uppercase tracking-wider">Nilai Akhir</div>
-                                    
                                     <div className="mt-8 flex justify-center gap-4 text-sm">
-                                        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
-                                            Benar: {questions.filter(q => answers[q.id] === q.answer).length}
-                                        </div>
-                                        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold">
-                                            Salah: {questions.length - questions.filter(q => answers[q.id] === q.answer).length}
-                                        </div>
+                                        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">Benar: {questions.filter(q => answers[q.id] === q.answer).length}</div>
+                                        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold">Salah: {questions.length - questions.filter(q => answers[q.id] === q.answer).length}</div>
                                     </div>
                                 </div>
-
-                                <div className="mb-6 flex items-center gap-2">
-                                    <h3 className="text-xl font-bold text-gray-800">Pembahasan Jawaban Salah</h3>
-                                    <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-bold">Penting</span>
-                                </div>
-
+                                <div className="mb-6 flex items-center gap-2"><h3 className="text-xl font-bold text-gray-800">Pembahasan Jawaban Salah</h3><span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full font-bold">Penting</span></div>
                                 {questions.filter(q => answers[q.id] !== q.answer).length === 0 ? (
-                                    <div className="text-center p-8 bg-white rounded-xl border border-dashed border-green-300">
-                                        <p className="text-green-600 font-bold">Hebat! Semua jawabanmu benar! 🎉</p>
-                                    </div>
+                                    <div className="text-center p-8 bg-white rounded-xl border border-dashed border-green-300"><p className="text-green-600 font-bold">Hebat! Semua jawabanmu benar! 🎉</p></div>
                                 ) : (
                                     <div className="space-y-4">
                                         {questions.map((q, idx) => {
                                             if (answers[q.id] === q.answer) return null;
                                             return (
                                                 <div key={q.id} className="bg-white p-6 rounded-xl border border-red-100 shadow-sm">
-                                                    <div className="flex gap-3 mb-3">
-                                                        <span className="bg-red-100 text-red-600 h-6 w-6 rounded flex items-center justify-center text-xs font-bold shrink-0">{idx + 1}</span>
-                                                        <p className="font-medium text-gray-800">{q.q}</p>
-                                                    </div>
-                                                    
+                                                    <div className="flex gap-3 mb-3"><span className="bg-red-100 text-red-600 h-6 w-6 rounded flex items-center justify-center text-xs font-bold shrink-0">{idx + 1}</span><p className="font-medium text-gray-800">{q.q}</p></div>
                                                     <VisualAsset type={q.imgType} />
-
-                                                    <div className="grid grid-cols-2 gap-4 text-sm mt-4">
-                                                        <div className="bg-red-50 p-3 rounded-lg border border-red-100">
-                                                            <p className="text-xs text-red-500 font-bold mb-1">JAWABANMU:</p>
-                                                            <div className="flex items-center gap-2 text-red-700">
-                                                                <Icons.XCircle size={16}/> {answers[q.id] || "Tidak dijawab"}
-                                                            </div>
-                                                        </div>
-                                                        <div className="bg-green-50 p-3 rounded-lg border border-green-100">
-                                                            <p className="text-xs text-green-500 font-bold mb-1">KUNCI JAWABAN:</p>
-                                                            <div className="flex items-center gap-2 text-green-700">
-                                                                <Icons.CheckCircle size={16}/> {q.answer}
-                                                            </div>
-                                                        </div>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-4">
+                                                        <div className="bg-red-50 p-3 rounded-lg border border-red-100"><p className="text-xs text-red-500 font-bold mb-1">JAWABANMU:</p><div className="flex items-center gap-2 text-red-700"><Icons.XCircle size={16}/> {answers[q.id] || "Tidak dijawab"}</div></div>
+                                                        <div className="bg-green-50 p-3 rounded-lg border border-green-100"><p className="text-xs text-green-500 font-bold mb-1">KUNCI JAWABAN:</p><div className="flex items-center gap-2 text-green-700"><Icons.CheckCircle size={16}/> {q.answer}</div></div>
                                                     </div>
-                                                    
-                                                    <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
-                                                        <span className="font-bold mr-1">💡 Penjelasan:</span> {q.explain}
-                                                    </div>
+                                                    <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800"><span className="font-bold mr-1">💡 Penjelasan:</span> {q.explain}</div>
                                                 </div>
                                             )
                                         })}
                                     </div>
                                 )}
-
-                                <div className="mt-10 text-center">
-                                    <button 
-                                        onClick={() => {
-                                            setStep('login');
-                                            setUserData({name: '', package: ''});
-                                        }}
-                                        className="bg-gray-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-700 flex items-center justify-center gap-2 mx-auto"
-                                    >
-                                        <Icons.RefreshCcw /> Kerjakan Ulang
-                                    </button>
-                                </div>
+                                <div className="mt-10 text-center"><button onClick={() => {setStep('login'); setUserData({name: '', package: ''});}} className="bg-gray-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-700 flex items-center justify-center gap-2 mx-auto"><Icons.RefreshCcw /> Kerjakan Ulang</button></div>
                             </div>
                         )}
-                        
-                        <footer className="mt-12 text-center text-gray-400 text-sm pb-8">
-                            &copy; 2025 Bimbel Musafir One. Dibuat dengan sepenuh hati untuk murid-murid hebat.
-                        </footer>
+                        <footer className="mt-12 text-center text-gray-400 text-sm pb-8">&copy; 2025 Bimbel Musafir One. Dibuat dengan sepenuh hati untuk murid-murid hebat.</footer>
                     </div>
                 </div>
             );
