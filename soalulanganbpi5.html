@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian BPI Kelas 5 - Bimbel Musafir One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0fdf4; /* Hijau muda islami */ }
+        .option-label { transition: all 0.2s; }
+        .option-input:checked + .option-label { background-color: #dcfce7; border-color: #16a34a; color: #14532d; }
+        .hidden-page { display: none; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-green-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-mosque text-2xl text-yellow-300"></i>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Bimbel Musafir One</h1>
+                    <p class="text-xs text-green-200">Ujian Bina Pribadi Islami (BPI) - Kelas 5</p>
+                </div>
+            </div>
+            <div id="timer-display" class="hidden bg-white text-green-800 px-3 py-1 rounded-full font-mono font-bold text-lg shadow-sm">
+                00:00:00
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+
+        <!-- SCREEN 1: LOGIN -->
+        <div id="login-screen" class="bg-white rounded-2xl shadow-xl p-8 max-w-lg mx-auto border-t-8 border-green-500">
+            <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">Assalamualaikum!</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="student-name" placeholder="Tulis namamu di sini..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Pilih Paket Soal</label>
+                    <select id="package-select" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 outline-none bg-white">
+                        <option value="A">Paket A (Latihan Utama)</option>
+                        <option value="B">Paket B (Latihan Pengayaan)</option>
+                    </select>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg text-sm text-green-800">
+                    <p><i class="fa-solid fa-circle-info mr-2"></i><strong>Petunjuk:</strong></p>
+                    <ul class="list-disc ml-5 mt-1 space-y-1">
+                        <li>Mata Pelajaran: <strong>Bina Pribadi Islami</strong></li>
+                        <li>Jumlah soal: 35 butir pilihan ganda.</li>
+                        <li>Waktu pengerjaan: 90 menit.</li>
+                        <li>Awali dengan membaca <em>Basmalah</em>.</li>
+                    </ul>
+                </div>
+                <button onclick="startQuiz()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-md transition transform hover:scale-[1.02]">
+                    Mulai Mengerjakan <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: QUIZ -->
+        <div id="quiz-screen" class="hidden">
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="progress-bar" class="bg-green-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <div id="questions-container" class="space-y-6"></div>
+
+            <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                <button id="prev-btn" onclick="changePage(-1)" class="hidden px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Sebelumnya
+                </button>
+                <span id="page-indicator" class="text-sm font-semibold text-gray-500"></span>
+                <button id="next-btn" onclick="changePage(1)" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-md">
+                    Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" onclick="finishQuiz()" class="hidden px-6 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 font-bold shadow-md animate-pulse">
+                    Selesai & Kumpul <i class="fa-solid fa-check ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: RESULT -->
+        <div id="result-screen" class="hidden max-w-2xl mx-auto text-center">
+            <div class="bg-white rounded-2xl shadow-xl p-8 border-t-8 border-green-500">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-star text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Alhamdulillah!</h2>
+                <p class="text-gray-500 mb-6">Siswa: <span id="result-name" class="font-bold text-green-600"></span> | Paket: <span id="result-package" class="font-bold"></span></p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <p class="text-sm text-gray-500">Nilai Kamu</p>
+                        <p id="final-score" class="text-4xl font-bold text-green-600">0</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <p class="text-sm text-gray-500">Benar / Salah</p>
+                        <p class="text-xl font-bold"><span id="correct-count" class="text-green-600">0</span> / <span id="wrong-count" class="text-red-500">0</span></p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="location.reload()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold text-gray-600">
+                        Coba Lagi
+                    </button>
+                    <button onclick="showDiscussion()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold shadow-md">
+                        Lihat Pembahasan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: DISCUSSION -->
+        <div id="discussion-screen" class="hidden">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Pembahasan Soal</h2>
+                <button onclick="document.getElementById('discussion-screen').classList.add('hidden'); document.getElementById('result-screen').classList.remove('hidden');" class="text-green-600 hover:underline">
+                    &larr; Kembali ke Nilai
+                </button>
+            </div>
+            <div id="discussion-container" class="space-y-6"></div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="text-center text-sm">
+            <p>&copy; 2025 Bimbel Musafir One.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // === DATABASE PAKET A (35 Soal) ===
+        const dataPaketA = [
+            // Ikhlas (1-4)
+            { q: "Ketika Ahmad membantu ibunya mencuci piring, ia tidak mengharapkan pujian atau hadiah, melainkan hanya mengharap ridha Allah. Sikap Ahmad disebut:", opt: ["Jujur", "Ikhlas", "Sabar", "Tawadhu"], ans: 1, exp: "Ikhlas adalah melakukan sesuatu hanya karena Allah SWT." },
+            { q: "Salah satu hikmah dari perilaku ikhlas dalam kehidupan sehari-hari adalah:", opt: ["Hati menjadi tenang dan damai", "Mendapat banyak pujian teman", "Terkenal di sekolah", "Mendapat upah yang besar"], ans: 0, exp: "Orang ikhlas tidak terbebani pujian manusia, sehingga hatinya tenang." },
+            { q: "Berikut ini adalah contoh penerapan ikhlas di lingkungan sekolah, yaitu:", opt: ["Menyontek agar nilai bagus", "Membersihkan kelas karena jadwal piket saja", "Membantu teman yang kesulitan belajar tanpa pamrih", "Memberi jajan teman agar dipilih jadi ketua kelas"], ans: 2, exp: "Membantu tanpa pamrih adalah ciri ikhlas." },
+            { q: "Lawan dari sifat ikhlas adalah riya', yang artinya:", opt: ["Sombong kepada teman", "Ingin dipuji orang lain", "Membicarakan keburukan orang", "Dengki terhadap nikmat orang"], ans: 1, exp: "Riya' adalah beramal agar dilihat dan dipuji orang lain." },
+            
+            // Salat Sunah (5-8)
+            { q: "Salat sunah yang dikerjakan mengiringi salat fardhu (sebelum atau sesudahnya) disebut salat sunah:", opt: ["Dhuha", "Tahajud", "Rawatib", "Tarawih"], ans: 2, exp: "Rawatib adalah salat sunah pengiring salat fardhu." },
+            { q: "Hukum melaksanakan salat sunah Rawatib 'Qobliyah Subuh' adalah:", opt: ["Sunah Muakkad (Sangat dianjurkan)", "Wajib", "Mubah", "Makruh"], ans: 0, exp: "Dua rakaat fajar (qobliyah subuh) lebih baik dari dunia dan isinya." },
+            { q: "Manfaat utama dari memperbanyak salat sunah adalah:", opt: ["Menghapus dosa besar secara langsung", "Menyempurnakan kekurangan dalam salat fardhu", "Supaya dianggap alim", "Agar doa cepat dikabulkan tanpa usaha"], ans: 1, exp: "Fungsi salat sunah adalah menambal kekurangan salat wajib." },
+            { q: "Waktu pelaksanaan salat sunah Dhuha adalah:", opt: ["Sepertiga malam terakhir", "Setelah terbit matahari hingga menjelang dhuhur", "Setelah salat Isya", "Ketika masuk masjid"], ans: 1, exp: "Dhuha dikerjakan di pagi hari saat matahari mulai naik." },
+
+            // Dosa & Menjaga Diri (9-12)
+            { q: "Perbuatan yang melanggar hukum Allah dan akan mendapatkan siksa disebut:", opt: ["Pahala", "Dosa", "Makruh", "Sunah"], ans: 1, exp: "Definisi dosa." },
+            { q: "Berikut ini yang termasuk contoh dosa kecil yang sering tidak disadari adalah:", opt: ["Membunuh", "Syirik", "Durhaka pada orang tua", "Berbicara sia-sia dan berlebihan"], ans: 3, exp: "Berbicara sia-sia bisa mengarah ke dosa kecil, sedangkan opsi lain adalah dosa besar." },
+            { q: "Cara terbaik untuk menghapus dosa kecil adalah dengan:", opt: ["Berwudhu dan salat", "Tidur seharian", "Makan yang banyak", "Bermain game"], ans: 0, exp: "Kebaikan (seperti wudhu dan salat) dapat menghapus kesalahan-kesalahan kecil." },
+            { q: "Jika teman mengajakmu membolos sekolah, sikap yang tepat untuk menjaga diri dari dosa adalah:", opt: ["Ikut saja agar tidak diejek", "Menolak dengan tegas dan menasehatinya", "Melaporkan ke polisi", "Diam saja"], ans: 1, exp: "Menolak ajakan buruk adalah bentuk menjaga diri." },
+
+            // Kisah Nabi & Rasul (13-15)
+            { q: "Alasan utama Rasulullah SAW hijrah ke Madinah adalah:", opt: ["Mencari harta kekayaan", "Perintah Allah dan menghindari tekanan kaum Quraisy", "Ingin berdagang", "Madinah lebih subur"], ans: 1, exp: "Hijrah dilakukan atas perintah Allah demi keselamatan dakwah." },
+            { q: "Sifat Rasulullah yang berarti 'dapat dipercaya' adalah:", opt: ["Siddiq", "Amanah", "Tabligh", "Fathonah"], ans: 1, exp: "Amanah artinya dapat dipercaya." },
+            { q: "Salah satu bukti kejujuran Rasulullah sebelum menjadi Nabi adalah beliau mendapat gelar:", opt: ["Al-Amin", "Al-Faruq", "As-Siddiq", "Saifullah"], ans: 0, exp: "Al-Amin artinya orang yang terpercaya." },
+
+            // Janji (16-19)
+            { q: "Dalam Islam, janji adalah ... yang harus ditepati.", opt: ["Hutang", "Hadiah", "Beban", "Mainan"], ans: 0, exp: "Janji adalah hutang." },
+            { q: "Jika kita berjanji kepada seseorang, kita disunahkan mengucapkan:", opt: ["Subhanallah", "Masya Allah", "Insya Allah", "Astaghfirullah"], ans: 2, exp: "Insya Allah artinya 'Jika Allah menghendaki'." },
+            { q: "Ciri-ciri orang munafik ada tiga, salah satunya adalah:", opt: ["Jika makan ia kenyang", "Jika tidur ia bermimpi", "Jika berjanji ia mengingkari", "Jika berjalan ia cepat"], ans: 2, exp: "Hadits Nabi: Tanda munafik ada 3: jika bicara berdusta, jika janji ingkar, jika dipercaya khianat." },
+            { q: "Menepati janji kepada Allah contohnya adalah:", opt: ["Melaksanakan salat lima waktu", "Membayar hutang ke teman", "Datang tepat waktu ke sekolah", "Mengembalikan buku"], ans: 0, exp: "Itu adalah janji hamba kepada Tuhannya (Syahadat)." },
+
+            // Anggota Tubuh & Adab (20-27)
+            { q: "Cara menjaga lisan (lidah) yang baik adalah:", opt: ["Sering berteriak", "Berkata yang baik atau diam", "Mengejek teman", "Banyak bicara"], ans: 1, exp: "Berkata baik atau diam adalah ajaran Nabi." },
+            { q: "Mata digunakan untuk melihat hal-hal yang:", opt: ["Diharamkan", "Milik orang lain", "Baik dan bermanfaat", "Aurat teman"], ans: 2, exp: "Fungsi mata untuk ibadah dan kebaikan." },
+            { q: "Adab ketika melihat teman yang terkena musibah adalah:", opt: ["Menertawakannya", "Memposting fotonya", "Mendoakan dan membantunya", "Menyalahkannya"], ans: 2, exp: "Empati dan doa adalah adab utama." },
+            { q: "Tokoh muslim dari Bani Umayyah yang terkenal dengan keadilannya adalah:", opt: ["Muawiyah bin Abu Sufyan", "Umar bin Abdul Aziz", "Yazid bin Muawiyah", "Walid bin Abdul Malik"], ans: 1, exp: "Umar bin Abdul Aziz dikenal sebagai pemimpin yang sangat adil dan zuhud." },
+            { q: "Jika kita berbuat salah kepada teman, yang harus segera dilakukan adalah:", opt: ["Pura-pura tidak tahu", "Meminta maaf dengan tulus", "Menunggu teman meminta maaf", "Menjauhinya"], ans: 1, exp: "Segera meminta maaf agar tidak menjadi dosa." },
+            { q: "Salah satu contoh menjaga telinga dari hal buruk adalah:", opt: ["Mendengarkan Al-Quran", "Mendengarkan ghibah (gosip)", "Mendengarkan nasehat guru", "Mendengarkan adzan"], ans: 1, exp: "Ghibah haram didengarkan." },
+            { q: "Sikap membantu teman harus dilakukan dengan:", opt: ["Terpaksa", "Minta imbalan", "Ikhlas", "Sombong"], ans: 2, exp: "Bantuan harus didasari keikhlasan." },
+            { q: "Manfaat menjaga anggota tubuh dari dosa adalah:", opt: ["Tubuh jadi sakit", "Hati menjadi bersih dan tenang", "Dijauhi teman", "Menjadi kaya raya"], ans: 1, exp: "Dosa membuat hati kotor, menjaga diri membuat hati bersih." },
+
+            // Tambahan (28-35)
+            { q: "Barangsiapa yang beriman kepada Allah dan hari akhir, hendaklah ia memuliakan:", opt: ["Mobilnya", "Tetangganya", "Hartanya", "Jabatannya"], ans: 1, exp: "Hadits Nabi tentang memuliakan tetangga/tamu." },
+            { q: "Sikap menghargai teman yang berbeda pendapat disebut:", opt: ["Egois", "Tasamuh (Toleransi)", "Takabur", "Riya"], ans: 1, exp: "Tasamuh artinya toleransi." },
+            { q: "Berikut ini yang BUKAN termasuk adab bertamu adalah:", opt: ["Mengucap salam", "Meminta makanan", "Duduk dengan sopan", "Pulang jika tidak diizinkan masuk"], ans: 1, exp: "Meminta makanan bukan adab yang baik, tuan rumah yang seharusnya menawari." },
+            { q: "Syukur artinya:", opt: ["Mengeluh", "Berterima kasih kepada Allah", "Merasa kurang", "Meminta lebih"], ans: 1, exp: "Syukur adalah berterima kasih atas nikmat." },
+            { q: "Cara bersyukur dengan anggota tubuh adalah:", opt: ["Mengucap Alhamdulillah", "Menggunakan tubuh untuk ibadah", "Meyakini dalam hati", "Menulis status"], ans: 1, exp: "Syukur bil arkan (dengan perbuatan/tubuh)." },
+            { q: "Membantu warga muslim yang sedang kesulitan hukumnya:", opt: ["Haram", "Makruh", "Dianjurkan (Sunah/Wajib Kifayah)", "Mubah"], ans: 2, exp: "Sesama muslim itu bersaudara." },
+            { q: "Sikap terbaik saat mendengar teman berbuat salah adalah:", opt: ["Menyebarkannya", "Menasehatinya secara rahasia", "Memarahinya di depan umum", "Membiarkannya"], ans: 1, exp: "Nasehat yang baik dilakukan tidak di depan umum." }
+        ];
+
+        // === DATABASE PAKET B (35 Soal - BEDA SOAL) ===
+        const dataPaketB = [
+            // Ikhlas (Beda konteks)
+            { q: "Fulan menyumbang uang ke kotak amal masjid secara diam-diam saat sepi. Sikap Fulan mencerminkan:", opt: ["Takabur", "Ikhlas", "Kikir", "Boros"], ans: 1, exp: "Menyembunyikan amal adalah salah satu cara menjaga keikhlasan." },
+            { q: "Ikhlas berasal dari kata 'khalasha' yang artinya:", opt: ["Kotor", "Murni/Bersih", "Campuran", "Ramai"], ans: 1, exp: "Ikhlas artinya memurnikan niat hanya untuk Allah." },
+            { q: "Jika kita beribadah tidak ikhlas, maka amal kita akan:", opt: ["Diterima setengah", "Sia-sia / Tidak diterima", "Tetap mendapat pahala", "Disimpan"], ans: 1, exp: "Syarat diterimanya amal adalah Ikhlas dan Ittiba (sesuai tuntunan)." },
+            { q: "Mengharap pujian dari manusia disebut:", opt: ["Sum'ah / Riya'", "Qanaah", "Wara'", "Zuhud"], ans: 0, exp: "Sum'ah ingin didengar, Riya ingin dilihat." },
+
+            // Salat Sunah
+            { q: "Salat sunah yang dikerjakan pada malam hari setelah bangun tidur disebut:", opt: ["Tahiyatul Masjid", "Tahajud", "Dhuha", "Istikharah"], ans: 1, exp: "Tahajud syaratnya harus tidur dulu." },
+            { q: "Salat sunah yang berfungsi untuk meminta petunjuk ketika bingung memilih adalah:", opt: ["Istisqa", "Hajat", "Istikharah", "Witir"], ans: 2, exp: "Istikharah untuk meminta pilihan terbaik." },
+            { q: "Jumlah rakaat minimal salat Dhuha adalah:", opt: ["2 rakaat", "4 rakaat", "8 rakaat", "12 rakaat"], ans: 0, exp: "Minimal 2 rakaat." },
+            { q: "Salat sunah Rawatib yang dilakukan SETELAH salat fardhu disebut:", opt: ["Qobliyah", "Ba'diyah", "Tahajud", "Witir"], ans: 1, exp: "Ba'diyah artinya setelah." },
+
+            // Dosa
+            { q: "Dosa yang tidak akan diampuni oleh Allah jika dibawa mati adalah:", opt: ["Mencuri", "Berbohong", "Syirik (Mensekutukan Allah)", "Durhaka"], ans: 2, exp: "Syirik adalah dosa besar yang tidak diampuni tanpa taubat nasuha." },
+            { q: "Membicarakan keburukan orang lain yang benar adanya disebut:", opt: ["Fitnah", "Ghibah", "Namimah", "Bohong"], ans: 1, exp: "Ghibah membicarakan fakta buruk, Fitnah membicarakan kebohongan." },
+            { q: "Cara bertaubat dari dosa kepada sesama manusia adalah:", opt: ["Cukup istighfar", "Meminta maaf kepada orangnya", "Bersedekah", "Puasa"], ans: 1, exp: "Haqqul Adami (hak manusia) harus diselesaikan dengan meminta maaf/mengembalikan hak." },
+            { q: "Menahan diri dari perbuatan dosa memerlukan sifat:", opt: ["Sabar", "Marah", "Tergesa-gesa", "Sombong"], ans: 0, exp: "Sabar dalam menjauhi maksiat." },
+
+            // Kisah Nabi
+            { q: "Sahabat Nabi yang menemani beliau hijrah dan bersembunyi di Gua Tsur adalah:", opt: ["Umar bin Khattab", "Ali bin Abi Thalib", "Abu Bakar Ash-Shiddiq", "Utsman bin Affan"], ans: 2, exp: "Abu Bakar menemani Nabi saat hijrah." },
+            { q: "Sifat wajib bagi Rasul 'Tabligh' artinya:", opt: ["Cerdas", "Menyampaikan", "Jujur", "Terpercaya"], ans: 1, exp: "Tabligh = Menyampaikan wahyu." },
+            { q: "Mukjizat terbesar Nabi Muhammad SAW adalah:", opt: ["Membelah bulan", "Tongkat jadi ular", "Al-Quran", "Menghidupkan orang mati"], ans: 2, exp: "Al-Quran adalah mukjizat abadi." },
+
+            // Janji
+            { q: "Melanggar janji dapat menyebabkan hilangnya:", opt: ["Uang", "Kepercayaan orang lain", "Kesehatan", "Rumah"], ans: 1, exp: "Orang yang ingkar janji sulit dipercaya lagi." },
+            { q: "Janji Allah kepada orang yang beriman dan beramal sholeh adalah:", opt: ["Surga", "Kekayaan dunia", "Umur panjang", "Jabatan"], ans: 0, exp: "Balasan iman adalah Surga." },
+            { q: "Mengingkari janji termasuk perbuatan:", opt: ["Terpuji", "Tercela (Mazmumah)", "Biasa saja", "Mubah"], ans: 1, exp: "Akhlak tercela." },
+            { q: "Nabi yang diperintah menyembelih anaknya karena janji/perintah Allah adalah:", opt: ["Nabi Musa", "Nabi Isa", "Nabi Ibrahim", "Nabi Nuh"], ans: 2, exp: "Kisah Nabi Ibrahim dan Ismail." },
+
+            // Adab & Tubuh
+            { q: "Tangan diciptakan Allah untuk:", opt: ["Memukul teman", "Mencuri", "Bekerja dan menolong", "Menjahili orang"], ans: 2, exp: "Gunakan tangan untuk kebaikan." },
+            { q: "Berjalan dengan angkuh dan membusungkan dada adalah perilaku:", opt: ["Tawadhu", "Sombong", "Percaya diri", "Berani"], ans: 1, exp: "Allah tidak menyukai orang yang sombong lagi membanggakan diri." },
+            { q: "Mengucapkan 'Innalillahi wa inna ilaihi rajiun' diucapkan saat:", opt: ["Mendapat hadiah", "Mendengar musibah", "Akan makan", "Bersin"], ans: 1, exp: "Kalimat Tarji' diucapkan saat musibah." },
+            { q: "Umar bin Abdul Aziz adalah khalifah yang sangat:", opt: ["Kejam", "Sederhana dan Adil", "Mewah", "Penakut"], ans: 1, exp: "Beliau terkenal sangat sederhana meski seorang raja." },
+            { q: "Jika ada teman yang sakit, kewajiban kita adalah:", opt: ["Membiarkannya", "Menjenguk dan mendoakan", "Menertawakan", "Mengganggunya"], ans: 1, exp: "Hak muslim atas muslim lain adalah dijenguk saat sakit." },
+            { q: "Menutup aurat adalah cara menjaga anggota tubuh agar:", opt: ["Terlihat gaya", "Terhindar dari dosa dan fitnah", "Kepananasan", "Susah bergerak"], ans: 1, exp: "Menutup aurat adalah kewajiban untuk menjaga kehormatan." },
+            { q: "Berbicara kotor adalah penyalahgunaan nikmat:", opt: ["Mata", "Telinga", "Lisan/Mulut", "Hidung"], ans: 2, exp: "Mulut harus dijaga." },
+            { q: "Membantu orang lain sebaiknya dimulai dari:", opt: ["Orang jauh", "Orang terdekat (kerabat/tetangga)", "Orang kaya", "Pejabat"], ans: 1, exp: "Prioritas sedekah/bantuan adalah kerabat terdekat." },
+
+            // Tambahan
+            { q: "Sikap 'Qanaah' artinya:", opt: ["Merasa cukup dengan pemberian Allah", "Selalu merasa kurang", "Malas bekerja", "Meminta-minta"], ans: 0, exp: "Qanaah adalah kekayaan hati yang sejati." },
+            { q: "Menghormati guru di sekolah termasuk:", opt: ["Adab penuntut ilmu", "Cari muka", "Perbuatan sia-sia", "Hal yang kuno"], ans: 0, exp: "Ilmu tidak akan berkah tanpa hormat pada guru." },
+            { q: "Ketika lewat di depan orang tua, sebaiknya kita:", opt: ["Lari kencang", "Membungkuk sopan dan permisi", "Berteriak", "Diam saja"], ans: 1, exp: "Adab sopan santun." },
+            { q: "Senyum kepada saudara sesama muslim adalah:", opt: ["Hutang", "Sedekah", "Dosa", "Rugi"], ans: 1, exp: "Senyummu di hadapan saudaramu adalah sedekah." },
+            { q: "Salah satu cara mensyukuri kesehatan adalah:", opt: ["Makan sembarangan", "Olahraga dan menjaga pola makan", "Tidur terus", "Merokok"], ans: 1, exp: "Menjaga amanah tubuh." },
+            { q: "Tolong menolong diperintahkan dalam hal:", opt: ["Dosa dan permusuhan", "Kebaikan dan Takwa", "Ujian sekolah", "Kejahatan"], ans: 1, exp: "Wa ta'awanu alal birri wat taqwa." },
+            { q: "Orang yang paling mulia di sisi Allah adalah orang yang paling:", opt: ["Kaya", "Cantik/Ganteng", "Bertakwa", "Pintar"], ans: 2, exp: "Inn aakramakum indallahi atqakum." }
+        ];
+
+        // --- GLOBAL VARIABLES ---
+        let currentQuestions = [];
+        let currentPage = 0;
+        const questionsPerPage = 10;
+        let userAnswers = {}; 
+        let timerInterval;
+        let totalSeconds = 90 * 60; // 90 menit
+
+        // --- FUNCTIONS ---
+        function startQuiz() {
+            const name = document.getElementById('student-name').value;
+            const pkg = document.getElementById('package-select').value;
+            
+            if (!name.trim()) {
+                alert("Mohon isi nama terlebih dahulu!");
+                return;
+            }
+
+            // Set Data UI
+            document.getElementById('result-name').innerText = name;
+            document.getElementById('result-package').innerText = pkg === 'A' ? "Paket A" : "Paket B";
+            
+            // LOAD SELECTED PACKAGE
+            currentQuestions = (pkg === 'A') ? dataPaketA : dataPaketB;
+            
+            // Reset State
+            currentPage = 0;
+            userAnswers = {};
+            
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('timer-display').classList.remove('hidden');
+
+            renderQuestions();
+            startTimer();
+            updateNavigation();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            const start = currentPage * questionsPerPage;
+            const end = Math.min(start + questionsPerPage, currentQuestions.length);
+
+            for (let i = start; i < end; i++) {
+                const q = currentQuestions[i];
+                const savedAns = userAnswers[i];
+                
+                let optionsHtml = '';
+                q.opt.forEach((opt, idx) => {
+                    const labels = ['A', 'B', 'C', 'D'];
+                    const isChecked = savedAns === idx ? 'checked' : '';
+                    optionsHtml += `
+                        <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-green-50 option-label">
+                            <input type="radio" name="q-${i}" value="${idx}" class="option-input hidden" onchange="saveAnswer(${i}, ${idx})" ${isChecked}>
+                            <div class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full mr-3 text-sm font-bold text-gray-700 peer-checked:bg-green-600 peer-checked:text-white">
+                                ${labels[idx]}
+                            </div>
+                            <div class="text-gray-700">${opt}</div>
+                        </label>
+                    `;
+                });
+
+                const questionHtml = `
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="flex gap-4 mb-4">
+                            <div class="bg-green-100 text-green-800 font-bold w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0">
+                                ${i + 1}
+                            </div>
+                            <div class="text-lg font-medium text-gray-800 pt-1">${q.q}</div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3 ml-12">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questionHtml;
+            }
+            window.scrollTo(0,0);
+        }
+
+        function saveAnswer(qIndex, ansIndex) {
+            userAnswers[qIndex] = ansIndex;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const answered = Object.keys(userAnswers).length;
+            const total = currentQuestions.length;
+            const percent = (answered / total) * 100;
+            document.getElementById('progress-bar').style.width = percent + '%';
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            renderQuestions();
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const totalPages = Math.ceil(currentQuestions.length / questionsPerPage);
+            document.getElementById('page-indicator').innerText = `Halaman ${currentPage + 1} dari ${totalPages}`;
+            
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const submitBtn = document.getElementById('submit-btn');
+
+            prevBtn.classList.toggle('hidden', currentPage === 0);
+            
+            if (currentPage === totalPages - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function startTimer() {
+            const display = document.getElementById('timer-display');
+            timerInterval = setInterval(() => {
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+                display.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishQuiz();
+                }
+                totalSeconds--;
+            }, 1000);
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            let correct = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.ans) correct++;
+            });
+            const wrong = currentQuestions.length - correct;
+            const score = Math.round((correct / currentQuestions.length) * 100);
+
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('correct-count').innerText = correct;
+            document.getElementById('wrong-count').innerText = wrong;
+
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('timer-display').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            prepareDiscussion();
+        }
+
+        function prepareDiscussion() {
+            const container = document.getElementById('discussion-container');
+            container.innerHTML = '';
+            let hasWrong = false;
+
+            currentQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.ans;
+                const labels = ['A', 'B', 'C', 'D'];
+
+                if (!isCorrect) {
+                    hasWrong = true;
+                    const userAnswerText = userAns !== undefined ? labels[userAns] + ". " + q.opt[userAns] : "Tidak dijawab";
+                    
+                    const item = `
+                        <div class="bg-white p-6 rounded-xl border-l-4 border-red-500 shadow-sm">
+                            <div class="flex gap-2 mb-2">
+                                <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">Soal No ${idx + 1}</span>
+                                <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-bold">Salah</span>
+                            </div>
+                            <p class="font-medium text-gray-800 mb-3">${q.q}</p>
+                            <div class="bg-red-50 p-3 rounded mb-2 text-sm">
+                                <span class="font-bold text-red-700">Jawaban Kamu:</span> ${userAnswerText}
+                            </div>
+                            <div class="bg-green-50 p-3 rounded mb-3 text-sm">
+                                <span class="font-bold text-green-700">Jawaban Benar:</span> ${labels[q.ans]}. ${q.opt[q.ans]}
+                            </div>
+                            <div class="text-sm text-gray-600 border-t pt-2 mt-2">
+                                <strong><i class="fa-solid fa-lightbulb text-yellow-500"></i> Pembahasan:</strong><br>
+                                ${q.exp}
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += item;
+                }
+            });
+
+            if (!hasWrong) {
+                container.innerHTML = `
+                    <div class="text-center py-10">
+                        <i class="fa-solid fa-star text-5xl text-yellow-400 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-700">Masya Allah, Sempurna!</h3>
+                        <p>Kamu menjawab semua soal dengan benar.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showDiscussion() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('discussion-screen').classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+    </script>
+</body>
+</html>
+
+
