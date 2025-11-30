@@ -90,73 +90,32 @@
 
         // --- IKON SVG INTERNAL ---
         const Icons = {
-            // Ikon Muslimah Pink (Mirip Gambar Upload)
             MuslimahPink: () => (
                 <svg viewBox="0 0 200 240" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
                             <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
                             <feOffset dx="2" dy="2" result="offsetblur"/>
-                            <feComponentTransfer>
-                                <feFuncA type="linear" slope="0.3"/>
-                            </feComponentTransfer>
-                            <feMerge>
-                                <feMergeNode/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
+                            <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+                            <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
                         </filter>
                     </defs>
-                    
                     <g filter="url(#shadow)">
-                        {/* Rok Putih Berenda */}
                         <path d="M50,180 L150,180 L160,230 Q100,240 40,230 Z" fill="#fff1f2" />
                         <path d="M40,230 Q100,240 160,230" fill="none" stroke="#fbcfe8" strokeWidth="2" strokeDasharray="5,3"/>
-                        
-                        {/* Baju Pink */}
                         <path d="M50,140 L150,140 L150,180 L50,180 Z" fill="#f9a8d4"/>
                         <path d="M100,140 L100,180" fill="none" stroke="#fce7f3" strokeWidth="2" strokeDasharray="4"/>
-                        <circle cx="100" cy="150" r="2" fill="white"/>
-                        <circle cx="100" cy="160" r="2" fill="white"/>
-                        <circle cx="100" cy="170" r="2" fill="white"/>
-
-                        {/* Kerah Baju */}
+                        <circle cx="100" cy="150" r="2" fill="white"/><circle cx="100" cy="160" r="2" fill="white"/><circle cx="100" cy="170" r="2" fill="white"/>
                         <path d="M70,140 Q100,160 130,140" fill="#fff1f2" stroke="#fbcfe8"/>
-
-                        {/* Tangan */}
-                        <ellipse cx="40" cy="160" rx="15" ry="10" fill="#ffedd5"/>
-                        <ellipse cx="160" cy="160" rx="15" ry="10" fill="#ffedd5"/>
-
-                        {/* Hijab Bagian Belakang */}
+                        <ellipse cx="40" cy="160" rx="15" ry="10" fill="#ffedd5"/><ellipse cx="160" cy="160" rx="15" ry="10" fill="#ffedd5"/>
                         <path d="M45,140 Q100,190 155,140 L155,160 Q100,210 45,160 Z" fill="#ec4899"/>
-                        
-                        {/* Kepala/Hijab Utama (Pink) */}
                         <path d="M50,130 C30,100 30,30 100,30 C170,30 170,100 150,130 Q100,160 50,130" fill="#f472b6"/>
-                        
-                        {/* Wajah */}
                         <path d="M65,90 Q65,140 100,140 Q135,140 135,90 Q135,55 100,55 Q65,55 65,90" fill="#ffedd5"/>
-                        
-                        {/* Inner Hijab (Ciput - Pink Tua) */}
                         <path d="M70,75 Q100,60 130,75 Q130,65 100,65 Q70,65 70,75" fill="#db2777"/>
-                        
-                        {/* Mata Besar & Lucu */}
-                        <g fill="#374151">
-                            <ellipse cx="82" cy="95" rx="6" ry="8"/>
-                            <ellipse cx="118" cy="95" rx="6" ry="8"/>
-                            {/* Kilauan Mata */}
-                            <circle cx="84" cy="92" r="2" fill="white"/>
-                            <circle cx="120" cy="92" r="2" fill="white"/>
-                        </g>
-                        
-                        {/* Alis */}
-                        <path d="M75,85 Q82,80 89,85" fill="none" stroke="#8b5cf6" strokeWidth="1.5"/>
-                        <path d="M111,85 Q118,80 125,85" fill="none" stroke="#8b5cf6" strokeWidth="1.5"/>
-
-                        {/* Mulut Senyum */}
+                        <g fill="#374151"><ellipse cx="82" cy="95" rx="6" ry="8"/><ellipse cx="118" cy="95" rx="6" ry="8"/><circle cx="84" cy="92" r="2" fill="white"/><circle cx="120" cy="92" r="2" fill="white"/></g>
+                        <path d="M75,85 Q82,80 89,85" fill="none" stroke="#8b5cf6" strokeWidth="1.5"/><path d="M111,85 Q118,80 125,85" fill="none" stroke="#8b5cf6" strokeWidth="1.5"/>
                         <path d="M92,115 Q100,122 108,115" fill="none" stroke="#db2777" strokeWidth="2" strokeLinecap="round"/>
-                        
-                        {/* Pipi Merona */}
-                        <circle cx="75" cy="105" r="5" fill="#fca5a5" opacity="0.5"/>
-                        <circle cx="125" cy="105" r="5" fill="#fca5a5" opacity="0.5"/>
+                        <circle cx="75" cy="105" r="5" fill="#fca5a5" opacity="0.5"/><circle cx="125" cy="105" r="5" fill="#fca5a5" opacity="0.5"/>
                     </g>
                 </svg>
             ),
@@ -493,6 +452,9 @@
                 return Math.round((correct / questions.length) * 100);
             };
 
+            // Array Label Pilihan Ganda
+            const optionLabels = ['A', 'B', 'C', 'D'];
+
             return (
                 <div className="min-h-screen pb-10">
                     {/* Navbar */}
@@ -517,7 +479,6 @@
                         {step === 'login' && (
                             <div className="glass-panel p-8 rounded-2xl max-w-md mx-auto text-center animate-fade-in">
                                 <div className="w-40 h-40 mx-auto mb-6 floating-avatar">
-                                    {/* KARAKTER MUSLIMAH BERGERAK DI SINI */}
                                     <Icons.MuslimahPink />
                                 </div>
                                 <h2 className="text-2xl font-bold text-pink-900 mb-2 font-sans">Ahlan Wa Sahlan!</h2>
@@ -599,7 +560,10 @@
                                                                 <div className={`w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center shrink-0 ${answers[q.id] === opt ? 'border-pink-500' : ''}`}>
                                                                     {answers[q.id] === opt && <div className="w-2.5 h-2.5 bg-pink-500 rounded-full"></div>}
                                                                 </div>
-                                                                <span className="text-gray-700 font-medium">{opt}</span>
+                                                                <div className="flex gap-2 w-full">
+                                                                    <span className="font-bold text-pink-600 min-w-[20px]">{optionLabels[i]}.</span>
+                                                                    <span className="text-gray-700 font-medium">{opt}</span>
+                                                                </div>
                                                             </div>
                                                         </label>
                                                     ))}
