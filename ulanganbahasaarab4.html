@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Arab Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind Libraries -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fefce8; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        .arabic-text { font-family: 'Amiri', serif; direction: rtl; unicode-bidi: embed; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #fde047; box-shadow: 8px 8px 0px #eab308; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #eab308; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Safe Area */
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #ca8a04; font-weight: bold;">Memuat Soal Bahasa Arab...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (45 SOAL - SESUAI KISI-KISI) ---
+        const paketA = [
+            // 1-10: Perkenalan (Ta'aruf)
+            { id: 1, text: "Jawaban yang tepat untuk sapaan 'Ahlan wa Sahlan' (أَهْلًا وَ سَهْلًا) adalah...", options: { A: "Ahlan bik (أَهْلًا بِك)", B: "Alhamdulillah", C: "Syukron", D: "Afwan" }, answer: "A", discussion: "Balasan 'Ahlan wa Sahlan' adalah 'Ahlan bik'." },
+            { id: 2, text: "Lengkapi kalimat berikut: Ana ... (Saya seorang murid laki-laki).", options: { A: "Tilmidzatun (تِلْمِيْذَةٌ)", B: "Ustadzun (أُسْتَاذٌ)", C: "Tilmidzun (تِلْمِيْذٌ)", D: "Tabibun (طَبِيْبٌ)" }, answer: "C", discussion: "Murid laki-laki bahasa Arabnya Tilmidzun." },
+            { id: 3, text: "Bahasa Arab dari 'Siapa namamu (laki-laki)?' adalah...", options: { A: "Ma ismuka? (مَا اسْمُكَ)", B: "Masmuhu?", C: "Masmuki?", D: "Man anta?" }, answer: "A", discussion: "Untuk laki-laki menggunakan 'ka' (Masmuka)." },
+            { id: 4, text: "Kata tanya 'Man' (مَنْ) digunakan untuk menanyakan...", options: { A: "Benda", B: "Orang (Siapa)", C: "Kabar", D: "Tempat" }, answer: "B", discussion: "'Man' artinya Siapa." },
+            { id: 5, text: "Kalimat tanya untuk menanyakan kabar adalah...", options: { A: "Masmuka?", B: "Min aina anta?", C: "Kaifa haluka? (كَيْفَ حَالُكَ)", D: "Man hadza?" }, answer: "C", discussion: "Kaifa haluka = Bagaimana kabarmu?" },
+            { id: 6, text: "Arti dari kalimat 'Ana min Jakarta' (أَنَا مِنْ جَاكَرْتَا) adalah...", options: { A: "Saya pergi ke Jakarta", B: "Saya dari Jakarta", C: "Saya di Jakarta", D: "Nama saya Jakarta" }, answer: "B", discussion: "'Min' artinya dari." },
+            { id: 7, text: "Lengkapi: ... Fatimah. (Saya Fatimah).", options: { A: "Anta", B: "Huwa", C: "Ana (أَنَا)", D: "Nahnu" }, answer: "C", discussion: "'Ana' (Saya) bisa untuk laki-laki dan perempuan." },
+            { id: 8, text: "Bahasa Arab dari 'Selamat Datang' adalah...", options: { A: "Ahlan wa Sahlan", B: "Shobahul khair", C: "Masa'ul khair", D: "Ilaliqo" }, answer: "A", discussion: "Ahlan wa Sahlan artinya Selamat Datang." },
+            { id: 9, text: "Ismi Ahmad. Arti kata 'Ismi' adalah...", options: { A: "Namamu", B: "Namaku", C: "Namanya", D: "Nama kami" }, answer: "B", discussion: "Ism + ya sukun (kepemilikan saya) = Namaku." },
+            { id: 10, text: "Susunan yang benar: ( Tholibun - Ana - Jadidun )", options: { A: "Ana Tholibun Jadidun", B: "Jadidun Ana Tholibun", C: "Tholibun Ana Jadidun", D: "Ana Jadidun Tholibun" }, answer: "A", discussion: "Saya murid baru (Ana Tholibun Jadidun)." },
+
+            // 11-20: Sapaan & Ramah Tamah (Tahiyyah)
+            { id: 11, text: "Arti dari sapaan 'Shobahul Khair' (صَبَاح الْخَيْر) adalah...", options: { A: "Selamat Sore", B: "Selamat Malam", C: "Selamat Pagi", D: "Selamat Siang" }, answer: "C", discussion: "Shobah = Pagi." },
+            { id: 12, text: "Jawaban untuk 'Masa'ul Khair' (Selamat Sore) adalah...", options: { A: "Masa'un Nur (مَسَاء النُّوْر)", B: "Shobahun Nur", C: "Bi khairin", D: "Afwan" }, answer: "A", discussion: "Balasan Masa'ul khair adalah Masa'un nur." },
+            { id: 13, text: "Jika teman mengucapkan 'Syukron' (Terima kasih), kita menjawab...", options: { A: "Na'am", B: "La", C: "Afwan (عَفْوًا)", D: "Ahlan" }, answer: "C", discussion: "Syukron dibalas Afwan." },
+            { id: 14, text: "Arti kata 'Ilaliqo' (إِلَى اللِّقَاء) adalah...", options: { A: "Sampai jumpa", B: "Selamat jalan", C: "Terima kasih", D: "Apa kabar" }, answer: "A", discussion: "Ilaliqo = Sampai jumpa." },
+            { id: 15, text: "Lengkapi: Kaifa ... (kabarmu/perempuan)?", options: { A: "Haluka", B: "Haluki", C: "Haluhu", D: "Haluha" }, answer: "B", discussion: "Untuk perempuan menggunakan akhiran 'ki' (Haluki)." },
+            { id: 16, text: "'Lailatuka Sa'idah' (لَيْلَتُكَ سَعِيْدَة) artinya...", options: { A: "Selamat Pagi", B: "Selamat Siang", C: "Selamat Malam", D: "Selamat Jalan" }, answer: "C", discussion: "Lailah = Malam." },
+            { id: 17, text: "Bahasa Arab dari 'Selamat Siang' adalah...", options: { A: "Naharuka Sa'id", B: "Lailatuka Sa'idah", C: "Shobahul Khair", D: "Masa'ul Khair" }, answer: "A", discussion: "Nahar = Siang." },
+            { id: 18, text: "Terjemahkan: 'Alhamdulillah, ana bi khair'.", options: { A: "Segala puji bagi Allah, saya sakit", B: "Segala puji bagi Allah, saya baik-baik saja", C: "Terima kasih banyak", D: "Sama-sama" }, answer: "B", discussion: "Bi khair = baik." },
+            { id: 19, text: "Susun kata: ( Nur - Shobahu - As ).", options: { A: "Shobahun Nur", B: "Nur Shobahu", C: "As Shobahu Nur", D: "Nur As Shobahu" }, answer: "A", discussion: "Shobahun Nur (Selamat pagi juga/Cahaya pagi)." },
+            { id: 20, text: "Lengkapi: Ma'as ... (Selamat jalan).", options: { A: "Salamah (السَّلَامَة)", B: "Khair", C: "Liqo", D: "Nur" }, answer: "A", discussion: "Ma'as Salamah = Selamat jalan (semoga disertai keselamatan)." },
+
+            // 21-30: Peralatan Sekolah (Adawatul Madrasiyah)
+            { id: 21, text: "Arti kata 'Qolamun' (قَلَمٌ) adalah...", options: { A: "Buku", B: "Pena", C: "Penggaris", D: "Penghapus" }, answer: "B", discussion: "Qolamun = Pena." },
+            { id: 22, text: "Kata tunjuk (Isim Isyarah) untuk benda 'Mistolotun' (مِصْطَرَةٌ) adalah...", options: { A: "Hadza", B: "Hadzihi (هٰذِهِ)", C: "Dzalika", D: "Huwa" }, answer: "B", discussion: "Mistolotun berakhiran Ta' Marbutoh (perempuan), pakai Hadzihi." },
+            { id: 23, text: "Manakah yang termasuk Isim Nakirah (Umum)?", options: { A: "Al-Kitabu", B: "Al-Qolamu", C: "Kitabun (كِتَابٌ)", D: "Al-Fashlu" }, answer: "C", discussion: "Isim Nakirah bertanwin (un), Ma'rifat pakai Al." },
+            { id: 24, text: "Bahasa Arab dari 'Papan Tulis' adalah...", options: { A: "Maktabun", B: "Kursiyyun", C: "Sabbuurotun (سَبُّوْرَةٌ)", D: "Fashlun" }, answer: "C", discussion: "Sabbuurotun = Papan tulis." },
+            { id: 25, text: "Lengkapi: Dzalika ... (Itu sebuah buku).", options: { A: "Kitabun (كِتَابٌ)", B: "Haqibatun", C: "Kurrasatun", D: "Mimsahatun" }, answer: "A", discussion: "Dzalika untuk laki-laki (tanpa Ta' Marbutoh)." },
+            { id: 26, text: "Arti 'Haqibatun' (حَقِيْبَةٌ) adalah...", options: { A: "Tas", B: "Meja", C: "Kursi", D: "Papan" }, answer: "A", discussion: "Haqibatun = Tas." },
+            { id: 27, text: "Terjemahkan: 'Hadza Fashlun'.", options: { A: "Ini Sekolah", B: "Ini Kelas", C: "Ini Kantin", D: "Ini Perpustakaan" }, answer: "B", discussion: "Fashlun = Kelas." },
+            { id: 28, text: "Kata 'Tholasatun' (طَلَّاسَةٌ) artinya...", options: { A: "Penghapus papan tulis", B: "Kapur tulis", C: "Spidol", D: "Buku tulis" }, answer: "A", discussion: "Tholasatun = Penghapus papan." },
+            { id: 29, text: "Bahasa Arab 'Meja' adalah...", options: { A: "Kursiyyun", B: "Maktabun (مَكْتَبٌ)", C: "Babun", D: "Misbahun" }, answer: "B", discussion: "Maktabun = Meja." },
+            { id: 30, text: "Susun: ( Jamilatun - Hadzihi - Haqibatun ).", options: { A: "Hadzihi Jamilatun Haqibatun", B: "Haqibatun Hadzihi Jamilatun", C: "Hadzihi Haqibatun Jamilatun", D: "Jamilatun Haqibatun Hadzihi" }, answer: "C", discussion: "Ini tas yang indah (Hadzihi Haqibatun Jamilatun)." },
+
+            // 31-45: Keluarga (Al-Usrah)
+            { id: 31, text: "Bahasa Arab dari 'Ayah' adalah...", options: { A: "Ummun", B: "Abun (أَبٌ)", C: "Jaddun", D: "Akhun" }, answer: "B", discussion: "Abun = Ayah." },
+            { id: 32, text: "'Ummun' (أُمٌّ) artinya...", options: { A: "Ayah", B: "Ibu", C: "Nenek", D: "Bibi" }, answer: "B", discussion: "Ummun = Ibu." },
+            { id: 33, text: "Saudara laki-laki dalam bahasa Arab adalah...", options: { A: "Ukhtun", B: "Akhun (أَخٌ)", C: "Ammun", D: "Jaddatun" }, answer: "B", discussion: "Akhun = Saudara laki-laki." },
+            { id: 34, text: "Gambar seorang kakek. Bahasa Arabnya adalah...", options: { A: "Jaddun (جَدٌّ)", B: "Jaddatun", C: "Abun", D: "Walidun" }, answer: "A", discussion: "Jaddun = Kakek." },
+            { id: 35, text: "Lengkapi: Hadzihi ... (Ini saudara perempuanku).", options: { A: "Akhi", B: "Ukhti (أُخْتِيْ)", C: "Abi", D: "Jaddi" }, answer: "B", discussion: "Ukhti = Saudara perempuanku." },
+            { id: 36, text: "'Ammatun' (عَمَّةٌ) artinya...", options: { A: "Paman (dari Ayah)", B: "Bibi (dari Ayah)", C: "Paman (dari Ibu)", D: "Bibi (dari Ibu)" }, answer: "B", discussion: "Ammun (Paman), Ammatun (Bibi dari pihak ayah)." },
+            { id: 37, text: "Manakah yang merupakan anggota keluarga?", options: { A: "Ustadzun", B: "Tholibun", C: "Jaddun (جَدٌّ)", D: "Mudarrisun" }, answer: "C", discussion: "Jaddun (Kakek) adalah keluarga." },
+            { id: 38, text: "Terjemahkan: 'Abi mudarrisun'.", options: { A: "Ayahku seorang dokter", B: "Ayahku seorang guru", C: "Ayahku seorang polisi", D: "Ayahku seorang pedagang" }, answer: "B", discussion: "Mudarrisun = Guru." },
+            { id: 39, text: "Siapakah 'Jaddatun'?", options: { A: "Ibu", B: "Nenek", C: "Tante", D: "Kakak perempuan" }, answer: "B", discussion: "Jaddatun = Nenek." },
+            { id: 40, text: "Susun: ( Fil - Baiti - Umi ).", options: { A: "Fil Baiti Umi", B: "Umi Fil Baiti", C: "Baiti Fil Umi", D: "Umi Baiti Fil" }, answer: "B", discussion: "Ibuku di dalam rumah (Umi fil baiti)." },
+            { id: 41, text: "Terjemahkan: 'Hadza Akhi'.", options: { A: "Ini Ayahku", B: "Ini Saudara lakiku", C: "Ini Pamanku", D: "Ini Kakekku" }, answer: "B", discussion: "Akhi = Saudaraku (lk)." },
+            { id: 42, text: "Kata tanya untuk menanyakan orang (Siapa ini?) adalah...", options: { A: "Ma hadza?", B: "Man hadza? (مَنْ هٰذَا)", C: "Aina hadza?", D: "Hal hadza?" }, answer: "B", discussion: "Man = Siapa." },
+            { id: 43, text: "Lengkapi: ... muwadhofun (Dia [lk] seorang pegawai).", options: { A: "Hiya", B: "Huwa (هُوَ)", C: "Anti", D: "Ana" }, answer: "B", discussion: "Huwa = Dia laki-laki." },
+            { id: 44, text: "Bahasa Arab 'Keluarga' adalah...", options: { A: "Al-Fashlu", B: "Al-Usrotu (الْأُسْرَةُ)", C: "Al-Madrasatu", D: "Al-Baitu" }, answer: "B", discussion: "Al-Usrah = Keluarga." },
+            { id: 45, text: "Isim dhomir untuk 'Dia Perempuan' adalah...", options: { A: "Huwa", B: "Anta", C: "Hiya (هِيَ)", D: "Nahnu" }, answer: "C", discussion: "Hiya = Dia perempuan." }
+        ];
+
+        // --- DATA SOAL PAKET B (45 SOAL - VARIASI) ---
+        const paketB = [
+            // Perkenalan
+            { id: 1, text: "Jika ada yang bertanya 'Masmuka?', jawabannya adalah...", options: { A: "Ana bi khair", B: "Ismi... (Namaku...)", C: "Ahlan bik", D: "Waalaikumussalam" }, answer: "B", discussion: "Ditanya nama, jawab nama (Ismi)." },
+            { id: 2, text: "Ana Tilmidzatun. Artinya...", options: { A: "Saya murid laki-laki", B: "Saya murid perempuan", C: "Saya guru", D: "Saya dokter" }, answer: "B", discussion: "Tilmidzatun (ada Ta' Marbutoh) = Murid Pr." },
+            { id: 3, text: "Bahasa Arab 'Siapa kamu (perempuan)?'...", options: { A: "Man Anta?", B: "Man Anti? (مَنْ أَنْتِ)", C: "Man Huwa?", D: "Man Hiya?" }, answer: "B", discussion: "Anti = Kamu (Pr)." },
+            { id: 4, text: "'Min Aina Anta?' artinya...", options: { A: "Siapa namamu?", B: "Dari mana kamu?", C: "Mau ke mana kamu?", D: "Di mana rumahmu?" }, answer: "B", discussion: "Min aina = Dari mana." },
+            { id: 5, text: "Jawaban 'Kaifa haluka' yang tepat adalah...", options: { A: "Ismi Ahmad", B: "Bi khairin, alhamdulillah", C: "Min Jakarta", D: "Afwan" }, answer: "B", discussion: "Kabar baik." },
+            { id: 6, text: "Bahasa Arab 'Temanku (laki-laki)'...", options: { A: "Shodiqi (صَدِيْقِيْ)", B: "Shodiqoti", C: "Ukhti", D: "Akhi" }, answer: "A", discussion: "Shodiqi = Temanku (Lk)." },
+            { id: 7, text: "Huwwa Ahmad. 'Huwwa' artinya...", options: { A: "Saya", B: "Kamu", C: "Dia (lk)", D: "Kita" }, answer: "C", discussion: "Huwa = Dia Lk." },
+            { id: 8, text: "Hiya Aisyah. 'Hiya' artinya...", options: { A: "Dia (pr)", B: "Kamu (pr)", C: "Saya", D: "Mereka" }, answer: "A", discussion: "Hiya = Dia Pr." },
+            { id: 9, text: "Anta mudarrisun. Artinya...", options: { A: "Saya guru", B: "Kamu (lk) guru", C: "Dia guru", D: "Kita guru" }, answer: "B", discussion: "Anta = Kamu (lk)." },
+            { id: 10, text: "Susun: ( Ismuki - Ma ? ).", options: { A: "Ma Ismuki?", B: "Ismuki Ma?", C: "Ki Ma Ismu?", D: "Ismu Ma Ki?" }, answer: "A", discussion: "Ma Ismuki? (Siapa namamu?)" },
+
+            // Sapaan
+            { id: 11, text: "Shobahun Nur adalah jawaban untuk...", options: { A: "Masa'ul khair", B: "Shobahul khair", C: "Lailah sa'idah", D: "Kaifa hal" }, answer: "B", discussion: "Selamat pagi." },
+            { id: 12, text: "Bahasa Arab 'Selamat Sore'...", options: { A: "Shobahul khair", B: "Masa'ul khair", C: "Naharuka sa'id", D: "Lailah sa'idah" }, answer: "B", discussion: "Masa' = Sore." },
+            { id: 13, text: "Arti 'Ahlan bik'...", options: { A: "Selamat datang juga/bersamamu", B: "Selamat jalan", C: "Terima kasih", D: "Maaf" }, answer: "A", discussion: "Balasan Ahlan wa Sahlan." },
+            { id: 14, text: "Ma'as Salamah diucapkan saat...", options: { A: "Bertemu", B: "Berpisah", C: "Tidur", D: "Makan" }, answer: "B", discussion: "Selamat jalan (perpisahan)." },
+            { id: 15, text: "Syukron katsiron artinya...", options: { A: "Terima kasih banyak", B: "Sama-sama", C: "Maafkan saya", D: "Sampai jumpa" }, answer: "A", discussion: "Syukron = Terima kasih." },
+            { id: 16, text: "Bahasa Arab 'Selamat Tidur/Malam'...", options: { A: "Tusbih alal khair / Lailah sa'idah", B: "Shobahul khair", C: "Nahar sa'id", D: "Ahlan" }, answer: "A", discussion: "Lailah = Malam." },
+            { id: 17, text: "Jawaban 'Naharuka sa'id' adalah...", options: { A: "Sa'idun mubarok", B: "Nur", C: "Bi khair", D: "Afwan" }, answer: "A", discussion: "Balasan selamat siang." },
+            { id: 18, text: "Bahasa Arab 'Maaf'...", options: { A: "Syukron", B: "Afwan / Asif", C: "Na'am", D: "La" }, answer: "B", discussion: "Afwan bisa berarti maaf atau sama-sama." },
+            { id: 19, text: "Jawablah: Aina baituka? (Di mana rumahmu?)", options: { A: "Baiti fi Jakarta", B: "Ismi Budi", C: "Ana tilmidz", D: "Umri 10" }, answer: "A", discussion: "Rumahku di Jakarta." },
+            { id: 20, text: "Man Anta? Jawabannya...", options: { A: "Ana Tilmidzun", B: "Ismi Ali", C: "Waalaikumussalam", D: "Bi khair" }, answer: "A", discussion: "Siapa kamu? Saya murid." },
+
+            // Peralatan Sekolah
+            { id: 21, text: "Hadza Kitabun. Artinya...", options: { A: "Ini Pena", B: "Ini Buku", C: "Ini Tas", D: "Ini Meja" }, answer: "B", discussion: "Kitabun = Buku." },
+            { id: 22, text: "Bahasa Arab 'Penggaris'...", options: { A: "Qolamun", B: "Mistorotun (مِصْطَرَةٌ)", C: "Maktabun", D: "Fashlun" }, answer: "B", discussion: "Mistorotun = Penggaris." },
+            { id: 23, text: "Hadzihi ... (Ini penghapus).", options: { A: "Qolamun", B: "Mimsahatun (مِمْسَحَةٌ)", C: "Kitabun", D: "Kursiyyun" }, answer: "B", discussion: "Mimsahatun (Perempuan/Muannats) pakai Hadzihi." },
+            { id: 24, text: "Bahasa Arab 'Kelas'...", options: { A: "Fashlun (فَصْلٌ)", B: "Madrasatun", C: "Maktabatun", D: "Maqshofun" }, answer: "A", discussion: "Fashlun = Kelas." },
+            { id: 25, text: "Tilka Sabbuurotun. Artinya...", options: { A: "Ini buku", B: "Itu papan tulis", C: "Itu kapur", D: "Ini penggaris" }, answer: "B", discussion: "Tilka = Itu (pr), Sabbuurotun = Papan tulis." },
+            { id: 26, text: "Benda untuk menulis di buku adalah...", options: { A: "Qolamun (قَلَمٌ)", B: "Mistorotun", C: "Haqibatun", D: "Kursiyyun" }, answer: "A", discussion: "Qolamun = Pena." },
+            { id: 27, text: "Ma Hadza? (Gambar Kursi). Jawab...", options: { A: "Hadza Maktabun", B: "Hadza Kursiyyun", C: "Hadzihi Kursiyyun", D: "Hadza Fashlun" }, answer: "B", discussion: "Kursi (lk) pakai Hadza." },
+            { id: 28, text: "Bahasa Arab 'Sekolah'...", options: { A: "Madrasatun (مَدْرَسَةٌ)", B: "Fashlun", C: "Baitun", D: "Masjidun" }, answer: "A", discussion: "Madrasatun = Sekolah." },
+            { id: 29, text: "Manakah Isim Ma'rifat (Khusus)?", options: { A: "Kitabun", B: "Al-Kitabu (الْكِتَابُ)", C: "Qolamun", D: "Fashlun" }, answer: "B", discussion: "Ada Alif Lam (Al)." },
+            { id: 30, text: "Susun: ( Jamilun - Dzalika - Fashlun ).", options: { A: "Dzalika Fashlun Jamilun", B: "Jamilun Fashlun Dzalika", C: "Fashlun Dzalika Jamilun", D: "Fashlun Jamilun Dzalika" }, answer: "A", discussion: "Itu kelas yang indah." },
+
+            // Keluarga
+            { id: 31, text: "Bahasa Arab 'Ibu'...", options: { A: "Abun", B: "Ummun (أُمٌّ)", C: "Jaddun", D: "Akhun" }, answer: "B", discussion: "Ummun = Ibu." },
+            { id: 32, text: "Bahasa Arab 'Paman (dari Ayah)'...", options: { A: "Ammun (عَمٌّ)", B: "Kholun", C: "Jaddun", D: "Akhun" }, answer: "A", discussion: "Ammun = Paman." },
+            { id: 33, text: "Saudara perempuan dalam bahasa Arab...", options: { A: "Akhun", B: "Ukhtun (أُخْتٌ)", C: "Ummun", D: "Jaddatun" }, answer: "B", discussion: "Ukhtun = Saudara pr." },
+            { id: 34, text: "Man Huwa? Huwa ... (Ayahku).", options: { A: "Abi (أَبِيْ)", B: "Umi", C: "Akhi", D: "Ukhti" }, answer: "A", discussion: "Abi = Ayahku." },
+            { id: 35, text: "Kakek bahasa Arabnya...", options: { A: "Jaddun", B: "Abun", C: "Ammun", D: "Walidun" }, answer: "A", discussion: "Jaddun = Kakek." },
+            { id: 36, text: "Nenek bahasa Arabnya...", options: { A: "Jaddun", B: "Jaddatun (جَدَّةٌ)", C: "Ummun", D: "Ammatun" }, answer: "B", discussion: "Jaddatun = Nenek." },
+            { id: 37, text: "Anak laki-laki bahasa Arabnya...", options: { A: "Ibnun (اِبْنٌ)", B: "Bintun", C: "Ummun", D: "Abun" }, answer: "A", discussion: "Ibnun = Anak laki-laki." },
+            { id: 38, text: "Anak perempuan bahasa Arabnya...", options: { A: "Ibnun", B: "Bintun (بِنْتٌ)", C: "Akhun", D: "Jaddun" }, answer: "B", discussion: "Bintun = Anak perempuan." },
+            { id: 39, text: "Umi ... (Ibu rumah tangga).", options: { A: "Mudarrisun", B: "Rabbatul baiti (رَبَّةُ الْبَيْتِ)", C: "Tabibun", D: "Tholibun" }, answer: "B", discussion: "Rabbatul bait = Ibu rumah tangga." },
+            { id: 40, text: "Abi Tabibun. Artinya...", options: { A: "Ayahku Guru", B: "Ayahku Dokter", C: "Ayahku Petani", D: "Ayahku Polisi" }, answer: "B", discussion: "Tabibun = Dokter." },
+            { id: 41, text: "Ismuhu Hasan. Artinya...", options: { A: "Namaku Hasan", B: "Namanya (lk) Hasan", C: "Namamu Hasan", D: "Nama kita Hasan" }, answer: "B", discussion: "Hu = Nya (laki-laki)." },
+            { id: 42, text: "Ismuha Fatimah. Artinya...", options: { A: "Namaku Fatimah", B: "Namanya (pr) Fatimah", C: "Namamu Fatimah", D: "Nama mereka Fatimah" }, answer: "B", discussion: "Ha = Nya (perempuan)." },
+            { id: 43, text: "Hadza Usroti. Artinya...", options: { A: "Ini Keluargaku", B: "Ini Sekolahku", C: "Ini Kelasku", D: "Ini Temanku" }, answer: "A", discussion: "Usroh = Keluarga." },
+            { id: 44, text: "Panggilan untuk saudara laki-laki ayah (Paman) adalah...", options: { A: "Ammun", B: "Kholun", C: "Jaddun", D: "Abun" }, answer: "A", discussion: "Ammun." },
+            { id: 45, text: "Panggilan untuk saudara perempuan ibu (Bibi) adalah...", options: { A: "Ammatun", B: "Kholatun (خَالَةٌ)", C: "Jaddatun", D: "Ukhtun" }, answer: "B", discussion: "Kholatun = Bibi dari pihak ibu." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-yellow-50 bg-[url('https://img.freepik.com/free-vector/islamic-background-design_1305-649.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center">
+                            <h2 className="text-xl font-bold text-yellow-800">Ahlan wa Sahlan di</h2>
+                            <h1 className="text-3xl font-black text-yellow-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Arab Kelas 4</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Antum..." className="w-full p-4 border-2 border-yellow-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-yellow-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-yellow-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-green-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-green-600 py-4 rounded-xl font-black text-xl border-b-4 border-green-800 btn-fun shadow-lg text-white">MULAI (إِبْدَأْ)</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-yellow-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-yellow-800">SISWA</div><div className="font-bold text-yellow-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-yellow-100 text-yellow-700 px-3 py-1 rounded-lg border border-yellow-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-yellow-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-yellow-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-green-100 border-green-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700 font-sans">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-yellow-50 rounded-2xl border-2 border-yellow-200 text-center">
+                            <h3 className="text-sm font-bold text-yellow-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-800 btn-fun">SELESAI (خَلَاص) ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-blue-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-blue-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-blue-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-yellow-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-yellow-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir (النَّتِيْجَة)</h2>
+                            <h1 className="text-7xl font-black text-yellow-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-yellow-100 text-yellow-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Mumtaz! (Luar Biasa) 🌟" : score >= 60 ? "Jayyid! (Bagus) 👍" : "Ayo Belajar Lagi! (Hamasah) 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-green-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-lg w-full">Ulangi (إِعَادَة) ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 MUMTAZ! <br/>Semua Benar! (صَحِيْح)</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
