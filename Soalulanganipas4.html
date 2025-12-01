@@ -23,7 +23,7 @@
         .loader { border: 6px solid #f3f3f3; border-top: 6px solid #22c55e; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Safe Area untuk HP */
+        /* Safe Area */
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
     </style>
 </head>
@@ -36,96 +36,82 @@
         </div>
     </div>
 
-    <!-- Error Handler Script (Agar tidak blank screen) -->
     <script>
         window.onerror = function(message, source, lineno, colno, error) {
             const root = document.getElementById('root');
-            root.innerHTML = '<div style="padding:20px; text-align:center; color:red; font-family:sans-serif;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><p>Baris: '+lineno+'</p><button onclick="window.location.reload()" style="padding:10px 20px; margin-top:10px; background:#eee; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Muat Ulang Halaman</button></div>';
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
         };
     </script>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // --- KOMPONEN GAMBAR AMAN ---
-        const SafeImage = ({ src, alt }) => {
-            const [error, setError] = useState(false);
-            if (error || !src) return (
-                <div className="w-full h-40 bg-gray-100 rounded-xl mb-4 border-2 border-gray-200 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
-                    <span className="text-3xl mb-2">🖼️</span>
-                    <span className="text-xs font-bold text-gray-500">Gambar Tidak Muncul</span>
-                    <span className="text-[10px] text-gray-400">(Koneksi internet lambat/diblokir)</span>
-                </div>
-            );
-            return <img src={src} alt={alt} className="w-full h-auto max-h-64 object-contain bg-white rounded-xl mb-4 border-2 border-green-100 shadow-sm" onError={() => setError(true)} />;
-        };
-
-        // --- DATA SOAL PAKET A (45 SOAL - VERIFIED) ---
+        // --- DATA SOAL PAKET A (45 SOAL - TEKS SAJA) ---
         const paketA = [
-            { id: 1, text: "Perhatikan gambar! Pak Tani menanam jagung di ladang. Jagung termasuk jenis SDA...", img: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=600&q=80", alt: "Ladang Jagung", options: { A: "Hayati", B: "Non-hayati", C: "Mineral", D: "Buatan" }, answer: "A", discussion: "Jagung adalah tumbuhan (makhluk hidup), maka termasuk SDA Hayati." },
+            { id: 1, text: "Pak Tani sedang menanam jagung di ladang. Jagung termasuk jenis Sumber Daya Alam (SDA)...", options: { A: "Hayati", B: "Non-hayati", C: "Mineral", D: "Buatan" }, answer: "A", discussion: "Jagung adalah tumbuhan (makhluk hidup), maka termasuk SDA Hayati." },
             { id: 2, text: "Kursi plastik terbuat dari bijih plastik yang berasal dari minyak bumi. Asal benda tersebut adalah...", options: { A: "Hutan", B: "Pertambangan", C: "Pertanian", D: "Laut" }, answer: "B", discussion: "Minyak bumi diambil dari perut bumi melalui pertambangan." },
             { id: 3, text: "SDA yang jumlahnya terbatas dan akan habis jika dipakai terus menerus disebut...", options: { A: "SDA Hayati", B: "SDA Dapat Diperbarui", C: "SDA Tidak Dapat Diperbarui", D: "SDA Kekal" }, answer: "C", discussion: "SDA tidak dapat diperbarui jumlahnya terbatas." },
             { id: 4, text: "Contoh sumber daya alam yang dapat diperbarui adalah...", options: { A: "Emas", B: "Air dan Tanah", C: "Batu Bara", D: "Besi" }, answer: "B", discussion: "Air dan tanah selalu mengalami siklus pembaruan alami." },
             { id: 5, text: "Wilayah dataran tinggi sangat cocok untuk kegiatan ekonomi...", options: { A: "Tambak udang", B: "Perkebunan teh", C: "Pabrik garam", D: "Pelabuhan" }, answer: "B", discussion: "Teh tumbuh subur di udara sejuk dataran tinggi." },
-            { id: 6, text: "Aktivitas manusia yang menyebabkan asap tebal dan memicu perubahan iklim adalah...", img: "https://images.unsplash.com/photo-1611273426761-53c8577a3c18?w=600&q=80", alt: "Polusi Asap", options: { A: "Reboisasi", B: "Asap kendaraan berlebihan", C: "Hemat energi", D: "Daur ulang sampah" }, answer: "B", discussion: "Asap kendaraan mengandung gas karbon pemicu pemanasan global." },
+            { id: 6, text: "Aktivitas kendaraan bermotor yang mengeluarkan asap tebal dapat menyebabkan...", options: { A: "Udara semakin segar", B: "Polusi udara dan perubahan iklim", C: "Hemat energi", D: "Lingkungan asri" }, answer: "B", discussion: "Asap kendaraan mengandung gas karbon pemicu polusi." },
             { id: 7, text: "Tindakan yang tepat dalam mengelola sampah organik (sisa makanan) adalah...", options: { A: "Buang ke sungai", B: "Dibakar", C: "Dibuat kompos", D: "Ditimbun plastik" }, answer: "C", discussion: "Sampah organik bisa membusuk menjadi pupuk kompos." },
             { id: 8, text: "Upaya pelestarian hewan langka agar tidak punah adalah...", options: { A: "Suaka Margasatwa", B: "Berburu", C: "Menebang hutan", D: "Memelihara di rumah" }, answer: "A", discussion: "Suaka Margasatwa adalah tempat perlindungan khusus hewan." },
             { id: 9, text: "Kerusakan di darat dan laut disebabkan oleh...", options: { A: "Alam", B: "Perbuatan manusia", C: "Laut", D: "Hewan" }, answer: "B", discussion: "Sesuai QS Ar-Rum ayat 41." },
             { id: 10, text: "Dampak penebangan hutan secara liar (gundul) adalah...", options: { A: "Kayu mudah didapat", B: "Udara segar", C: "Banjir & Longsor", D: "Tanah subur" }, answer: "C", discussion: "Hutan gundul tidak bisa menyerap air hujan." },
-            { id: 11, text: "Menutup hidung saat ada bau sampah. Indra yang terganggu adalah...", img: "https://images.unsplash.com/photo-1533227268428-f9ed0900fb3b?w=600&q=80", alt: "Sampah", options: { A: "Mata", B: "Telinga", C: "Penciuman", D: "Kulit" }, answer: "C", discussion: "Hidung mendeteksi bau." },
+            { id: 11, text: "Andi menutup hidung saat melewati tumpukan sampah yang bau. Indra yang terganggu adalah...", options: { A: "Mata", B: "Telinga", C: "Penciuman", D: "Kulit" }, answer: "C", discussion: "Hidung mendeteksi bau." },
             { id: 12, text: "Bagian mata yang berwarna putih dan keras disebut...", options: { A: "Kornea", B: "Sklera", C: "Pupil", D: "Retina" }, answer: "B", discussion: "Sklera adalah lapisan pelindung mata berwarna putih." },
             { id: 13, text: "Bayangan benda jatuh tepat di bagian mata yaitu...", options: { A: "Lensa", B: "Retina", C: "Pupil", D: "Kornea" }, answer: "B", discussion: "Retina menangkap bayangan." },
             { id: 14, text: "Rabun dekat disebut juga...", options: { A: "Miopi", B: "Hipermetropi", C: "Buta Warna", D: "Silindris" }, answer: "B", discussion: "Hipermetropi (Rabun Dekat)." },
-            { id: 15, text: "Bagian telinga berbentuk seperti siput adalah...", img: "https://images.unsplash.com/photo-1516575150278-77136aed6920?w=600&q=80", alt: "Telinga", options: { A: "Koklea", B: "Gendang", C: "Saluran", D: "Daun Telinga" }, answer: "A", discussion: "Koklea sering disebut rumah siput." },
+            { id: 15, text: "Bagian telinga bagian dalam yang berbentuk seperti rumah siput adalah...", options: { A: "Koklea", B: "Gendang", C: "Saluran", D: "Daun Telinga" }, answer: "A", discussion: "Koklea sering disebut rumah siput." },
             { id: 16, text: "Selain mendengar, telinga berfungsi sebagai alat...", options: { A: "Penglihatan", B: "Penciuman", C: "Keseimbangan", D: "Peraba" }, answer: "C", discussion: "Telinga bagian dalam mengatur keseimbangan tubuh." },
             { id: 17, text: "Selaput lendir pada hidung berfungsi...", options: { A: "Menyaring debu", B: "Melembapkan udara", C: "Mengenali bau", D: "Menghangatkan" }, answer: "B", discussion: "Agar rongga hidung tidak kering." },
             { id: 18, text: "Manfaat bersiwak adalah menjaga kesehatan...", options: { A: "Mata", B: "Mulut & Gigi", C: "Telinga", D: "Kulit" }, answer: "B", discussion: "Kebersihan mulut." },
             { id: 19, text: "Bagian tepi lidah peka terhadap rasa...", options: { A: "Manis", B: "Asin/Asam", C: "Pahit", D: "Pedas" }, answer: "B", discussion: "Tepi lidah sensitif rasa asam dan asin." },
             { id: 20, text: "Ujung jari sangat peka karena...", options: { A: "Kulit tebal", B: "Banyak saraf peraba", C: "Ada kuku", D: "Sering dipakai" }, answer: "B", discussion: "Banyak saraf peraba berkumpul di ujung jari." },
-            { id: 21, text: "Balon mengembang karena gas bersifat...", options: { A: "Kaku", B: "Menekan ke segala arah", C: "Tetap", D: "Volume tetap" }, answer: "B", discussion: "Gas mengisi seluruh ruangan." },
+            { id: 21, text: "Balon mengembang membuktikan bahwa gas bersifat...", options: { A: "Kaku", B: "Menekan ke segala arah", C: "Tetap", D: "Volume tetap" }, answer: "B", discussion: "Gas mengisi seluruh ruangan." },
             { id: 22, text: "Benda yang bentuk dan volumenya selalu berubah adalah...", options: { A: "Batu", B: "Air", C: "Asap", D: "Kayu" }, answer: "C", discussion: "Gas (asap) tidak punya bentuk & volume tetap." },
             { id: 23, text: "Zat yang partikelnya sangat rapat adalah...", options: { A: "Padat", B: "Cair", C: "Gas", D: "Campuran" }, answer: "A", discussion: "Ciri zat padat." },
-            { id: 24, text: "Aroma masakan tercium jauh karena sifat gas...", options: { A: "Bergerak bebas", B: "Diam", C: "Mengalir", D: "Berat" }, answer: "A", discussion: "Difusi gas menyebar ke segala arah." },
+            { id: 24, text: "Aroma masakan tercium sampai jauh karena sifat gas...", options: { A: "Bergerak bebas", B: "Diam", C: "Mengalir", D: "Berat" }, answer: "A", discussion: "Difusi gas menyebar ke segala arah." },
             { id: 25, text: "Sifat utama zat cair adalah...", options: { A: "Bentuk tetap", B: "Bentuk mengikuti wadah", C: "Volume berubah", D: "Keras" }, answer: "B", discussion: "Cair beradaptasi dengan tempatnya." },
-            { id: 26, text: "Uap air di tutup panci menjadi air disebut...", options: { A: "Mencair", B: "Mengembun", C: "Menyublim", D: "Mengkristal" }, answer: "B", discussion: "Gas ke Cair." },
-            { id: 27, text: "Kapur barus habis karena peristiwa...", img: "https://images.unsplash.com/photo-1626017846939-2d1893d50849?w=600&q=80", alt: "Kapur Barus", options: { A: "Mencair", B: "Menguap", C: "Menyublim", D: "Membeku" }, answer: "C", discussion: "Padat ke Gas." },
+            { id: 26, text: "Uap air yang menempel di tutup panci berubah menjadi titik-titik air disebut...", options: { A: "Mencair", B: "Mengembun", C: "Menyublim", D: "Mengkristal" }, answer: "B", discussion: "Gas ke Cair." },
+            { id: 27, text: "Kapur barus di lemari lama-kelamaan habis karena peristiwa...", options: { A: "Mencair", B: "Menguap", C: "Menyublim", D: "Membeku" }, answer: "C", discussion: "Padat ke Gas." },
             { id: 28, text: "Es kering (Dry Ice) dibuat dengan prinsip...", options: { A: "Membeku", B: "Menguap", C: "Deposisi/Sublimasi", D: "Mencair" }, answer: "C", discussion: "Gas CO2 dipadatkan langsung." },
-            { id: 29, text: "Bensin dibiarkan terbuka akan...", options: { A: "Membeku", B: "Mencair", C: "Menguap", D: "Menyublim" }, answer: "C", discussion: "Cair ke Gas." },
+            { id: 29, text: "Bensin yang dibiarkan dalam wadah terbuka akan habis karena...", options: { A: "Membeku", B: "Mencair", C: "Menguap", D: "Menyublim" }, answer: "C", discussion: "Cair ke Gas." },
             { id: 30, text: "Agar air menjadi es, suhu harus...", options: { A: "Dipanaskan", B: "Didinginkan", C: "Diaduk", D: "Dijemur" }, answer: "B", discussion: "Pelepasan kalor." },
-            { id: 31, text: "Setrika mengubah energi listrik menjadi...", img: "https://images.unsplash.com/photo-1555776092-4f7f57424424?w=600&q=80", alt: "Setrika", options: { A: "Gerak", B: "Panas", C: "Bunyi", D: "Cahaya" }, answer: "B", discussion: "Menghasilkan panas." },
-            { id: 32, text: "Alat yang sama dengan Kipas Angin (Gerak) adalah...", options: { A: "Blender", B: "Kompor", C: "Lampu", D: "Radio" }, answer: "A", discussion: "Blender menggunakan motor listrik." },
+            { id: 31, text: "Setrika mengubah energi listrik menjadi...", options: { A: "Gerak", B: "Panas", C: "Bunyi", D: "Cahaya" }, answer: "B", discussion: "Menghasilkan panas." },
+            { id: 32, text: "Alat yang sama perubahan energinya dengan Kipas Angin (Gerak) adalah...", options: { A: "Blender", B: "Kompor", C: "Lampu", D: "Radio" }, answer: "A", discussion: "Blender menggunakan motor listrik." },
             { id: 33, text: "Baterai mengubah energi kimia menjadi...", options: { A: "Gerak", B: "Listrik", C: "Panas", D: "Bunyi" }, answer: "B", discussion: "Sumber arus listrik DC." },
             { id: 34, text: "Bel rumah mengubah listrik menjadi...", options: { A: "Lampu", B: "Panas", C: "Bunyi", D: "Gerak" }, answer: "C", discussion: "Menghasilkan suara." },
             { id: 35, text: "Alat pengubah gerak air menjadi listrik di PLTA adalah...", options: { A: "Baterai", B: "Generator", C: "Panel Surya", D: "Lampu" }, answer: "B", discussion: "Generator." },
             { id: 36, text: "Televisi menghasilkan energi...", options: { A: "Cahaya & Bunyi", B: "Gerak", C: "Kimia", D: "Panas & Gerak" }, answer: "A", discussion: "Gambar (Cahaya) dan Suara (Bunyi)." },
             { id: 37, text: "Fotosintesis tumbuhan membutuhkan energi...", options: { A: "Angin", B: "Cahaya Matahari", C: "Listrik", D: "Gerak" }, answer: "B", discussion: "Cahaya matahari." },
-            { id: 38, text: "Uap panas di PLTU memutar...", options: { A: "Roda", B: "Turbin", C: "Baling", D: "Jam" }, answer: "B", discussion: "Turbin uap." },
-            { id: 39, text: "Energi kimia dari makanan diubah tubuh menjadi...", options: { A: "Panas", B: "Gerak", C: "Bunyi", D: "Cahaya" }, answer: "B", discussion: "Tenaga untuk bergerak." },
+            { id: 38, text: "Uap panas di PLTU digunakan untuk memutar...", options: { A: "Roda", B: "Turbin", C: "Baling", D: "Jam" }, answer: "B", discussion: "Turbin uap." },
+            { id: 39, text: "Energi kimia dari makanan diubah tubuh untuk bergerak menjadi...", options: { A: "Panas", B: "Gerak", C: "Bunyi", D: "Cahaya" }, answer: "B", discussion: "Tenaga untuk bergerak." },
             { id: 40, text: "Matahari menghasilkan energi...", options: { A: "Gerak", B: "Cahaya & Panas", C: "Listrik", D: "Bunyi" }, answer: "B", discussion: "Sinar dan hangat." },
             { id: 41, text: "SDA Hayati berasal dari...", options: { A: "Makhluk hidup", B: "Benda mati", C: "Tambang", D: "Udara" }, answer: "A", discussion: "Hayati = Hidup." },
-            { id: 42, text: "Menjaga kesehatan mata dengan cara...", options: { A: "Baca tiduran", B: "Baca gelap", C: "Jarak 30cm & Vit A", D: "Main HP lama" }, answer: "C", discussion: "Posisi dan nutrisi." },
+            { id: 42, text: "Menjaga kesehatan mata dengan cara...", options: { A: "Baca tiduran", B: "Baca gelap", C: "Jarak 30cm & makan Vit A", D: "Main HP lama" }, answer: "C", discussion: "Posisi dan nutrisi." },
             { id: 43, text: "Perbedaan zat cair dan padat adalah...", options: { A: "Volume", B: "Bentuk mengikuti wadah", C: "Bentuk tetap", D: "Partikel" }, answer: "B", discussion: "Cair berubah bentuk." },
-            { id: 44, text: "Menjemur baju memanfaatkan peristiwa...", img: "https://images.unsplash.com/photo-1563829288107-19db29cb9898?w=600&q=80", alt: "Jemur Baju", options: { A: "Mencair", B: "Menguap", C: "Menyublim", D: "Membeku" }, answer: "B", discussion: "Air menguap." },
+            { id: 44, text: "Menjemur baju basah memanfaatkan peristiwa...", options: { A: "Mencair", B: "Menguap", C: "Menyublim", D: "Membeku" }, answer: "B", discussion: "Air menguap." },
             { id: 45, text: "Persamaan Kipas, Blender, dan Mixer adalah...", options: { A: "Hasilkan Panas", B: "Hasilkan Cahaya", C: "Hasilkan Gerak", D: "Hasilkan Bunyi" }, answer: "C", discussion: "Semuanya berputar." }
         ];
 
-        // --- DATA SOAL PAKET B (45 SOAL - VERIFIED) ---
+        // --- DATA SOAL PAKET B (45 SOAL - TEKS SAJA) ---
         const paketB = [
             { id: 1, text: "Susu, Telur, dan Daging adalah hasil SDA...", options: { A: "Nabati", B: "Hewani", C: "Tambang", D: "Energi" }, answer: "B", discussion: "Berasal dari hewan." },
             { id: 2, text: "Batu bata berasal dari...", options: { A: "Tanah Liat", B: "Pasir", C: "Kayu", D: "Besi" }, answer: "A", discussion: "Tanah liat dibakar." },
             { id: 3, text: "SDA yang dapat habis disebut...", options: { A: "Terbarukan", B: "Tidak Terbarukan", C: "Lestari", D: "Abadi" }, answer: "B", discussion: "Jumlah terbatas." },
             { id: 4, text: "Matahari dan Angin termasuk SDA...", options: { A: "Dapat diperbarui", B: "Langka", C: "Mahal", D: "Tambang" }, answer: "A", discussion: "Selalu ada." },
             { id: 5, text: "Penduduk dataran rendah banyak bekerja sebagai...", options: { A: "Petani Padi", B: "Nelayan", C: "Pemetik Teh", D: "Penambang" }, answer: "A", discussion: "Pertanian sawah." },
-            { id: 6, text: "Membuang sampah plastik ke sungai menyebabkan...", img: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=600&q=80", alt: "Sungai Sampah", options: { A: "Air jernih", B: "Banjir & Polusi", C: "Ikan senang", D: "Tanah subur" }, answer: "B", discussion: "Sumbatan aliran air." },
+            { id: 6, text: "Membuang sampah plastik ke sungai dapat menyebabkan...", options: { A: "Air jernih", B: "Banjir & Polusi", C: "Ikan senang", D: "Tanah subur" }, answer: "B", discussion: "Sumbatan aliran air." },
             { id: 7, text: "Menghemat listrik siang hari dengan cara...", options: { A: "Nyalakan lampu", B: "Buka Jendela", C: "Nyalakan AC", D: "Tidur" }, answer: "B", discussion: "Cahaya matahari alami." },
             { id: 8, text: "Dilarang berburu hewan langka bertujuan...", options: { A: "Koleksi", B: "Menjaga Ekosistem", C: "Diambil kulitnya", D: "Hobi" }, answer: "B", discussion: "Agar tidak punah." },
             { id: 9, text: "Kerusakan alam terjadi akibat ulah...", options: { A: "Bencana", B: "Manusia", C: "Takdir", D: "Hewan" }, answer: "B", discussion: "Tanggung jawab manusia." },
             { id: 10, text: "Hutan bakau rusak menyebabkan...", options: { A: "Abrasi", B: "Meletus", C: "Gempa", D: "Hujan" }, answer: "A", discussion: "Pengikisan pantai." },
-            { id: 11, text: "Rasa manis permen dirasakan oleh...", img: "https://images.unsplash.com/photo-1582058091505-f87a2e55a91f?w=600&q=80", alt: "Permen", options: { A: "Hidung", B: "Lidah", C: "Kulit", D: "Mata" }, answer: "B", discussion: "Lidah pengecap." },
+            { id: 11, text: "Rasa manis permen dirasakan oleh...", options: { A: "Hidung", B: "Lidah", C: "Kulit", D: "Mata" }, answer: "B", discussion: "Lidah pengecap." },
             { id: 12, text: "Bagian mata yang memberi warna adalah...", options: { A: "Iris", B: "Pupil", C: "Lensa", D: "Retina" }, answer: "A", discussion: "Iris." },
             { id: 13, text: "Lensa mata berfungsi untuk...", options: { A: "Menangkap cahaya", B: "Memfokuskan cahaya", C: "Melindungi mata", D: "Mengatur cahaya" }, answer: "B", discussion: "Fokus bayangan." },
             { id: 14, text: "Kacamata lensa cekung untuk penderita...", options: { A: "Rabun Dekat", B: "Rabun Jauh (Miopi)", C: "Silinder", D: "Katarak" }, answer: "B", discussion: "Rabun jauh." },
-            { id: 15, text: "Daun telinga berfungsi...", img: "https://images.unsplash.com/photo-1543598587-0b5c00e62f55?w=600&q=80", alt: "Telinga", options: { A: "Menangkap Bunyi", B: "Mengubah Saraf", C: "Keseimbangan", D: "Melindungi Gendang" }, answer: "A", discussion: "Corong suara." },
+            { id: 15, text: "Daun telinga berfungsi...", options: { A: "Menangkap Bunyi", B: "Mengubah Saraf", C: "Keseimbangan", D: "Melindungi Gendang" }, answer: "A", discussion: "Corong suara." },
             { id: 16, text: "Indra peraba adalah...", options: { A: "Rambut", B: "Kulit", C: "Kuku", D: "Otot" }, answer: "B", discussion: "Kulit." },
             { id: 17, text: "Saraf pembau terletak di...", options: { A: "Langit mulut", B: "Rongga hidung atas", C: "Telinga", D: "Lidah" }, answer: "B", discussion: "Hidung bagian atas." },
             { id: 18, text: "Menjaga telinga dengan cara...", options: { A: "Mendengar musik keras", B: "Pakai benda tajam", C: "Hindari suara bising", D: "Masukan air" }, answer: "C", discussion: "Hindari bising." },
@@ -137,8 +123,8 @@
             { id: 24, text: "Ban sepeda kempes karena...", options: { A: "Memuai", B: "Udara keluar pori", C: "Membeku", D: "Mencair" }, answer: "B", discussion: "Partikel kecil keluar." },
             { id: 25, text: "Minyak goreng termasuk zat...", options: { A: "Padat", B: "Cair", C: "Gas", D: "Beku" }, answer: "B", discussion: "Cair." },
             { id: 26, text: "Lilin meleleh adalah perubahan...", options: { A: "Padat ke Cair", B: "Cair ke Padat", C: "Padat ke Gas", D: "Cair ke Gas" }, answer: "A", discussion: "Mencair." },
-            { id: 27, text: "Air mendidih habis menjadi...", img: "https://images.unsplash.com/photo-1504544750208-dc0358e63f7f?w=600&q=80", alt: "Air Mendidih", options: { A: "Beku", B: "Uap (Gas)", C: "Sublim", D: "Kristal" }, answer: "B", discussion: "Menguap." },
-            { id: 28, text: "Pembuatan garam memanfaatkan...", img: "https://images.unsplash.com/photo-1518116383610-85f242566738?w=600&q=80", alt: "Tambak", options: { A: "Penguapan", B: "Pembekuan", C: "Sublimasi", D: "Peleburan" }, answer: "A", discussion: "Penguapan air laut." },
+            { id: 27, text: "Air mendidih habis menjadi...", options: { A: "Beku", B: "Uap (Gas)", C: "Sublim", D: "Kristal" }, answer: "B", discussion: "Menguap." },
+            { id: 28, text: "Pembuatan garam memanfaatkan...", options: { A: "Penguapan", B: "Pembekuan", C: "Sublimasi", D: "Peleburan" }, answer: "A", discussion: "Penguapan air laut." },
             { id: 29, text: "Mengkristal adalah perubahan...", options: { A: "Cair ke Padat", B: "Gas ke Padat", C: "Padat ke Gas", D: "Cair ke Gas" }, answer: "B", discussion: "Gas jadi padat." },
             { id: 30, text: "Membeku membutuhkan...", options: { A: "Panas", B: "Suhu dingin", C: "Angin", D: "Cahaya" }, answer: "B", discussion: "Dingin." },
             { id: 31, text: "Rice Cooker mengubah listrik menjadi...", options: { A: "Gerak", B: "Panas", C: "Bunyi", D: "Cahaya" }, answer: "B", discussion: "Panas." },
@@ -201,7 +187,7 @@
 
             if (step === 'welcome') {
                 return (
-                    <div className="min-h-screen flex items-center justify-center p-4 bg-green-50 bg-[url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1920&q=80')] bg-cover bg-center">
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-green-50">
                         <div className="glass-panel p-8 max-w-md w-full text-center">
                             <h2 className="text-xl font-bold text-green-700">Selamat Datang</h2>
                             <h1 className="text-3xl font-black text-green-600 mb-2">Bimbel Musafir One</h1>
@@ -226,19 +212,16 @@
 
                 return (
                     <div className="max-w-3xl mx-auto p-4 pb-48">
-                        {/* HEADER */}
                         <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-green-200 px-4 py-2 flex justify-between items-center h-16 safe-top">
                             <div><div className="text-[10px] font-bold text-green-800">SISWA</div><div className="font-bold text-green-700 truncate max-w-[150px]">{nama}</div></div>
                             <div className="font-mono font-bold bg-green-100 text-green-700 px-3 py-1 rounded-lg border border-green-300">{formatTime(timeLeft)}</div>
                         </div>
 
-                        {/* LIST SOAL */}
                         <div className="mt-20 space-y-6">
                             {currentQ.map((q, idx) => (
                                 <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-green-100 relative overflow-hidden">
                                     <div className="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
                                     <div className="mt-8">
-                                        {q.img && <SafeImage src={q.img} alt={q.alt || "Soal"} />}
                                         <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
                                         <div className="grid grid-cols-1 gap-3">
                                             {Object.entries(q.options).map(([k, v]) => (
@@ -253,12 +236,10 @@
                             ))}
                         </div>
 
-                        {/* NAVIGASI CADANGAN (STATIS) */}
                         <div className="mt-12 mb-10 p-6 bg-green-50 rounded-2xl border-2 border-green-100 text-center">
                             <h3 className="text-sm font-bold text-green-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
                             <div className="flex gap-4 justify-center">
                                 <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
-                                
                                 {isLastPage ? 
                                     <button onClick={() => setStep('result')} className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-800 btn-fun">SELESAI ✅</button> :
                                     <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-blue-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-blue-700 btn-fun">SELANJUTNYA →</button>
@@ -266,7 +247,6 @@
                             </div>
                         </div>
 
-                        {/* NAVIGASI UTAMA (FLOATING) */}
                         <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
                             <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
                             <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
