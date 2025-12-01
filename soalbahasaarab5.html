@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Arab Kelas 5 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Arab (Amiri) & Latin -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #ecfdf5; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        /* Kelas khusus untuk teks Arab agar besar dan jelas */
+        .ar { font-family: 'Amiri', serif; direction: rtl; font-size: 1.6rem; line-height: 2.2rem; color: #065f46; margin-bottom: 10px; display: block; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #34d399; box-shadow: 8px 8px 0px #059669; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #059669; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #047857; font-weight: bold;">Memuat Soal Bahasa Arab...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (50 SOAL - REVISI) ---
+        const paketA = [
+            // 1. Isim Tafdhil (Perbandingan) - REVISI SOAL 1
+            { id: 1, text: "Perhatikan kata-kata berikut: \n1. كَبِيْرٌ (Besar) \n2. أَكْبَرُ (Lebih Besar) \nKata yang berfungsi sebagai Isim Tafdhil (kata sifat untuk membandingkan) adalah nomor...", options: { A: "1 (Satu)", B: "2 (Dua)", C: "Keduanya", D: "Tidak ada" }, answer: "B", discussion: "Isim Tafdhil mengikuti pola أَفْعَلُ (seperti أَكْبَرُ) yang artinya 'Lebih...'." },
+            { id: 2, text: "Lawan kata dari 'Akbaru' (Lebih Besar) adalah...", options: { A: "Atwalu", B: "Asghoru (أَصْغَرُ)", C: "Ajmalu", D: "Anzhafu" }, answer: "B", discussion: "Asghoru = Lebih Kecil." },
+            { id: 3, text: "Gajah itu lebih besar daripada Kucing. Bahasa Arabnya: Al-Fiilu ... minal Qitthi.", options: { A: "Asghoru", B: "Akbaru (أَكْبَرُ)", C: "Atwalu", D: "Aqshoru" }, answer: "B", discussion: "Gajah lebih besar (Akbaru)." },
+            
+            // 2. Anggota Tubuh
+            { id: 4, text: "Bahasa Arab dari 'Kepala' adalah...", options: { A: "Yadun", B: "Rijlun", C: "Ra'sun (رَأْسٌ)", D: "Anfun" }, answer: "C", discussion: "Ra'sun = Kepala." },
+            { id: 5, text: "Kita melihat menggunakan...", options: { A: "Al-Anfu", B: "Al-Udzunu", C: "Al-Yadu", D: "Al-Ainu (الْعَيْنُ)" }, answer: "D", discussion: "Al-Ainu = Mata." },
+            { id: 6, text: "Fungsi dari 'Al-Udzunu' (الْأُذُنُ) adalah untuk...", options: { A: "Melihat", B: "Mendengar", C: "Berjalan", D: "Makan" }, answer: "B", discussion: "Udzunu = Telinga = Mendengar." },
+            { id: 7, text: "Anggota tubuh yang digunakan untuk berjalan adalah...", options: { A: "Rijlun (رِجْلٌ)", B: "Yadun", C: "Famun", D: "Sya'run" }, answer: "A", discussion: "Rijlun = Kaki." },
+            { id: 8, text: "Arti kata 'Anfun' (أَنْفٌ) adalah...", options: { A: "Mulut", B: "Hidung", C: "Telinga", D: "Wajah" }, answer: "B", discussion: "Anfun = Hidung." },
+            { id: 9, text: "Di kepala terdapat rambut. Bahasa Arab 'Rambut' adalah...", options: { A: "Sya'run (شَعْرٌ)", B: "Sinun", C: "Lisanun", D: "Batnun" }, answer: "A", discussion: "Sya'run = Rambut." },
+            { id: 10, text: "Manusia mempunyai dua tangan. Bahasa Arab 'Tangan' adalah...", options: { A: "Yadun (يَدٌ)", B: "Rijlun", C: "Sadrun", D: "Dzahrun" }, answer: "A", discussion: "Yadun = Tangan." },
+
+            // 3. Bentuk (Asy-Syaklu)
+            { id: 11, text: "Bentuk papan tulis biasanya adalah...", options: { A: "Kuroiyyun", B: "Mustathilun (مُسْتَطِيْلٌ)", C: "Mutsallatsun", D: "Murabba'un" }, answer: "B", discussion: "Mustathilun = Persegi Panjang." },
+            { id: 12, text: "Bahasa Arab dari 'Lingkaran' adalah...", options: { A: "Mustathilun", B: "Kuroiyyun (كُرَوِيٌّ)", C: "Dairatun (دَائِرَةٌ)", D: "Mutsallatsun" }, answer: "C", discussion: "Dairatun = Lingkaran." },
+            { id: 13, text: "Bentuk Piramida adalah...", options: { A: "Makhruthiyyun (مَخْرُوْطِيٌّ)", B: "Haramiyyun (هَرَمِيٌّ)", C: "Ustuwaniyyun", D: "Muka'abun" }, answer: "B", discussion: "Haramiyyun = Piramida/Limas." },
+            { id: 14, text: "Benda yang berbentuk 'Kuroiyyun' (Bola) adalah...", options: { A: "Buku", B: "Bola Kaki", C: "Pintu", D: "Meja" }, answer: "B", discussion: "Kuroiyyun = Bulat seperti bola." },
+            { id: 15, text: "Bentuk Kubus dalam bahasa Arab adalah...", options: { A: "Muka'abun (مُكَعَّبٌ)", B: "Mustathilun", C: "Dairatun", D: "Mutsallatsun" }, answer: "A", discussion: "Muka'abun = Kubus." },
+            { id: 16, text: "'Mutsallatsun' (مُثَلَّثٌ) artinya...", options: { A: "Persegi", B: "Segitiga", C: "Lingkaran", D: "Tabung" }, answer: "B", discussion: "Mutsallatsun = Segitiga." },
+            { id: 17, text: "Bentuk Ubin/Keramik lantai biasanya...", options: { A: "Murabba'un (مُكَعَّبٌ)", B: "Dairatun", C: "Ustuwaniyyun", D: "Haramiyyun" }, answer: "A", discussion: "Murabba'un = Persegi/Bujur sangkar." },
+            { id: 18, text: "Bentuk gelas atau tong sampah adalah...", options: { A: "Muka'abun", B: "Ustuwaniyyun (أُسْطُوَانِيٌّ)", C: "Mutsallatsun", D: "Kuroiyyun" }, answer: "B", discussion: "Ustuwaniyyun = Tabung/Silinder." },
+            { id: 19, text: "Topi ulang tahun biasanya berbentuk...", options: { A: "Murabba'un", B: "Makhruthiyyun (مَخْرُوْطِيٌّ)", C: "Mustathilun", D: "Dairatun" }, answer: "B", discussion: "Makhruthiyyun = Kerucut." },
+            { id: 20, text: "Arti dari 'Asy-Syaklu' adalah...", options: { A: "Warna", B: "Bentuk", C: "Ukuran", D: "Berat" }, answer: "B", discussion: "Syaklu = Bentuk." },
+
+            // 4. Warna (Al-Alwan)
+            { id: 21, text: "Warna darah adalah...", options: { A: "Ahmaru (أَحْمَرُ)", B: "Abyadhu", C: "Aswadu", D: "Azraqu" }, answer: "A", discussion: "Ahmaru = Merah." },
+            { id: 22, text: "Bahasa Arab dari warna 'Putih' adalah...", options: { A: "Ahmaru", B: "Abyadhu (أَبْيَضُ)", C: "Akhdaru", D: "Ashfaru" }, answer: "B", discussion: "Abyadhu = Putih." },
+            { id: 23, text: "Warna langit yang cerah adalah...", options: { A: "Ahmaru", B: "Azraqu (أَزْرَقُ)", C: "Aswadu", D: "Burtuqoliyyun" }, answer: "B", discussion: "Azraqu = Biru." },
+            { id: 24, text: "Daun pepohonan umumnya berwarna...", options: { A: "Azraqu", B: "Akhdaru (أَخْضَرُ)", C: "Ahmaru", D: "Aswadu" }, answer: "B", discussion: "Akhdaru = Hijau." },
+            { id: 25, text: "Pisang yang sudah matang berwarna...", options: { A: "Ashfaru (أَصْفَرُ)", B: "Ahmaru", C: "Azraqu", D: "Aswadu" }, answer: "A", discussion: "Ashfaru = Kuning." },
+            { id: 26, text: "Warna Hajar Aswad di Ka'bah adalah...", options: { A: "Abyadhu", B: "Aswadu (أَسْوَدُ)", C: "Ahmaru", D: "Akhdaru" }, answer: "B", discussion: "Aswadu = Hitam." },
+            { id: 27, text: "Warna seragam sekolah 'Merah Putih' bahasa Arabnya...", options: { A: "Ahmar wa Aswad", B: "Ahmar wa Abyad (أَحْمَر وَ أَبْيَض)", C: "Abyad wa Azraq", D: "Akhdar wa Asfar" }, answer: "B", discussion: "Ahmar (Merah) wa Abyad (Putih)." },
+            { id: 28, text: "'Burtuqoliyyun' (بُرْتُقَالِيٌّ) artinya warna...", options: { A: "Ungu", B: "Oranye / Jingga", C: "Cokelat", D: "Abu-abu" }, answer: "B", discussion: "Dari kata Burtuqol (Jeruk)." },
+            { id: 29, text: "Warna 'Cokelat' dalam bahasa Arab adalah...", options: { A: "Banafsajiyyun", B: "Asmaru / Bunniyun (بُنِّيٌّ)", C: "Romadiyyun", D: "Wardiyyun" }, answer: "B", discussion: "Bunniyun = Cokelat (Warna Kopi)." },
+            { id: 30, text: "Bunga Mawar itu merah. 'Al-Wardatu ...'", options: { A: "Hamro'u (حَمْرَاءُ)", B: "Ahmaru", C: "Baidho'u", D: "Zarqho'u" }, answer: "A", discussion: "Karena Bunga (Wardatun) perempuan, warna Ahmar jadi Hamro'." },
+
+            // 5. Kalender Hijriyah & Masehi
+            { id: 31, text: "Kalender Islam disebut Kalender...", options: { A: "Masehi", B: "Hijriyah (هِجْرِيَّة)", C: "Jawa", D: "Syamsiyah" }, answer: "B", discussion: "Hijriyah berdasarkan hijrah Nabi." },
+            { id: 32, text: "Bulan pertama dalam kalender Hijriyah adalah...", options: { A: "Safar", B: "Muharram (مُحَرَّم)", C: "Ramadhan", D: "Syawal" }, answer: "B", discussion: "Muharram adalah bulan ke-1." },
+            { id: 33, text: "Umat Islam berpuasa wajib pada bulan...", options: { A: "Rajab", B: "Sya'ban", C: "Ramadhan (رَمَضَان)", D: "Dzulhijjah" }, answer: "C", discussion: "Ramadhan bulan puasa." },
+            { id: 34, text: "Bulan kelahiran Nabi Muhammad SAW adalah...", options: { A: "Rabi'ul Awwal (رَبِيْعُ الْأَوَّل)", B: "Rabi'ul Akhir", C: "Jumadil Awwal", D: "Muharram" }, answer: "A", discussion: "Maulid Nabi di Rabi'ul Awwal." },
+            { id: 35, text: "Idul Fitri dirayakan pada tanggal 1 bulan...", options: { A: "Ramadhan", B: "Syawal (شَوَّال)", C: "Dzulqa'dah", D: "Dzulhijjah" }, answer: "B", discussion: "Syawal setelah Ramadhan." },
+            { id: 36, text: "Idul Adha (Hari Raya Kurban) terjadi pada bulan...", options: { A: "Syawal", B: "Dzulhijjah (ذُو الْحِجَّة)", C: "Muharram", D: "Safar" }, answer: "B", discussion: "Bulan Haji/Kurban." },
+            { id: 37, text: "Jumlah bulan dalam satu tahun Hijriyah adalah...", options: { A: "10", B: "11", C: "12 (اِثْنَا عَشَرَ)", D: "13" }, answer: "C", discussion: "Ada 12 bulan." },
+            { id: 38, text: "Bulan sesudah Rajab adalah...", options: { A: "Sya'ban (شَعْبَان)", B: "Ramadhan", C: "Syawal", D: "Muharram" }, answer: "A", discussion: "Rajab, Sya'ban, Ramadhan." },
+            { id: 39, text: "Bahasa Arab dari 'Tahun Baru' adalah...", options: { A: "Sanah Jadidah (سَنَة جَدِيْدَة)", B: "Syahrun", C: "Usbu'", D: "Yaum" }, answer: "A", discussion: "Sanah = Tahun, Jadidah = Baru." },
+            { id: 40, text: "Sebelum bulan Shafar adalah bulan...", options: { A: "Rabi'ul Awwal", B: "Muharram", C: "Rajab", D: "Ramadhan" }, answer: "B", discussion: "Urutan: Muharram, Shafar." },
+            { id: 41, text: "Nama-nama bulan Masehi dalam bahasa Arab mirip dengan bahasa...", options: { A: "Inggris / Latin", B: "Jawa", C: "China", D: "Jepang" }, answer: "A", discussion: "Contoh: Yanayir (Januari), Fibrayir (Februari)." },
+            { id: 42, text: "Bulan Agustus dalam bahasa Arab adalah...", options: { A: "Yuliyu", B: "Aghustus (أَغُسْطُس)", C: "Sibtimbir", D: "Uktubir" }, answer: "B", discussion: "Aghustus." },
+            { id: 43, text: "'Ba'da' (بَعْدَ) artinya...", options: { A: "Sebelum", B: "Sesudah", C: "Sekarang", D: "Kemarin" }, answer: "B", discussion: "Ba'da = Sesudah." },
+            { id: 44, text: "'Qobla' (قَبْلَ) artinya...", options: { A: "Sebelum", B: "Sesudah", C: "Besok", D: "Lusa" }, answer: "A", discussion: "Qobla = Sebelum." },
+            { id: 45, text: "Ba'da Syahr i Ramadhan syahru... (Setelah bulan Ramadhan bulan...)", options: { A: "Sya'ban", B: "Syawal (شَوَّال)", C: "Dzulhijjah", D: "Rajab" }, answer: "B", discussion: "Habis Ramadhan terbitlah Syawal." },
+            { id: 46, text: "Hari Kemerdekaan Indonesia pada bulan...", options: { A: "Yanayir", B: "Aghustus", C: "Maris", D: "Mayu" }, answer: "B", discussion: "Agustus." },
+            { id: 47, text: "Bulan terakhir dalam kalender Masehi adalah...", options: { A: "Disimbir (دِيْسِمْبِر)", B: "Nufimbir", C: "Uktubir", D: "Yanayir" }, answer: "A", discussion: "Desember." },
+            { id: 48, text: "Kita memperingati Nuzulul Qur'an pada bulan...", options: { A: "Ramadhan", B: "Syawal", C: "Muharram", D: "Safar" }, answer: "A", discussion: "Al-Quran turun di bulan Ramadhan." },
+            { id: 49, text: "Kalender Hijriyah berpedoman pada peredaran...", options: { A: "Matahari", B: "Bumi", C: "Bulan (Qomariyah)", D: "Bintang" }, answer: "C", discussion: "Hijriyah = Kalender Bulan (Qomariyah)." },
+            { id: 50, text: "Isra Mi'raj diperingati pada bulan...", options: { A: "Rajab (رَجَب)", B: "Sya'ban", C: "Ramadhan", D: "Syawal" }, answer: "A", discussion: "27 Rajab." }
+        ];
+
+        // --- DATA SOAL PAKET B (50 SOAL - VARIASI) ---
+        const paketB = [
+            // 1. Isim Tafdhil
+            { id: 1, text: "Bahasa Arab 'Lebih Panjang' adalah...", options: { A: "Akbaru", B: "Atwalu (أَطْوَلُ)", C: "Aqshoru", D: "Asghoru" }, answer: "B", discussion: "Thowilun = Panjang, Atwalu = Lebih Panjang." },
+            { id: 2, text: "Bahasa Arab 'Lebih Indah/Bagus' adalah...", options: { A: "Ahsanu / Ajmalu (أَجْمَلُ)", B: "Aqbah", C: "Akbaru", D: "Asghoru" }, answer: "A", discussion: "Jamilun = Indah, Ajmalu = Lebih Indah." },
+            { id: 3, text: "Semut lebih kecil dari Gajah. 'An-Namlu ... minal Fiili'.", options: { A: "Akbaru", B: "Asghoru (أَصْغَرُ)", C: "Atwalu", D: "Ajmalu" }, answer: "B", discussion: "Asghoru = Lebih kecil." },
+            
+            // 2. Anggota Tubuh
+            { id: 4, text: "Bahasa Arab 'Perut' adalah...", options: { A: "Sadrun", B: "Batnun (بَطْنٌ)", C: "Zahrun", D: "Yadun" }, answer: "B", discussion: "Batnun = Perut." },
+            { id: 5, text: "Bahasa Arab 'Gigi' adalah...", options: { A: "Sinun / Asnan (سِنٌّ)", B: "Lisanun", C: "Anfun", D: "Ainun" }, answer: "A", discussion: "Sinun = Gigi." },
+            { id: 6, text: "Anggota tubuh untuk berbicara adalah...", options: { A: "Famun (فَمٌ)", B: "Udzunung", C: "Ainun", D: "Yadun" }, answer: "A", discussion: "Famun = Mulut." },
+            { id: 7, text: "Di dalam mulut terdapat lidah. Bahasa Arab 'Lidah'...", options: { A: "Sinun", B: "Lisanun (لِسَانٌ)", C: "Anfun", D: "Sya'run" }, answer: "B", discussion: "Lisanun = Lidah." },
+            { id: 8, text: "Bahasa Arab 'Dada'...", options: { A: "Sadrun (صَدْرٌ)", B: "Batnun", C: "Zahrun", D: "Ra'sun" }, answer: "A", discussion: "Sadrun = Dada." },
+            { id: 9, text: "Jari-jari tangan bahasa Arabnya...", options: { A: "Ashobi' (أَصَابِع)", B: "Kaffun", C: "Mirfaqun", D: "Rijlun" }, answer: "A", discussion: "Ashobi' = Jari-jari." },
+            { id: 10, text: "Kita mencium bau dengan...", options: { A: "Ainun", B: "Anfun (أَنْفٌ)", C: "Udzunun", D: "Famun" }, answer: "B", discussion: "Anfun = Hidung." },
+
+            // 3. Bentuk
+            { id: 11, text: "Bahasa Arab 'Persegi Panjang'...", options: { A: "Murabba'un", B: "Mustathilun (مُسْتَطِيْلٌ)", C: "Dairatun", D: "Mutsallatsun" }, answer: "B", discussion: "Mustathilun." },
+            { id: 12, text: "Bahasa Arab 'Kerucut'...", options: { A: "Makhruthiyyun (مَخْرُوْطِيٌّ)", B: "Haramiyyun", C: "Kuroiyyun", D: "Muka'abun" }, answer: "A", discussion: "Makhruthiyyun." },
+            { id: 13, text: "Bentuk Ka'bah adalah...", options: { A: "Kuroiyyun", B: "Muka'abun (مُكَعَّبٌ)", C: "Ustuwaniyyun", D: "Haramiyyun" }, answer: "B", discussion: "Muka'abun = Kubus." },
+            { id: 14, text: "Bentuk telur adalah...", options: { A: "Dairatun", B: "Baidhowiyyun (بَيْضَوِيٌّ)", C: "Murabba'un", D: "Mustathilun" }, answer: "B", discussion: "Baidhowiyyun = Oval/Bulat telur." },
+            { id: 15, text: "Roda mobil berbentuk...", options: { A: "Dairatun (دَائِرَةٌ)", B: "Murabba'un", C: "Mutsallatsun", D: "Mustathilun" }, answer: "A", discussion: "Dairatun = Lingkaran." },
+            { id: 16, text: "Buku tulis biasanya berbentuk...", options: { A: "Dairatun", B: "Mustathilun (مُسْتَطِيْلٌ)", C: "Kuroiyyun", D: "Mutsallatsun" }, answer: "B", discussion: "Persegi panjang." },
+            { id: 17, text: "Gunung berbentuk seperti...", options: { A: "Muka'abun", B: "Makhruthiyyun/Jabaliyyun", C: "Murabba'un", D: "Mustathilun" }, answer: "B", discussion: "Menyerupai kerucut." },
+            { id: 18, text: "Bintang dalam bahasa Arab (Bentuk Bintang)...", options: { A: "Najmiyyun (نَجْمِيٌّ)", B: "Qomariyyun", C: "Syamsiyyun", D: "Ardhiyyun" }, answer: "A", discussion: "Najmun = Bintang." },
+            { id: 19, text: "Pipa air berbentuk...", options: { A: "Ustuwaniyyun (أُسْطُوَانِيٌّ)", B: "Muka'abun", C: "Haramiyyun", D: "Mutsallatsun" }, answer: "A", discussion: "Silinder/Tabung." },
+            { id: 20, text: "Benda yang berbentuk 'Mutsallatsun' (Segitiga) adalah...", options: { A: "Bola", B: "Penggaris Segitiga", C: "Buku", D: "Papan Tulis" }, answer: "B", discussion: "Mutsallatsun." },
+
+            // 4. Warna
+            { id: 21, text: "Bahasa Arab 'Hitam'...", options: { A: "Abyadhu", B: "Aswadu (أَسْوَدُ)", C: "Ahmaru", D: "Azraqu" }, answer: "B", discussion: "Aswadu." },
+            { id: 22, text: "Bahasa Arab 'Hijau'...", options: { A: "Akhdaru (أَخْضَرُ)", B: "Ashfaru", C: "Ahmaru", D: "Azraqu" }, answer: "A", discussion: "Akhdaru." },
+            { id: 23, text: "Warna Melati adalah...", options: { A: "Aswadu", B: "Abyadhu (أَبْيَضُ)", C: "Ahmaru", D: "Ashfaru" }, answer: "B", discussion: "Putih." },
+            { id: 24, text: "Warna Terong adalah Ungu. Bahasa Arabnya...", options: { A: "Banafsajiyyun (بَنَفْسَجِيٌّ)", B: "Wardiyyun", C: "Bunniyun", D: "Romadiyyun" }, answer: "A", discussion: "Banafsajiyyun = Ungu." },
+            { id: 25, text: "Warna Abu-abu bahasa Arabnya...", options: { A: "Aswadu", B: "Romadiyyun (رَمَادِيٌّ)", C: "Bunniyun", D: "Karimiyyun" }, answer: "B", discussion: "Romadiyyun." },
+            { id: 26, text: "Warna Merah Muda (Pink) adalah...", options: { A: "Wardiyyun (وَرْدِيٌّ)", B: "Ahmaru", C: "Banafsajiyyun", D: "Burtuqoliyyun" }, answer: "A", discussion: "Wardiyyun." },
+            { id: 27, text: "Warna tanah adalah Cokelat...", options: { A: "Bunniyun (بُنِّيٌّ)", B: "Romadiyyun", C: "Krim", D: "Aswad" }, answer: "A", discussion: "Bunniyun." },
+            { id: 28, text: "Warna awan mendung...", options: { A: "Abyadhu", B: "Romadiyyun/Aswadu", C: "Ahmaru", D: "Ashfaru" }, answer: "B", discussion: "Kelabu/Hitam." },
+            { id: 29, text: "Buah Jeruk warnanya...", options: { A: "Burtuqoliyyun (بُرْتُقَالِيٌّ)", B: "Ahmaru", C: "Azraqu", D: "Aswadu" }, answer: "A", discussion: "Oranye." },
+            { id: 30, text: "Tas itu Merah (Tas = Muannats). 'Al-Haqibatu ...'", options: { A: "Ahmaru", B: "Hamro'u (حَمْرَاءُ)", C: "Zarqho'u", D: "Khadro'u" }, answer: "B", discussion: "Warna ikut jenis bendanya (Pr)." },
+
+            // 5. Kalender
+            { id: 31, text: "Tahun baru Hijriyah dimulai tanggal...", options: { A: "1 Ramadhan", B: "1 Muharram", C: "1 Syawal", D: "1 Dzulhijjah" }, answer: "B", discussion: "Awal tahun Islam." },
+            { id: 32, text: "Bulan puasa adalah bulan...", options: { A: "Sya'ban", B: "Ramadhan", C: "Syawal", D: "Rajab" }, answer: "B", discussion: "Ramadhan." },
+            { id: 33, text: "Hari Raya Kurban dilaksanakan bulan...", options: { A: "Dzulhijjah", B: "Dzulqa'dah", C: "Syawal", D: "Ramadhan" }, answer: "A", discussion: "Bulan Haji." },
+            { id: 34, text: "Bulan ke-3 Hijriyah adalah...", options: { A: "Safar", B: "Rabi'ul Awwal", C: "Rabi'ul Akhir", D: "Jumadil Awwal" }, answer: "B", discussion: "Muharram, Safar, Rabi'ul Awwal." },
+            { id: 35, text: "Kita memperingati Kemerdekaan RI pada bulan...", options: { A: "Yuliyu", B: "Aghustus", C: "Sibtimbir", D: "Uktubir" }, answer: "B", discussion: "Agustus." },
+            { id: 36, text: "Bulan pertama Masehi adalah...", options: { A: "Fibrayir", B: "Yanayir (يَنَايِر)", C: "Maris", D: "Abril" }, answer: "B", discussion: "Januari." },
+            { id: 37, text: "Hari Pahlawan 10 November. November bahasa Arabnya...", options: { A: "Nufimbir (نُوْفِمْبِر)", B: "Disimbir", C: "Uktubir", D: "Sibtimbir" }, answer: "A", discussion: "November." },
+            { id: 38, text: "Sebelum hari ini (Kemarin) bahasa Arabnya...", options: { A: "Al-Yauma", B: "Bil Amsi (بِالْأَمْسِ)", C: "Ghodan", D: "Ba'da ghodin" }, answer: "B", discussion: "Bil Amsi = Kemarin." },
+            { id: 39, text: "Besok bahasa Arabnya...", options: { A: "Al-Yauma", B: "Ghodan (غَدًا)", C: "Amsi", D: "Qobla" }, answer: "B", discussion: "Ghodan = Besok." },
+            { id: 40, text: "Qobla Ramadhan syahru... (Sebelum Ramadhan bulan...)", options: { A: "Rajab", B: "Sya'ban (شَعْبَان)", C: "Syawal", D: "Muharram" }, answer: "B", discussion: "Sya'ban." },
+            { id: 41, text: "Ba'da Ahad yaumu... (Setelah Ahad hari...)", options: { A: "Al-Itsnaini (الْإِثْنَيْنِ)", B: "Ats-Tsulasa", C: "Al-Arbi'a", D: "Al-Khamis" }, answer: "A", discussion: "Senin." },
+            { id: 42, text: "Jumlah hari dalam seminggu...", options: { A: "5", B: "6", C: "7 (سَبْعَة)", D: "8" }, answer: "C", discussion: "Sab'ah = 7." },
+            { id: 43, text: "Hari Jumat bahasa Arabnya...", options: { A: "Yaumul Khamis", B: "Yaumul Jumu'ah (يَوْمُ الْجُمُعَةِ)", C: "Yaumus Sabti", D: "Yaumul Ahad" }, answer: "B", discussion: "Jumu'ah." },
+            { id: 44, text: "Kalender Masehi berpedoman pada...", options: { A: "Bulan", B: "Matahari (Syamsiyah)", C: "Bintang", D: "Angin" }, answer: "B", discussion: "Masehi = Matahari." },
+            { id: 45, text: "Tahun Gajah adalah tahun kelahiran...", options: { A: "Nabi Adam", B: "Nabi Muhammad SAW", C: "Nabi Ibrahim", D: "Nabi Isa" }, answer: "B", discussion: "Amul Fiil." },
+            { id: 46, text: "Hari Kartini bulan April. April bahasa Arabnya...", options: { A: "Maris", B: "Abril (أَبْرِيْل)", C: "Mayu", D: "Yuniyu" }, answer: "B", discussion: "April." },
+            { id: 47, text: "Bulan ke-12 Hijriyah...", options: { A: "Dzulqa'dah", B: "Dzulhijjah (ذُو الْحِجَّة)", C: "Ramadhan", D: "Muharram" }, answer: "B", discussion: "Akhir tahun." },
+            { id: 48, text: "Malam Lailatul Qadar ada di bulan...", options: { A: "Ramadhan", B: "Syawal", C: "Rajab", D: "Sya'ban" }, answer: "A", discussion: "Bulan Puasa." },
+            { id: 49, text: "Hari Kamis bahasa Arabnya...", options: { A: "Al-Arbi'a", B: "Al-Khamis (الْخَمِيْس)", C: "Al-Jumu'ah", D: "As-Sabtu" }, answer: "B", discussion: "Khamis." },
+            { id: 50, text: "Ba'da Selasa hari...", options: { A: "Senin", B: "Rabu (الْأَرْبِعَاء)", C: "Kamis", D: "Jumat" }, answer: "B", discussion: "Rabu." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Tafaddhol, tulis nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    // LATAR BELAKANG ISLAMI YANG BARU
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-emerald-50 bg-[url('https://img.freepik.com/free-photo/ornamental-arabic-lantern-with-burning-candle-glowing-night_181624-31201.jpg?w=1380&t=st=1709136027~exp=1709136627~hmac=8a19040588877557150392686712416456689886665455108483020006218673')] bg-cover bg-center bg-blend-multiply bg-opacity-50">
+                        <div className="glass-panel p-8 max-w-md w-full text-center">
+                            <h2 className="text-xl font-bold text-emerald-800">Ahlan wa Sahlan di</h2>
+                            <h1 className="text-3xl font-black text-emerald-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Arab Kelas 5</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Antum..." className="w-full p-4 border-2 border-emerald-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-emerald-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-emerald-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-teal-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-yellow-500 py-4 rounded-xl font-black text-xl border-b-4 border-yellow-700 btn-fun shadow-lg text-white">MULAI (إِبْدَأْ)</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-emerald-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-emerald-800">SISWA</div><div className="font-bold text-emerald-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-emerald-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-emerald-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="text-gray-800 mb-6 text-lg leading-relaxed font-semibold">
+                                            {/* Deteksi teks Arab dan beri style khusus */}
+                                            {q.text.split(/([ا-ي]+)/).map((part, i) => 
+                                                /[\u0600-\u06FF]/.test(part) ? <span key={i} className="ar">{part}</span> : part
+                                            )}
+                                        </p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-emerald-100 border-emerald-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-xl font-medium text-gray-700 font-amiri">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-center">
+                            <h3 className="text-sm font-bold text-emerald-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-emerald-800 btn-fun">SELESAI (خَلَاص) ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-teal-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-teal-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-teal-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-emerald-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-emerald-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir (النَّتِيْجَة)</h2>
+                            <h1 className="text-7xl font-black text-emerald-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-emerald-100 text-emerald-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Mumtaz! (Luar Biasa) 🌟" : score >= 60 ? "Jayyid! (Bagus) 👍" : "Ayo Belajar Lagi! (Hamasah) 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-teal-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg w-full">Ulangi (إِعَادَة) ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ <span className="font-amiri text-lg">{q.options[q.answer]}</span></div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 MUMTAZ! <br/>Semua Benar! (صَحِيْح)</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
