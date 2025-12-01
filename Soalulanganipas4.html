@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal IPAS Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- Library React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0fdf4; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #bbf7d0; box-shadow: 8px 8px 0px #86efac; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #22c55e; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #166534;">Memuat Soal...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <!-- Error Handler -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- KOMPONEN GAMBAR AMAN ---
+        const SafeImage = ({ src, alt }) => {
+            const [error, setError] = useState(false);
+            // Fallback jika gambar error
+            if (error || !src) return (
+                <div className="w-full h-32 bg-gray-100 rounded-xl mb-4 border-2 border-gray-200 flex flex-col items-center justify-center text-gray-400 p-4 text-center">
+                    <span className="text-2xl mb-1">🖼️</span>
+                    <span className="text-xs font-bold text-gray-500">Gambar: {alt}</span>
+                    <span className="text-[10px] text-gray-400">(Tidak muncul, kerjakan sesuai teks)</span>
+                </div>
+            );
+            return <img src={src} alt={alt} className="w-full h-auto max-h-56 object-contain bg-white rounded-xl mb-4 border-2 border-green-100" onError={() => setError(true)} />;
+        };
+
+        // --- DATA SOAL PAKET A (45 SOAL) ---
+        const paketA = [
+            { id: 1, text: "Pak Tani menanam jagung di ladang. Jagung termasuk jenis SDA...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Jagung", alt: "Jagung", options: { A: "Hayati", B: "Non-hayati", C: "Mineral", D: "Buatan" }, answer: "A", discussion: "Jagung adalah makhluk hidup (Hayati)." },
+            { id: 2, text: "Kursi plastik dari bijih plastik (minyak bumi) berasal dari...", options: { A: "Hutan", B: "Pertambangan", C: "Pertanian", D: "Laut" }, answer: "B", discussion: "Minyak bumi hasil tambang." },
+            { id: 3, text: "SDA yang jumlahnya terbatas dan akan habis disebut...", options: { A: "SDA Hayati", B: "SDA Dapat Diperbarui", C: "SDA Tidak Dapat Diperbarui", D: "SDA Kekal" }, answer: "C", discussion: "Tidak dapat diperbarui = terbatas." },
+            { id: 4, text: "Contoh SDA yang dapat diperbarui...", options: { A: "Emas", B: "Air dan Tanah", C: "Batu Bara", D: "Besi" }, answer: "B", discussion: "Air selalu ada siklusnya." },
+            { id: 5, text: "Dataran tinggi cocok untuk...", options: { A: "Tambak", B: "Kebun Teh", C: "Garam", D: "Pelabuhan" }, answer: "B", discussion: "Suhu sejuk." },
+            { id: 6, text: "Aktivitas pemicu perubahan iklim...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Asap", alt: "Asap Kendaraan", options: { A: "Reboisasi", B: "Asap Kendaraan Berlebih", C: "Hemat Energi", D: "Daur Ulang" }, answer: "B", discussion: "Polusi udara." },
+            { id: 7, text: "Mengelola sampah organik...", options: { A: "Buang sungai", B: "Bakar", C: "Kompos", D: "Timbun plastik" }, answer: "C", discussion: "Jadi pupuk." },
+            { id: 8, text: "Melestarikan hewan langka dengan...", options: { A: "Suaka Margasatwa", B: "Berburu", C: "Tebang hutan", D: "Pelihara" }, answer: "A", discussion: "Tempat perlindungan." },
+            { id: 9, text: "Penyebab kerusakan di darat dan laut...", options: { A: "Alam", B: "Ulah Manusia", C: "Laut", D: "Hewan" }, answer: "B", discussion: "Surat Ar-Rum ayat 41." },
+            { id: 10, text: "Dampak hutan gundul...", options: { A: "Kayu mudah", B: "Segar", C: "Banjir/Longsor", D: "Subur" }, answer: "C", discussion: "Tidak ada resapan air." },
+            { id: 11, text: "Menutup hidung saat ada sampah. Indra apa?", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Bau", alt: "Anak tutup hidung", options: { A: "Mata", B: "Telinga", C: "Penciuman", D: "Kulit" }, answer: "C", discussion: "Hidung mencium bau." },
+            { id: 12, text: "Bagian mata putih dan keras...", options: { A: "Kornea", B: "Sklera", C: "Pupil", D: "Retina" }, answer: "B", discussion: "Pelindung mata." },
+            { id: 13, text: "Bayangan jatuh tepat di...", options: { A: "Lensa", B: "Retina", C: "Pupil", D: "Kornea" }, answer: "B", discussion: "Layar mata." },
+            { id: 14, text: "Rabun dekat disebut...", options: { A: "Miopi", B: "Hipermetropi", C: "Buta Warna", D: "Silindris" }, answer: "B", discussion: "Tidak jelas lihat dekat." },
+            { id: 15, text: "Rumah siput di telinga...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Telinga", alt: "Koklea", options: { A: "Koklea", B: "Gendang", C: "Saluran", D: "Daun" }, answer: "A", discussion: "Ubah bunyi jadi sinyal." },
+            { id: 16, text: "Indra keseimbangan...", options: { A: "Mata", B: "Hidung", C: "Telinga", D: "Kulit" }, answer: "C", discussion: "Telinga dalam." },
+            { id: 17, text: "Selaput lendir hidung...", options: { A: "Saring debu", B: "Melembapkan", C: "Bau", D: "Hangat" }, answer: "B", discussion: "Agar tidak kering." },
+            { id: 18, text: "Manfaat siwak...", options: { A: "Mata", B: "Mulut & Gigi", C: "Telinga", D: "Kulit" }, answer: "B", discussion: "Kebersihan mulut." },
+            { id: 19, text: "Lidah peka rasa asam...", options: { A: "Ujung", B: "Tepi (Samping)", C: "Pangkal", D: "Tengah" }, answer: "B", discussion: "Samping lidah." },
+            { id: 20, text: "Ujung jari peka karena...", options: { A: "Tebal", B: "Banyak saraf peraba", C: "Kuku", D: "Aktif" }, answer: "B", discussion: "Saraf berkumpul." },
+            { id: 21, text: "Sifat gas pada balon...", options: { A: "Kaku", B: "Menekan segala arah", C: "Tetap", D: "Volume tetap" }, answer: "B", discussion: "Isi seluruh ruang." },
+            { id: 22, text: "Benda volume & bentuk berubah...", options: { A: "Batu", B: "Air", C: "Asap (Gas)", D: "Kayu" }, answer: "C", discussion: "Gas bebas." },
+            { id: 23, text: "Partikel rapat dan teratur...", options: { A: "Padat", B: "Cair", C: "Gas", D: "Campuran" }, answer: "A", discussion: "Keras/Padat." },
+            { id: 24, text: "Aroma masakan tercium jauh...", options: { A: "Gas bergerak bebas", B: "Padat diam", C: "Cair mengalir", D: "Gas berat" }, answer: "A", discussion: "Difusi gas." },
+            { id: 25, text: "Sifat Zat Cair...", options: { A: "Tetap", B: "Bentuk ikut wadah, Volume tetap", C: "Berubah semua", D: "Tetap semua" }, answer: "B", discussion: "Cair adaptif." },
+            { id: 26, text: "Uap jadi air di tutup panci...", options: { A: "Mencair", B: "Mengembun", C: "Menyublim", D: "Kristal" }, answer: "B", discussion: "Gas ke Cair." },
+            { id: 27, text: "Menyublim...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Kapur+Barus", alt: "Kapur Barus", options: { A: "Es cair", B: "Air uap", C: "Kapur barus habis", D: "Lilin" }, answer: "C", discussion: "Padat ke Gas." },
+            { id: 28, text: "Es kering (Dry Ice)...", options: { A: "Beku", B: "Uap", C: "Menyublim/Deposisi", D: "Cair" }, answer: "C", discussion: "Gas CO2 padat." },
+            { id: 29, text: "Bensin terbuka habis...", options: { A: "Membeku", B: "Mencair", C: "Menguap", D: "Menguap" }, answer: "C", discussion: "Cair ke Gas." },
+            { id: 30, text: "Air jadi Es butuh...", options: { A: "Panas", B: "Dingin (Melepas Kalor)", C: "Aduk", D: "Jemur" }, answer: "B", discussion: "Suhu turun." },
+            { id: 31, text: "Energi Setrika...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Setrika", alt: "Setrika", options: { A: "Listrik-Gerak", B: "Listrik-Panas", C: "Panas-Listrik", D: "Listrik-Cahaya" }, answer: "B", discussion: "Panas." },
+            { id: 32, text: "Sama dengan Kipas Angin (Gerak)...", options: { A: "Blender", B: "Kompor", C: "Lampu", D: "Radio" }, answer: "A", discussion: "Motor berputar." },
+            { id: 33, text: "Kimia jadi Listrik...", options: { A: "Dinamo", B: "Baterai", C: "Lampu", D: "Kincir" }, answer: "B", discussion: "Baterai." },
+            { id: 34, text: "Listrik jadi Bunyi...", options: { A: "Lampu", B: "Solder", C: "Bel Rumah", D: "Kipas" }, answer: "C", discussion: "Suara." },
+            { id: 35, text: "Ubah gerak jadi listrik...", options: { A: "Baterai", B: "Generator", C: "Panel Surya", D: "Lampu" }, answer: "B", discussion: "PLTA/PLTB." },
+            { id: 36, text: "Energi TV...", options: { A: "Listrik -> Cahaya & Bunyi", B: "Listrik -> Gerak", C: "Kimia -> Cahaya", D: "Gerak -> Bunyi" }, answer: "A", discussion: "Gambar & Suara." },
+            { id: 37, text: "Energi Fotosintesis...", options: { A: "Angin", B: "Matahari", C: "Listrik", D: "Gerak" }, answer: "B", discussion: "Cahaya." },
+            { id: 38, text: "PLTU memutar...", options: { A: "Roda", B: "Turbin", C: "Baling", D: "Jam" }, answer: "B", discussion: "Turbin uap." },
+            { id: 39, text: "Makan lalu lari...", options: { A: "Kimia -> Panas", B: "Kimia -> Gerak", C: "Gerak -> Kimia", D: "Listrik -> Gerak" }, answer: "B", discussion: "Tenaga." },
+            { id: 40, text: "Energi Matahari...", options: { A: "Gerak", B: "Cahaya & Panas", C: "Listrik", D: "Bunyi" }, answer: "B", discussion: "Sinar & Hangat." },
+            { id: 41, text: "SDA Hayati vs Non-Hayati...", options: { A: "Hidup vs Mati", B: "Tambang vs Hutan", C: "Tak Habis vs Habis", D: "Sama" }, answer: "A", discussion: "Hayati = Makhluk Hidup." },
+            { id: 42, text: "Jaga mata...", options: { A: "Tiduran", B: "Gelap", C: "Jarak 30cm & Vit A", D: "HP Terus" }, answer: "C", discussion: "Posisi & Nutrisi." },
+            { id: 43, text: "Beda Cair dan Padat...", options: { A: "Volume", B: "Bentuk ikut wadah", C: "Bentuk tetap", D: "Partikel" }, answer: "B", discussion: "Cair berubah bentuk." },
+            { id: 44, text: "Jemur baju...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Baju", alt: "Jemur Baju", options: { A: "Cair-Padat", B: "Cair-Gas (Menguap)", C: "Gas-Cair", D: "Padat-Cair" }, answer: "B", discussion: "Air hilang." },
+            { id: 45, text: "Kipas, Blender, Mixer...", options: { A: "Panas", B: "Cahaya", C: "Gerak", D: "Bunyi" }, answer: "C", discussion: "Semua berputar." }
+        ];
+
+        // --- DATA SOAL PAKET B (45 SOAL) ---
+        const paketB = [
+            { id: 1, text: "Susu, Telur, Daging...", options: { A: "Nabati", B: "Hewani", C: "Tambang", D: "Energi" }, answer: "B", discussion: "Dari hewan." },
+            { id: 2, text: "Batu bata dari...", options: { A: "Tanah Liat", B: "Pasir", C: "Kayu", D: "Besi" }, answer: "A", discussion: "Tanah." },
+            { id: 3, text: "SDA yang bisa habis...", options: { A: "Renewable", B: "Unrenewable", C: "Lestari", D: "Abadi" }, answer: "B", discussion: "Tak terbarukan." },
+            { id: 4, text: "Matahari & Angin...", options: { A: "Dapat diperbarui", B: "Langka", C: "Mahal", D: "Tambang" }, answer: "A", discussion: "Selalu ada." },
+            { id: 5, text: "Dataran rendah subur...", options: { A: "Petani Padi", B: "Nelayan", C: "Teh", D: "Tambang" }, answer: "A", discussion: "Sawah." },
+            { id: 6, text: "Sampah di sungai...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Sungai", alt: "Sungai Sampah", options: { A: "Jernih", B: "Banjir", C: "Ikan", D: "Subur" }, answer: "B", discussion: "Sumbat air." },
+            { id: 7, text: "Hemat listrik siang...", options: { A: "Lampu", B: "Buka Jendela", C: "AC", D: "Tidur" }, answer: "B", discussion: "Cahaya alami." },
+            { id: 8, text: "Larang buru hewan...", options: { A: "Koleksi", B: "Jaga Ekosistem", C: "Kulit", D: "Takut" }, answer: "B", discussion: "Cegah punah." },
+            { id: 9, text: "Penyebab rusak alam...", options: { A: "Bencana", B: "Manusia", C: "Takdir", D: "Hewan" }, answer: "B", discussion: "Tangan manusia." },
+            { id: 10, text: "Hutan bakau rusak...", options: { A: "Abrasi", B: "Meletus", C: "Gempa", D: "Hujan" }, answer: "A", discussion: "Pengikisan pantai." },
+            { id: 11, text: "Rasa manis permen...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Permen", alt: "Makan", options: { A: "Hidung", B: "Lidah", C: "Kulit", D: "Mata" }, answer: "B", discussion: "Pengecap." },
+            { id: 12, text: "Warna mata...", options: { A: "Iris", B: "Pupil", C: "Lensa", D: "Retina" }, answer: "A", discussion: "Selaput pelangi." },
+            { id: 13, text: "Fokus cahaya...", options: { A: "Tangkap", B: "Lensa (Fokus)", C: "Lindung", D: "Atur" }, answer: "B", discussion: "Lensa." },
+            { id: 14, text: "Kacamata Rabun Jauh...", options: { A: "Cembung", B: "Cekung", C: "Datar", D: "Gelap" }, answer: "B", discussion: "Minus." },
+            { id: 15, text: "Daun telinga...", options: { A: "Tangkap Bunyi", B: "Saraf", C: "Seimbang", D: "Lindung" }, answer: "A", discussion: "Corong bunyi." },
+            { id: 16, text: "Peraba...", options: { A: "Rambut", B: "Kulit", C: "Kuku", D: "Otot" }, answer: "B", discussion: "Kulit." },
+            { id: 17, text: "Saraf pembau...", options: { A: "Mulut", B: "Hidung Atas", C: "Telinga", D: "Lidah" }, answer: "B", discussion: "Hidung." },
+            { id: 18, text: "Jaga telinga...", options: { A: "Keras", B: "Tajam", C: "Hindari Bising", D: "Air" }, answer: "C", discussion: "Jangan keras-keras." },
+            { id: 19, text: "Pangkal lidah...", options: { A: "Manis", B: "Asin", C: "Pahit", D: "Asam" }, answer: "C", discussion: "Belakang = pahit." },
+            { id: 20, text: "Fungsi lain kulit...", options: { A: "Gerak", B: "Keringat (Ekskresi)", C: "Cerna", D: "Napas" }, answer: "B", discussion: "Suhu tubuh." },
+            { id: 21, text: "Cair dipindah...", options: { A: "Volume ubah", B: "Bentuk ubah", C: "Bentuk tetap", D: "Massa ubah" }, answer: "B", discussion: "Ikut wadah." },
+            { id: 22, text: "Padat lunak...", options: { A: "Batu", B: "Plastisin", C: "Kayu", D: "Besi" }, answer: "B", discussion: "Bisa dibentuk." },
+            { id: 23, text: "Ciri Gas...", options: { A: "Rapat", B: "Bebas & Jauh", C: "Genggam", D: "Volume tetap" }, answer: "B", discussion: "Terbang bebas." },
+            { id: 24, text: "Ban kempes...", options: { A: "Memuai", B: "Udara keluar pori", C: "Beku", D: "Cair" }, answer: "B", discussion: "Partikel kecil." },
+            { id: 25, text: "Minyak goreng...", options: { A: "Padat", B: "Cair", C: "Gas", D: "Beku" }, answer: "B", discussion: "Cair." },
+            { id: 26, text: "Lilin meleleh...", options: { A: "Padat-Cair", B: "Cair-Padat", C: "Padat-Gas", D: "Cair-Gas" }, answer: "A", discussion: "Mencair." },
+            { id: 27, text: "Air dipanaskan...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Mendidih", alt: "Air Mendidih", options: { A: "Beku", B: "Habis (Uap)", C: "Sublim", D: "Kristal" }, answer: "B", discussion: "Menguap." },
+            { id: 28, text: "Garam...", options: { A: "Penguapan", B: "Pembekuan", C: "Sublim", D: "Lebur" }, answer: "A", discussion: "Evaporasi." },
+            { id: 29, text: "Mengkristal...", options: { A: "Es cair", B: "Jelaga Knalpot", C: "Kapur", D: "Mendidih" }, answer: "B", discussion: "Gas jadi padat." },
+            { id: 30, text: "Membeku butuh...", options: { A: "Panas", B: "Dingin", C: "Angin", D: "Cahaya" }, answer: "B", discussion: "Suhu rendah." },
+            { id: 31, text: "Rice Cooker...", options: { A: "Gerak", B: "Panas", C: "Bunyi", D: "Cahaya" }, answer: "B", discussion: "Masak nasi." },
+            { id: 32, text: "Solder (Panas)...", options: { A: "Oven", B: "Kipas", C: "Bor", D: "TV" }, answer: "A", discussion: "Oven panas." },
+            { id: 33, text: "Mobil bensin...", options: { A: "Kimia-Gerak", B: "Listrik-Gerak", C: "Panas-Bunyi", D: "Gerak-Kimia" }, answer: "A", discussion: "Bensin dibakar." },
+            { id: 34, text: "Matahari ke baju...", options: { A: "Warna", B: "Keringkan", C: "Bakar", D: "Dingin" }, answer: "B", discussion: "Uapkan air." },
+            { id: 35, text: "Biola...", options: { A: "Gerak-Bunyi", B: "Tiup", C: "Pukul", D: "Listrik" }, answer: "A", discussion: "Gesek." },
+            { id: 36, text: "Radio Baterai...", options: { A: "Kimia-Listrik-Bunyi", B: "Listrik-Gerak", C: "Gerak", D: "Panas" }, answer: "A", discussion: "Baterai." },
+            { id: 37, text: "Fotosintesis...", options: { A: "Matahari", B: "Bulan", C: "Lampu", D: "Api" }, answer: "A", discussion: "Cahaya." },
+            { id: 38, text: "PLTA...", options: { A: "Uap", B: "Air", C: "Angin", D: "Gas" }, answer: "B", discussion: "Air terjun." },
+            { id: 39, text: "Olahraga...", options: { A: "Gerak & Panas", B: "Listrik", C: "Bunyi", D: "Cahaya" }, answer: "A", discussion: "Keringat." },
+            { id: 40, text: "Energi Terbesar...", options: { A: "Batu bara", B: "Matahari", C: "Minyak", D: "Air" }, answer: "B", discussion: "Pusat tata surya." },
+            { id: 41, text: "SDA Non-Hayati...", options: { A: "Ayam", B: "Padi", C: "Emas, Air", D: "Ikan" }, answer: "C", discussion: "Benda mati." },
+            { id: 42, text: "Suara keras...", options: { A: "Bersih", B: "Gendang Rusak", C: "Buram", D: "Sumbat" }, answer: "B", discussion: "Pecah gendang." },
+            { id: 43, text: "Batu keras karena...", options: { A: "Renggang", B: "Rapat", C: "Cair", D: "Gas" }, answer: "B", discussion: "Padat." },
+            { id: 44, text: "Garam di tambak...", img: "https://placehold.co/600x300/e2e8f0/1e293b?text=Garam", alt: "Tambak", options: { A: "Menguap", B: "Beku", C: "Sublim", D: "Cair" }, answer: "A", discussion: "Air laut hilang." },
+            { id: 45, text: "Lampu, TV, Komputer...", options: { A: "Baterai", B: "Listrik", C: "Bensin", D: "Matahari" }, answer: "B", discussion: "Colok listrik." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Isi nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN WELCOME
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-green-50 bg-[url('https://placehold.co/1920x1080/dcfce7/166534?text=Background')] bg-cover">
+                        <div className="glass-panel p-8 max-w-md w-full text-center">
+                            <h2 className="text-xl font-bold text-green-700">Selamat Datang</h2>
+                            <h1 className="text-3xl font-black text-green-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-500 mb-6">Latihan Soal IPAS (45 Soal)</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Nama Kamu..." className="w-full p-3 border-2 border-green-300 rounded-xl mb-4 text-center font-bold" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold ${paket === 'A' ? 'bg-green-500 text-white' : 'bg-white'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold ${paket === 'B' ? 'bg-blue-500 text-white' : 'bg-white'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-yellow-400 py-3 rounded-xl font-black border-b-4 border-yellow-600 btn-fun">MULAI! 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER (Floating Top) */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-green-200 px-4 py-2 flex justify-between items-center h-16">
+                            <div><div className="text-[10px] font-bold text-green-800">SISWA</div><div className="font-bold text-green-700">{nama}</div></div>
+                            <div className="font-mono font-bold bg-green-100 text-green-700 px-3 py-1 rounded-lg border border-green-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-4 rounded-2xl shadow-sm border-2 border-gray-100 relative">
+                                    <div className="absolute -top-3 -left-2 bg-green-500 text-white w-8 h-8 flex items-center justify-center rounded-full font-bold border-2 border-white shadow">{start + idx + 1}</div>
+                                    <div className="mt-4">
+                                        {q.img && <SafeImage src={q.img} alt={q.alt || "Soal"} />}
+                                        <p className="font-bold text-gray-800 mb-4 text-lg">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex gap-3 transition-colors ${answers[q.id] === k ? 'bg-green-100 border-green-500' : 'bg-gray-50 border-gray-200 active:bg-gray-200'}`}>
+                                                    <span className={`w-6 h-6 flex items-center justify-center rounded font-bold text-xs flex-shrink-0 ${answers[q.id] === k ? 'bg-green-500 text-white' : 'bg-gray-300'}`}>{k}</span>
+                                                    <span className="text-sm font-medium">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (CADANGAN - PASTI MUNCUL DI BAWAH SOAL) */}
+                        <div className="mt-8 mb-20 p-4 bg-green-50 rounded-xl border-2 border-green-100 text-center">
+                            <h3 className="text-sm font-bold text-green-800 mb-4">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-blue-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-blue-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING (UTAMA) */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-4 py-2 bg-gray-100 rounded-lg font-bold text-gray-600 disabled:opacity-30">←</button>
+                            <span className="text-xs font-bold text-gray-400">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-2 bg-green-600 text-white rounded-lg font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-green-50 p-6 pb-20">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-green-200 text-center mb-6">
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest">Nilai Akhir</h2>
+                            <h1 className="text-6xl font-black text-green-600 my-4">{score.toFixed(0)}</h1>
+                            <p className="font-bold text-xl text-gray-800">{nama}</p>
+                            <p className="text-gray-500 text-sm mt-2">{score >= 80 ? "Luar Biasa!" : "Tetap Semangat!"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-6 bg-gray-800 text-white px-6 py-2 rounded-lg font-bold">Ulangi</button>
+                        </div>
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-red-100 mb-3">
+                                <p className="font-bold text-gray-800 text-sm mb-2"><span className="text-red-500">#{activeQuestions.indexOf(q)+1}</span> {q.text}</p>
+                                <div className="text-xs space-y-1">
+                                    <div className="text-red-500">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="text-green-600">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-2 rounded text-blue-800 mt-2">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-4 bg-green-200 rounded-xl font-bold text-green-800">Sempurna! Benar Semua! 🎉</div>}
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
