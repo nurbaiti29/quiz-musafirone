@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal IPAS Kelas 5 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind Libraries -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f9ff; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #bae6fd; box-shadow: 8px 8px 0px #0ea5e9; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #0ea5e9; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Safe Area */
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #0369a1; font-weight: bold;">Memuat Soal IPAS Kelas 5...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (50 SOAL - SESUAI KISI-KISI KELAS 5) ---
+        const paketA = [
+            // Cahaya (1-9)
+            { id: 1, text: "Cahaya matahari dapat masuk ke dalam ruangan melalui celah-celah jendela. Hal ini membuktikan bahwa cahaya...", options: { A: "Dapat dipantulkan", B: "Merambat lurus", C: "Dapat dibiaskan", D: "Menembus benda bening" }, answer: "B", discussion: "Cahaya merambat lurus melewati celah." },
+            { id: 2, text: "Bayangan yang dibentuk oleh cermin datar (seperti cermin rias) bersifat...", options: { A: "Maya, tegak, diperbesar", B: "Nyata, terbalik, sama besar", C: "Maya, tegak, sama besar", D: "Nyata, tegak, diperkecil" }, answer: "C", discussion: "Cermin datar: Maya, tegak, sama besar." },
+            { id: 3, text: "Pensil yang dimasukkan ke dalam gelas berisi air terlihat patah. Ini adalah contoh sifat cahaya...", options: { A: "Pembiasan (Refraksi)", B: "Pemantulan (Refleksi)", C: "Penguraian (Dispersi)", D: "Merambat lurus" }, answer: "A", discussion: "Cahaya dibelokkan saat pindah medium (udara ke air)." },
+            { id: 4, text: "Bagian mata yang berfungsi mengatur jumlah cahaya yang masuk (membesar dan mengecil) adalah...", options: { A: "Kornea", B: "Pupil", C: "Lensa", D: "Retina" }, answer: "B", discussion: "Pupil adalah celah tempat masuknya cahaya." },
+            { id: 5, text: "Bagian mata yang transparan dan berfungsi memfokuskan cahaya agar jatuh tepat di retina adalah...", options: { A: "Lensa mata", B: "Iris", C: "Sklera", D: "Kelopak" }, answer: "A", discussion: "Lensa memfokuskan cahaya." },
+            { id: 6, text: "Jika kita berada di tempat yang sangat terang, pupil mata kita akan...", options: { A: "Membesar", B: "Mengecil", C: "Tetap", D: "Menutup" }, answer: "B", discussion: "Mengecil untuk mengurangi cahaya yang masuk." },
+            { id: 7, text: "Gangguan mata di mana penderita tidak dapat melihat benda jauh dengan jelas disebut...", options: { A: "Miopi (Rabun Jauh)", B: "Hipermetropi (Rabun Dekat)", C: "Presbiopi", D: "Katarak" }, answer: "A", discussion: "Miopi = Rabun Jauh." },
+            { id: 8, text: "Penderita rabun dekat (Hipermetropi) dapat ditolong dengan kacamata berlensa...", options: { A: "Cekung (Minus)", B: "Cembung (Plus)", C: "Rangkap", D: "Silinder" }, answer: "B", discussion: "Rabun dekat dibantu lensa cembung (plus)." },
+            { id: 9, text: "Sikap bersyukur kepada Allah atas anugerah mata adalah...", options: { A: "Membaca di tempat gelap", B: "Menonton TV terlalu dekat", C: "Menggunakan mata untuk melihat hal baik", D: "Menatap matahari langsung" }, answer: "C", discussion: "Menggunakan sesuai fungsinya untuk kebaikan." },
+            
+            // Bunyi (10-15)
+            { id: 10, text: "Bunyi tidak dapat terdengar di ruang hampa udara (luar angkasa) karena...", options: { A: "Tidak ada udara/medium perambat", B: "Tidak ada sumber bunyi", C: "Bunyi terlalu pelan", D: "Telinga tidak berfungsi" }, answer: "A", discussion: "Bunyi butuh medium (padat, cair, gas)." },
+            { id: 11, text: "Bagian telinga yang berfungsi menangkap getaran suara dari luar seperti corong adalah...", options: { A: "Gendang telinga", B: "Daun telinga", C: "Rumah siput", D: "Tulang pendengaran" }, answer: "B", discussion: "Daun telinga mengumpulkan suara." },
+            { id: 12, text: "Saluran Eustachius menghubungkan telinga tengah dengan...", options: { A: "Mata", B: "Rongga mulut/tenggorokan", C: "Otak", D: "Hidung" }, answer: "B", discussion: "Menyeimbangkan tekanan udara." },
+            { id: 13, text: "Getaran bunyi dari gendang telinga akan diteruskan ke tulang pendengaran, yaitu...", options: { A: "Martil, Landasan, Sanggurdi", B: "Atlas, Leher, Ekor", C: "Kering, Betis, Paha", D: "Pengumpil, Hasta" }, answer: "A", discussion: "Tulang pendengaran: Martil, Landasan, Sanggurdi." },
+            { id: 14, text: "Kebiasaan mendengar musik terlalu keras menggunakan earphone dapat menyebabkan...", options: { A: "Telinga menjadi bersih", B: "Kerusakan gendang telinga", C: "Suara menjadi merdu", D: "Pendengaran semakin tajam" }, answer: "B", discussion: "Suara keras merusak sensor pendengaran." },
+            { id: 15, text: "Membersihkan telinga sebaiknya menggunakan...", options: { A: "Peniti", B: "Benda tajam", C: "Kapas lembut/kain basah di bagian luar", D: "Lidi" }, answer: "C", discussion: "Hindari memasukkan benda keras ke dalam telinga." },
+
+            // Ekosistem (16-25)
+            { id: 16, text: "Dalam rantai makanan, hewan pemakan tumbuhan (herbivora) disebut...", options: { A: "Produsen", B: "Konsumen Tingkat 1", C: "Konsumen Tingkat 2", D: "Pengurai" }, answer: "B", discussion: "Herbivora memakan produsen (tumbuhan)." },
+            { id: 17, text: "Urutan rantai makanan yang benar di sawah adalah...", options: { A: "Padi -> Ular -> Tikus -> Elang", B: "Padi -> Tikus -> Ular -> Elang", C: "Tikus -> Padi -> Ular -> Elang", D: "Elang -> Ular -> Tikus -> Padi" }, answer: "B", discussion: "Produsen dimakan konsumen 1, dst." },
+            { id: 18, text: "Komponen rantai makanan yang berperan menguraikan sisa makhluk hidup mati adalah...", options: { A: "Konsumen Puncak", B: "Karnivora", C: "Dekomposer (Pengurai)", D: "Omnivora" }, answer: "C", discussion: "Contoh: Bakteri dan Jamur." },
+            { id: 19, text: "Kumpulan dari beberapa rantai makanan yang saling berhubungan disebut...", options: { A: "Jaring-jaring makanan", B: "Piramida makanan", C: "Ekosistem", D: "Habitat" }, answer: "A", discussion: "Jaring-jaring makanan lebih kompleks." },
+            { id: 20, text: "Pada jaring-jaring makanan, jika populasi ular punah, maka kemungkinan yang terjadi adalah...", options: { A: "Populasi tikus meningkat", B: "Populasi tikus menurun", C: "Padi semakin subur", D: "Elang semakin banyak" }, answer: "A", discussion: "Karena pemangsanya (ular) hilang." },
+            { id: 21, text: "Dalam piramida makanan, posisi paling bawah yang jumlahnya paling banyak ditempati oleh...", options: { A: "Konsumen III", B: "Konsumen II", C: "Konsumen I", D: "Produsen" }, answer: "D", discussion: "Produsen (tumbuhan) adalah dasar piramida." },
+            { id: 22, text: "Pertumbuhan eceng gondok yang terlalu cepat di sungai dapat menyebabkan...", options: { A: "Ikan semakin banyak", B: "Air menjadi jernih", C: "Terganggunya keseimbangan ekosistem air", D: "Aliran air semakin lancar" }, answer: "C", discussion: "Menutup cahaya matahari ke dalam air." },
+            { id: 23, text: "Sumber energi utama dalam jaring-jaring makanan berasal dari...", options: { A: "Tumbuhan", B: "Matahari", C: "Hewan", D: "Tanah" }, answer: "B", discussion: "Matahari sumber energi bagi produsen." },
+            { id: 24, text: "Jika petani membasmi hama tikus dengan racun berlebihan, dampaknya bagi elang adalah...", options: { A: "Populasi elang bertambah", B: "Populasi elang berkurang (kelaparan)", C: "Elang makan padi", D: "Tidak ada dampak" }, answer: "B", discussion: "Makanan elang (tikus) berkurang." },
+            { id: 25, text: "Peran manusia menjaga aliran energi dalam ekosistem adalah...", options: { A: "Menebang hutan sembarangan", B: "Berburu hewan langka", C: "Melakukan reboisasi dan menjaga lingkungan", D: "Membuang limbah ke sungai" }, answer: "C", discussion: "Menjaga keseimbangan alam." },
+
+            // Peta & Geografi (26-29)
+            { id: 26, text: "Warna biru pada peta menyimbolkan...", options: { A: "Dataran rendah", B: "Pegunungan", C: "Perairan (Laut/Danau/Sungai)", D: "Jalan raya" }, answer: "C", discussion: "Biru = Air." },
+            { id: 27, text: "Letak suatu wilayah berdasarkan garis lintang dan garis bujur disebut letak...", options: { A: "Geografis", B: "Astronomis", C: "Geologis", D: "Strategis" }, answer: "B", discussion: "Astronomis = koordinat." },
+            { id: 28, text: "Simbol segitiga merah pada peta menunjukkan...", options: { A: "Gunung berapi aktif", B: "Gunung mati", C: "Ibu kota", D: "Bandara" }, answer: "A", discussion: "Segitiga merah = Gunung aktif." },
+            { id: 29, text: "Secara geografis, Indonesia terletak di antara dua benua, yaitu...", options: { A: "Asia dan Afrika", B: "Asia dan Australia", C: "Australia dan Amerika", D: "Eropa dan Asia" }, answer: "B", discussion: "Asia dan Australia." },
+
+            // SDA & Budaya (30-40)
+            { id: 30, text: "Kegiatan masyarakat di daerah pantai biasanya berkaitan dengan budaya...", options: { A: "Bertani padi", B: "Nelayan/Bahari", C: "Berkebun teh", D: "Industri berat" }, answer: "B", discussion: "Budaya maritim/laut." },
+            { id: 31, text: "Garis yang memisahkan fauna tipe Asiatis dan tipe Peralihan disebut garis...", options: { A: "Weber", B: "Wallace", C: "Khatulistiwa", D: "Bujur" }, answer: "B", discussion: "Wallace memisah Asiatis-Peralihan." },
+            { id: 32, text: "Pasangan SDA dan manfaatnya yang benar: Serat Kapas -> ...", options: { A: "Bahan bangunan", B: "Bahan makanan", C: "Bahan pakaian (kain)", D: "Obat-obatan" }, answer: "C", discussion: "Kapas untuk benang/kain." },
+            { id: 33, text: "Fauna tipe Australis (Indonesia Timur) contohnya adalah...", options: { A: "Gajah", B: "Harimau", C: "Cendrawasih & Kanguru Pohon", D: "Komodo" }, answer: "C", discussion: "Mirip hewan Australia." },
+            { id: 34, text: "Batu bara dan minyak bumi termasuk SDA yang...", options: { A: "Dapat diperbarui", B: "Tidak dapat diperbarui", C: "Kekal", D: "Biotik" }, answer: "B", discussion: "Hasil tambang fosil." },
+            { id: 35, text: "Perilaku bijak dalam memanfaatkan air adalah...", options: { A: "Membiarkan keran terbuka", B: "Mandi berjam-jam", C: "Menutup keran jika tidak dipakai", D: "Mencuci mobil tiap hari" }, answer: "C", discussion: "Hemat air." },
+            { id: 36, text: "Warisan budaya yang berupa benda (tangible) adalah...", options: { A: "Tari-tarian", B: "Lagu daerah", C: "Candi dan Prasasti", D: "Bahasa daerah" }, answer: "C", discussion: "Bisa disentuh (fisik)." },
+            { id: 37, text: "Contoh warisan budaya tak benda (intangible) adalah...", options: { A: "Keris", B: "Batik (Kain)", C: "Wayang Kulit (Alat)", D: "Musik Gamelan (Seni Musiknya)" }, answer: "D", discussion: "Seni pertunjukan/musik." },
+            { id: 38, text: "Upacara adat 'Ngaben' (pembakaran mayat) berasal dari daerah...", options: { A: "Jawa Tengah", B: "Bali", C: "Sumatera Barat", D: "Sulawesi Selatan" }, answer: "B", discussion: "Ngaben adat Bali." },
+            { id: 39, text: "Rumah adat Gadang berasal dari provinsi...", options: { A: "Sumatera Barat", B: "Jawa Barat", C: "Kalimantan Barat", D: "Papua" }, answer: "A", discussion: "Minangkabau (Sumbar)." },
+            { id: 40, text: "Dampak positif pencampuran budaya (akulturasi) adalah...", options: { A: "Hilangnya budaya asli", B: "Menambah kekayaan budaya bangsa", C: "Terjadi konflik", D: "Masyarakat bingung" }, answer: "B", discussion: "Memperkaya khazanah budaya." },
+
+            // Ekonomi (41-46) & Tambahan
+            { id: 41, text: "Aktivitas ekonomi utama di daerah pegunungan adalah...", options: { A: "Perikanan", B: "Perkebunan (Teh/Kopi)", C: "Pabrik Garam", D: "Pelabuhan" }, answer: "B", discussion: "Suhu sejuk cocok untuk kebun." },
+            { id: 42, text: "Kegiatan menyalurkan barang dari produsen ke konsumen disebut...", options: { A: "Produksi", B: "Konsumsi", C: "Distribusi", D: "Investasi" }, answer: "C", discussion: "Penyaluran barang." },
+            { id: 43, text: "Faktor yang mempengaruhi kegiatan ekonomi di suatu daerah adalah...", options: { A: "Warna tanah", B: "Kondisi geografis/alam", C: "Nama daerah", D: "Bentuk rumah" }, answer: "B", discussion: "Alam menentukan mata pencaharian." },
+            { id: 44, text: "Sektor ekonomi yang mengolah bahan mentah menjadi barang jadi disebut...", options: { A: "Perdagangan", B: "Jasa", C: "Industri", D: "Agraris" }, answer: "C", discussion: "Industri/Pabrik." },
+            { id: 45, text: "Tanaman yang menjadi komoditas utama perkebunan di Kalimantan Barat adalah...", options: { A: "Gandum", B: "Apel", C: "Kelapa Sawit & Karet", D: "Teh" }, answer: "C", discussion: "Sawit dan karet dominan di Kalbar." },
+            { id: 46, text: "Proses melihat: Cahaya -> Kornea -> Pupil -> Lensa -> ... -> Otak.", options: { A: "Retina", B: "Iris", C: "Sklera", D: "Kelopak" }, answer: "A", discussion: "Bayangan ditangkap Retina." },
+            { id: 47, text: "Gendang telinga bergetar saat menerima...", options: { A: "Cahaya", B: "Gelombang Bunyi", C: "Bau", D: "Rasa" }, answer: "B", discussion: "Bunyi menggetarkan gendang." },
+            { id: 48, text: "Transformasi energi pada tumbuhan (Fotosintesis) adalah...", options: { A: "Energi Kimia -> Gerak", B: "Energi Cahaya -> Kimia", C: "Energi Listrik -> Panas", D: "Energi Gerak -> Bunyi" }, answer: "B", discussion: "Cahaya matahari jadi zat makanan (kimia)." },
+            { id: 49, text: "Dampak pemanfaatan hutan secara berlebihan (eksploitasi) adalah...", options: { A: "Hutan lestari", B: "Habitat hewan rusak", C: "Ekonomi meningkat terus", D: "Udara makin bersih" }, answer: "B", discussion: "Merusak rumah hewan." },
+            { id: 50, text: "Budaya daerah di sekitar kita (Pontianak) yang terkenal saat perayaan Imlek/Cap Go Meh adalah...", options: { A: "Reog", B: "Ondel-ondel", C: "Naga & Barongsai", D: "Kecak" }, answer: "C", discussion: "Khas Pontianak/Singkawang." }
+        ];
+
+        // --- DATA SOAL PAKET B (50 SOAL - VARIASI) ---
+        const paketB = [
+            { id: 1, text: "Cermin cembung (seperti spion kendaraan) membentuk bayangan yang bersifat...", options: { A: "Maya, tegak, diperkecil", B: "Nyata, terbalik, diperbesar", C: "Maya, tegak, sama besar", D: "Nyata, tegak, diperbesar" }, answer: "A", discussion: "Sifat cermin cembung: Maya, tegak, diperkecil (agar pandangan luas)." },
+            { id: 2, text: "Pelangi terjadi karena peristiwa...", options: { A: "Pemantulan cahaya", B: "Penguraian cahaya (Dispersi)", C: "Merambat lurus", D: "Penyerapan cahaya" }, answer: "B", discussion: "Cahaya putih diuraikan menjadi mejikuhibiniu." },
+            { id: 3, text: "Kolam renang terlihat lebih dangkal dari aslinya. Ini bukti cahaya mengalami...", options: { A: "Pemantulan", B: "Pembiasan", C: "Penguraian", D: "Difusi" }, answer: "B", discussion: "Pembiasan cahaya." },
+            { id: 4, text: "Bagian mata yang memberi warna (cokelat/hitam/biru) disebut...", options: { A: "Pupil", B: "Iris", C: "Kornea", D: "Lensa" }, answer: "B", discussion: "Iris adalah selaput pelangi." },
+            { id: 5, text: "Saraf mata berfungsi untuk...", options: { A: "Menangkap bayangan", B: "Meneruskan sinyal bayangan ke otak", C: "Mengatur cahaya", D: "Melindungi mata" }, answer: "B", discussion: "Menghubungkan mata ke otak." },
+            { id: 6, text: "Pupil mata akan membesar ketika kita berada di...", options: { A: "Tempat terang", B: "Bawah matahari", C: "Tempat gelap/redup", D: "Depan lampu" }, answer: "C", discussion: "Agar lebih banyak cahaya masuk." },
+            { id: 7, text: "Rabun jauh (Miopi) biasanya disebabkan oleh...", options: { A: "Bola mata terlalu pendek", B: "Bayangan jatuh di depan retina", C: "Lensa mata kaku", D: "Infeksi bakteri" }, answer: "B", discussion: "Fokus jatuh di depan retina." },
+            { id: 8, text: "Lensa silinder digunakan untuk penderita...", options: { A: "Miopi", B: "Hipermetropi", C: "Astigmatisme (Silinder)", D: "Presbiopi" }, answer: "C", discussion: "Astigmatisme (kornea tidak rata)." },
+            { id: 9, text: "Menjaga kesehatan mata dapat dilakukan dengan mengonsumsi...", options: { A: "Wortel (Vitamin A)", B: "Daging (Protein)", C: "Nasi (Karbohidrat)", D: "Garam (Yodium)" }, answer: "A", discussion: "Vitamin A bagus untuk mata." },
+            { id: 10, text: "Bunyi merambat paling cepat melalui medium...", options: { A: "Gas (Udara)", B: "Cair (Air)", C: "Padat (Benda keras)", D: "Ruang hampa" }, answer: "C", discussion: "Partikel zat padat paling rapat." },
+            { id: 11, text: "Rumah siput (koklea) berfungsi untuk...", options: { A: "Menangkap suara", B: "Mengubah getaran menjadi impuls saraf", C: "Menyeimbangkan tekanan", D: "Melindungi telinga" }, answer: "B", discussion: "Ubah getaran jadi sinyal listrik." },
+            { id: 12, text: "Tiga tulang pendengaran terdapat di telinga bagian...", options: { A: "Luar", B: "Tengah", C: "Dalam", D: "Samping" }, answer: "B", discussion: "Martil, landasan, sanggurdi ada di tengah." },
+            { id: 13, text: "Proses mendengar: Daun telinga -> Lubang -> Gendang -> ... -> Koklea.", options: { A: "Saraf", B: "Tulang Pendengaran", C: "Otak", D: "Eustachius" }, answer: "B", discussion: "Getaran diteruskan tulang pendengaran." },
+            { id: 14, text: "Polusi suara (kebisingan) di bandara dapat dicegah dengan...", options: { A: "Membuka jendela", B: "Menggunakan penutup telinga (earmuff)", C: "Berteriak", D: "Mendengar musik" }, answer: "B", discussion: "Pelindung telinga." },
+            { id: 15, text: "Fungsi rambut halus dan kotoran telinga adalah...", options: { A: "Menyaring debu dan serangga", B: "Menangkap suara", C: "Memperindah telinga", D: "Mengganggu pendengaran" }, answer: "A", discussion: "Perlindungan alami." },
+            { id: 16, text: "Organisme yang mampu membuat makanannya sendiri (fotosintesis) disebut...", options: { A: "Konsumen", B: "Produsen", C: "Pengurai", D: "Predator" }, answer: "B", discussion: "Tumbuhan hijau." },
+            { id: 17, text: "Konsumen tingkat 2 biasanya adalah hewan...", options: { A: "Herbivora", B: "Karnivora/Omnivora", C: "Produsen", D: "Pengurai" }, answer: "B", discussion: "Memakan konsumen 1 (herbivora)." },
+            { id: 18, text: "Jamur dan bakteri dalam ekosistem berperan sebagai...", options: { A: "Produsen", B: "Konsumen", C: "Dekomposer", D: "Predator" }, answer: "C", discussion: "Menguraikan zat organik." },
+            { id: 19, text: "Hewan yang memakan tumbuhan dan hewan lain disebut...", options: { A: "Herbivora", B: "Karnivora", C: "Omnivora", D: "Insektivora" }, answer: "C", discussion: "Pemakan segala." },
+            { id: 20, text: "Jika populasi katak di sawah punah, maka populasi belalang akan...", options: { A: "Menurun drastis", B: "Meningkat pesat", C: "Tetap", D: "Mati semua" }, answer: "B", discussion: "Tidak ada yang memakan belalang." },
+            { id: 21, text: "Puncak piramida makanan ditempati oleh...", options: { A: "Produsen", B: "Konsumen Puncak (Predator Tertinggi)", C: "Pengurai", D: "Konsumen I" }, answer: "B", discussion: "Jumlahnya paling sedikit." },
+            { id: 22, text: "Dampak penebangan hutan bakau terhadap ekosistem pantai adalah...", options: { A: "Ikan bertambah banyak", B: "Terjadi abrasi (pengikisan pantai)", C: "Air laut jadi tawar", D: "Pantai makin luas" }, answer: "B", discussion: "Akar bakau menahan tanah." },
+            { id: 23, text: "Aliran energi dalam ekosistem berakhir pada...", options: { A: "Matahari", B: "Tumbuhan", C: "Pengurai", D: "Hewan" }, answer: "C", discussion: "Energi dikembalikan ke tanah." },
+            { id: 24, text: "Ketidakseimbangan ekosistem sering disebabkan oleh...", options: { A: "Bencana alam dan ulah manusia", B: "Fotosintesis", C: "Hewan makan tumbuhan", D: "Hujan" }, answer: "A", discussion: "Faktor perusak utama." },
+            { id: 25, text: "Manusia berperan sebagai ... dalam menjaga lingkungan.", options: { A: "Perusak", B: "Pengelola/Pelestari", C: "Penonton", D: "Penguasa" }, answer: "B", discussion: "Kewajiban menjaga alam." },
+            { id: 26, text: "Simbol pesawat terbang pada peta menunjukkan...", options: { A: "Pelabuhan", B: "Bandara Udara", C: "Terminal Bus", D: "Stasiun Kereta" }, answer: "B", discussion: "Bandara." },
+            { id: 27, text: "Legenda pada peta berfungsi untuk...", options: { A: "Menunjukkan arah mata angin", B: "Menjelaskan arti simbol-simbol peta", C: "Mengukur jarak", D: "Memperindah peta" }, answer: "B", discussion: "Keterangan simbol." },
+            { id: 28, text: "Peta yang menggambarkan bentuk permukaan bumi (tinggi rendah) disebut...", options: { A: "Peta Topografi/Relief", B: "Peta Politik", C: "Peta Persebaran Penduduk", D: "Peta Jalan" }, answer: "A", discussion: "Topografi." },
+            { id: 29, text: "Indonesia terletak di antara dua Samudra, yaitu...", options: { A: "Hindia dan Atlantik", B: "Pasifik dan Hindia", C: "Pasifik dan Arktik", D: "Atlantik dan Pasifik" }, answer: "B", discussion: "Samudra Pasifik dan Hindia." },
+            { id: 30, text: "Rumah adat Honai berasal dari...", options: { A: "Sumatera", B: "Jawa", C: "Papua", D: "Kalimantan" }, answer: "C", discussion: "Papua." },
+            { id: 31, text: "Garis Weber memisahkan fauna tipe...", options: { A: "Asiatis dan Peralihan", B: "Peralihan dan Australis", C: "Asiatis dan Australis", D: "Barat dan Timur" }, answer: "B", discussion: "Weber di timur (Peralihan-Australis)." },
+            { id: 32, text: "SDA yang dapat menghasilkan energi listrik ramah lingkungan adalah...", options: { A: "Batu bara", B: "Minyak bumi", C: "Sinar Matahari (Panel Surya)", D: "Gas Alam" }, answer: "C", discussion: "Energi terbarukan." },
+            { id: 33, text: "Fauna tipe Asiatis (Indonesia Barat) contohnya...", options: { A: "Komodo", B: "Cendrawasih", C: "Gajah & Harimau", D: "Kuskus" }, answer: "C", discussion: "Hewan menyusui besar." },
+            { id: 34, text: "Emas dan Perak termasuk SDA...", options: { A: "Hayati", B: "Mineral Logam", C: "Mineral Non-Logam", D: "Energi" }, answer: "B", discussion: "Logam mulia." },
+            { id: 35, text: "Pemanfaatan lahan gambut yang salah dapat menyebabkan...", options: { A: "Tanah subur", B: "Kebakaran hutan", C: "Banjir bandang", D: "Udara sejuk" }, answer: "B", discussion: "Gambut mudah terbakar saat kering." },
+            { id: 36, text: "Batik adalah warisan budaya Indonesia yang diakui UNESCO. Batik termasuk...", options: { A: "Senjata tradisional", B: "Kain tradisional", C: "Rumah adat", D: "Tarian" }, answer: "B", discussion: "Seni kain." },
+            { id: 37, text: "Lagu 'Ampar-Ampar Pisang' berasal dari...", options: { A: "Jawa Tengah", B: "Kalimantan Selatan", C: "Sulawesi Utara", D: "Papua" }, answer: "B", discussion: "Lagu daerah Kalsel." },
+            { id: 38, text: "Sikap kita terhadap perbedaan budaya daerah adalah...", options: { A: "Mengejek", B: "Merasa budaya sendiri paling baik", C: "Menghargai dan melestarikan", D: "Masa bodoh" }, answer: "C", discussion: "Toleransi." },
+            { id: 39, text: "Makanan khas 'Gudeg' berasal dari...", options: { A: "Jakarta", B: "Yogyakarta", C: "Surabaya", D: "Bandung" }, answer: "B", discussion: "Jogja." },
+            { id: 40, text: "Pencampuran dua budaya yang menghasilkan budaya baru disebut...", options: { A: "Asimilasi/Akulturasi", B: "Isolasi", C: "Demonstrasi", D: "Reboisasi" }, answer: "A", discussion: "Penyatuan budaya." },
+            { id: 41, text: "Mata pencaharian penduduk kota besar biasanya di bidang...", options: { A: "Pertanian", B: "Jasa dan Industri", C: "Nelayan", D: "Perkebunan" }, answer: "B", discussion: "Perkantoran, pabrik, jasa." },
+            { id: 42, text: "Orang yang menggunakan barang/jasa disebut...", options: { A: "Produsen", B: "Distributor", C: "Konsumen", D: "Karyawan" }, answer: "C", discussion: "Pemakai." },
+            { id: 43, text: "Pasar terapung adalah aktivitas ekonomi unik di daerah...", options: { A: "Pegunungan", B: "Sungai (Kalimantan)", C: "Gurun", D: "Hutan lebat" }, answer: "B", discussion: "Sungai Barito/Martapura." },
+            { id: 44, text: "Contoh kegiatan produksi adalah...", options: { A: "Makan nasi", B: "Mengantar paket", C: "Membuat tahu tempe", D: "Membeli baju" }, answer: "C", discussion: "Menghasilkan barang." },
+            { id: 45, text: "Tanaman lidah buaya di Pontianak banyak diolah menjadi...", options: { A: "Bahan bangunan", B: "Minuman dan makanan (Cemilan)", C: "Kain", D: "Bahan bakar" }, answer: "B", discussion: "Oleh-oleh khas Pontianak." },
+            { id: 46, text: "Sifat bayangan pada retina mata normal adalah...", options: { A: "Nyata, terbalik, diperkecil", B: "Maya, tegak, diperbesar", C: "Nyata, tegak, sama besar", D: "Maya, terbalik, diperkecil" }, answer: "A", discussion: "Lensa mata membalikkan bayangan." },
+            { id: 47, text: "Frekuensi bunyi yang dapat didengar manusia (Audiosonik) adalah...", options: { A: "Kurang dari 20 Hz", B: "20 - 20.000 Hz", C: "Lebih dari 20.000 Hz", D: "1.000.000 Hz" }, answer: "B", discussion: "Batas pendengaran manusia." },
+            { id: 48, text: "Pada ekosistem laut, yang berperan sebagai produsen adalah...", options: { A: "Ikan hiu", B: "Fitoplankton", C: "Zooplankton", D: "Paus" }, answer: "B", discussion: "Tumbuhan mikroskopis laut." },
+            { id: 49, text: "Cara melestarikan SDA hutan adalah dengan sistem...", options: { A: "Tebang habis", B: "Tebang bakar", C: "Tebang pilih", D: "Ladang berpindah" }, answer: "C", discussion: "Hanya menebang pohon tua." },
+            { id: 50, text: "Tarian Tidayu (Tionghoa, Dayak, Melayu) mencerminkan budaya daerah...", options: { A: "Jawa Timur", B: "Kalimantan Barat", C: "Sumatera Utara", D: "Bali" }, answer: "B", discussion: "Harmoni etnis di Kalbar." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-sky-50 bg-[url('https://img.freepik.com/free-vector/science-education-background_23-2148486901.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center">
+                            <h2 className="text-xl font-bold text-sky-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-sky-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan IPAS Kelas 5 (50 Soal)</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Kamu..." className="w-full p-4 border-2 border-sky-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-sky-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-sky-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-indigo-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-orange-500 py-4 rounded-xl font-black text-xl border-b-4 border-orange-700 btn-fun shadow-lg text-white">MULAI MENGERJAKAN! 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-sky-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-sky-800">SISWA</div><div className="font-bold text-sky-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-sky-100 text-sky-700 px-3 py-1 rounded-lg border border-sky-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-sky-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-sky-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-green-100 border-green-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700 font-sans">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-sky-50 rounded-2xl border-2 border-sky-200 text-center">
+                            <h3 className="text-sm font-bold text-sky-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-blue-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-blue-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-blue-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-sky-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-sky-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-sky-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-sky-100 text-sky-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat Sekali! (Ilmuwan Cilik) 🌟" : score >= 60 ? "Bagus! Tingkatkan lagi! 👍" : "Jangan menyerah, ayo belajar lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-sky-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-sky-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 KEREN! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
