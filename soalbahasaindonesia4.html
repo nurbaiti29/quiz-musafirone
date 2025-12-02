@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Indonesia Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind Libraries -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fff1f2; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #fecdd3; box-shadow: 8px 8px 0px #fb7185; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #e11d48; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Safe Area */
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #be123c; font-weight: bold;">Memuat Soal Bahasa Indonesia...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (45 SOAL - SESUAI KISI-KISI) ---
+        const paketA = [
+            // Teks Narasi & Cerita (1-5, 12-14)
+            { id: 1, text: "Cerita: Budi ingin bermain bola, tapi hujan turun sangat deras. Ia merasa sedih dan marah karena tidak bisa keluar rumah. Konflik yang dialami tokoh Budi adalah...", options: { A: "Konflik dengan teman", B: "Konflik batin (kecewa karena hujan)", C: "Konflik fisik", D: "Konflik sosial" }, answer: "B", discussion: "Konflik batin adalah perasaan kecewa dalam diri tokoh." },
+            { id: 2, text: "Dalam cerita, tokoh 'Kancil' selalu digambarkan cerdik namun suka menipu. Watak Kancil adalah...", options: { A: "Protagonis (Baik)", B: "Antagonis (Jahat/Licik)", C: "Tritagonis (Penengah)", D: "Figuran" }, answer: "B", discussion: "Suka menipu adalah sifat buruk (Antagonis)." },
+            { id: 3, text: "Inti cerita 'Bawang Merah dan Bawang Putih' adalah...", options: { A: "Anak yang durhaka", B: "Kesabaran membawa kebahagiaan, kejahatan membawa celaka", C: "Persahabatan sejati", D: "Perang antar desa" }, answer: "B", discussion: "Bawang Putih yang sabar akhirnya bahagia." },
+            { id: 4, text: "Pesan moral dari cerita 'Malin Kundang' adalah...", options: { A: "Kita harus merantau jauh", B: "Jangan melupakan teman lama", C: "Jangan durhaka kepada orang tua", D: "Harus menjadi kaya raya" }, answer: "C", discussion: "Anak tidak boleh durhaka pada ibu." },
+            { id: 5, text: "Tokoh yang memiliki sifat baik, jujur, dan suka menolong disebut tokoh...", options: { A: "Antagonis", B: "Protagonis", C: "Tritagonis", D: "Figuran" }, answer: "B", discussion: "Protagonis = Tokoh utama yang baik." },
+            
+            // Kalimat Transitif & Intransitif (6-7)
+            { id: 6, text: "Kalimat Transitif adalah kalimat yang...", options: { A: "Tidak memerlukan objek", B: "Memerlukan objek", C: "Tidak punya subjek", D: "Hanya berupa kata kerja" }, answer: "B", discussion: "Transitif butuh objek agar kalimatnya utuh." },
+            { id: 7, text: "Perhatikan kalimat: 'Ibu memasak nasi goreng.' Objek dalam kalimat tersebut adalah...", options: { A: "Ibu", B: "Memasak", C: "Nasi goreng", D: "Di dapur" }, answer: "C", discussion: "Yang dimasak adalah nasi goreng (Objek)." },
+
+            // Ejaan & Tanda Baca (8-11)
+            { id: 8, text: "Penulisan huruf kapital yang BENAR adalah...", options: { A: "hari minggu saya ke pasar.", B: "Hari Minggu saya ke Pasar.", C: "Hari Minggu saya ke pasar.", D: "hari Minggu saya ke Pasar." }, answer: "C", discussion: "Awal kalimat dan nama hari harus kapital." },
+            { id: 9, text: "Penulisan kalimat yang salah: 'adik membeli obat di apotik'. Kata baku yang benar adalah...", options: { A: "Apotik (tetap)", B: "Apotek", C: "Apothik", D: "Apotak" }, answer: "B", discussion: "Kata baku adalah Apotek (Apoteker)." },
+            { id: 10, text: "Tanda baca untuk mengakhiri kalimat tanya adalah...", options: { A: "Tanda titik (.)", B: "Tanda seru (!)", C: "Tanda tanya (?)", D: "Tanda koma (,)" }, answer: "C", discussion: "Kalimat tanya diakhiri tanda tanya." },
+            { id: 11, text: "Penggunaan tanda koma yang benar terdapat pada kalimat...", options: { A: "Ibu membeli, apel jeruk dan mangga.", B: "Ibu membeli apel, jeruk, dan mangga.", C: "Ibu, membeli apel jeruk dan mangga.", D: "Ibu membeli apel jeruk, dan mangga." }, answer: "B", discussion: "Koma memisahkan rincian barang." },
+
+            // Kosakata (15-19)
+            { id: 12, text: "Perilaku tokoh yang 'suka membual' artinya...", options: { A: "Suka berbohong/omong kosong", B: "Suka menolong", C: "Suka memberi uang", D: "Suka bekerja keras" }, answer: "A", discussion: "Membual = Berbohong besar." },
+            { id: 13, text: "Nilai positif dari tokoh yang 'pantang menyerah' adalah...", options: { A: "Mudah putus asa", B: "Terus berusaha meski gagal", C: "Suka mengeluh", D: "Malas bekerja" }, answer: "B", discussion: "Pantang menyerah = Gigih." },
+            { id: 14, text: "Karakter 'rendah hati' berarti...", options: { A: "Sombong", B: "Tidak sombong/tawadhu", C: "Merasa paling pintar", D: "Minder" }, answer: "B", discussion: "Rendah hati = Tidak sombong." },
+            { id: 15, text: "Makna kata 'Fobia' adalah...", options: { A: "Ketakutan yang berlebihan", B: "Keberanian yang besar", C: "Penyakit kulit", D: "Hobi mengoleksi barang" }, answer: "A", discussion: "Fobia = Rasa takut berlebihan." },
+            { id: 16, text: "Padanan kata (sinonim) dari 'Hemat' adalah...", options: { A: "Boros", B: "Irit", C: "Kikir", D: "Dermawan" }, answer: "B", discussion: "Hemat = Irit (hati-hati membelanjakan uang)." },
+            { id: 17, text: "Kata 'Bisa' memiliki dua arti (homonim), yaitu...", options: { A: "Dapat dan Racun ular", B: "Mampu dan Mau", C: "Racun dan Madu", D: "Kuat dan Lemah" }, answer: "A", discussion: "Bisa (mampu) dan Bisa (racun)." },
+            { id: 18, text: "Contoh kata homonim (tulisan & bunyi sama, arti beda) adalah...", options: { A: "Bank dan Bang", B: "Hak (sepatu) dan Hak (milik)", C: "Massa dan Masa", D: "Apel (buah) dan Apel (upacara)" }, answer: "B", discussion: "Hak sepatu vs Hak asasi (tulisan & bacaan sama)." },
+            { id: 19, text: "Kalimat berhomonim: 'Rapat hari ini membahas pagar yang rapat'. Arti kata rapat kedua adalah...", options: { A: "Pertemuan", B: "Tidak renggang", C: "Jauh", D: "Tinggi" }, answer: "B", discussion: "Rapat (tidak berongga)." },
+
+            // Imbuhan (20-24)
+            { id: 20, text: "Kata dasar 'Tari' jika diberi awalan 'Me-' menjadi...", options: { A: "Mentari", B: "Menari", C: "Memtari", D: "Menyari" }, answer: "B", discussion: "Huruf T luluh jika bertemu Me- (Menari)." },
+            { id: 21, text: "Kata dasar dari 'Memakai' adalah...", options: { A: "Makai", B: "Pakai", C: "Akai", D: "Mem" }, answer: "B", discussion: "Me + Pakai = Memakai (P luluh)." },
+            { id: 22, text: "Fungsi awalan 'Ber-' pada kata 'Bersepeda' adalah menyatakan...", options: { A: "Memiliki sepeda", B: "Mengendarai/memakai sepeda", C: "Membuat sepeda", D: "Menjual sepeda" }, answer: "B", discussion: "Bersepeda = Melakukan aktivitas dengan sepeda." },
+            { id: 23, text: "Andi sedang (sapu) halaman. Kata berimbuhan yang tepat adalah...", options: { A: "Mensapu", B: "Menyapu", C: "Mesapu", D: "Memyapu" }, answer: "B", discussion: "Sapu -> Menyapu (S luluh)." },
+            { id: 24, text: "Adik sedang (ajar) membaca. Kata yang tepat...", options: { A: "Mengajar", B: "Belajar", C: "Pelajar", D: "Terajar" }, answer: "B", discussion: "Ber + ajar = Belajar (pengecualian)." },
+
+            // Paragraf & Kalimat (25-35)
+            { id: 25, text: "Kalimat utama biasanya terdapat di ... paragraf.", options: { A: "Tengah saja", B: "Awal atau Akhir", C: "Setiap kalimat", D: "Judul" }, answer: "B", discussion: "Deduktif (awal) atau Induktif (akhir)." },
+            { id: 26, text: "Ide pokok adalah...", options: { A: "Kalimat penjelas", B: "Gagasan utama/inti paragraf", C: "Judul bacaan", D: "Kesimpulan akhir" }, answer: "B", discussion: "Ide pokok = Inti masalah." },
+            { id: 27, text: "Kalimat pendukung berfungsi untuk...", options: { A: "Mengakhiri paragraf", B: "Menjelaskan kalimat utama", C: "Menyingkat cerita", D: "Membuat judul" }, answer: "B", discussion: "Menjelaskan lebih rinci." },
+            { id: 28, text: "Kalimat majemuk setara biasanya menggunakan kata hubung...", options: { A: "Dan, atau, tetapi", B: "Agar, supaya", C: "Ketika, jika", D: "Walaupun, meskipun" }, answer: "A", discussion: "Setara: Dan (penambahan), Atau (pemilihan), Tetapi (pertentangan)." },
+            { id: 29, text: "'Aku ingin membeli mainan, ... uangku belum cukup.' Konjungsi yang tepat adalah...", options: { A: "Dan", B: "Atau", C: "Tetapi", D: "Lalu" }, answer: "C", discussion: "Pertentangan menggunakan 'Tetapi'." },
+            { id: 30, text: "Kalimat persuasif bertujuan untuk...", options: { A: "Memerintah dengan kasar", B: "Menenangkan hati", C: "Mengajak atau membujuk", D: "Menanyakan sesuatu" }, answer: "C", discussion: "Persuasif = Ajakan." },
+            { id: 31, text: "Contoh kalimat persuasif (ajakan) adalah...", options: { A: "Dilarang membuang sampah!", B: "Ayo, kita jaga kebersihan lingkungan!", C: "Siapa yang membuang sampah?", D: "Sampah itu bau." }, answer: "B", discussion: "Menggunakan kata 'Ayo' atau 'Mari'." },
+            { id: 32, text: "Majas Personifikasi adalah gaya bahasa yang...", options: { A: "Melebih-lebihkan sesuatu", B: "Mengumpamakan benda mati seolah hidup", C: "Menyindir secara halus", D: "Membandingkan dua benda" }, answer: "B", discussion: "Contoh: Pena menari-nari." },
+            { id: 33, text: "Contoh kalimat bermajas personifikasi: 'Angin ... menyapaku pagi ini.'", options: { A: "Kencang", B: "Dingin", C: "Berbisik", D: "Sepoi-sepoi" }, answer: "C", discussion: "Berbisik adalah sifat manusia (hidup)." },
+            { id: 34, text: "Dalam diskusi, pendapat 'Saya setuju' berarti...", options: { A: "Menolak usulan", B: "Menerima/mendukung usulan", C: "Ragu-ragu", D: "Marah" }, answer: "B", discussion: "Setuju = Pro/Mendukung." },
+            { id: 35, text: "Kesimpulan yang baik harus...", options: { A: "Panjang dan bertele-tele", B: "Menyimpang dari topik", C: "Singkat, padat, dan mewakili isi bacaan", D: "Berbeda dengan isi" }, answer: "C", discussion: "Ringkas dan jelas." },
+
+            // Denah & Wawancara (36-45)
+            { id: 36, text: "Untuk membaca denah, kita memerlukan petunjuk arah...", options: { A: "Mata angin (Utara, Selatan, dll)", B: "Jam dinding", C: "Senter", D: "Termometer" }, answer: "A", discussion: "Mata angin penunjuk arah." },
+            { id: 37, text: "Jika arah Utara di atas, maka arah Timur berada di sebelah...", options: { A: "Kiri", B: "Kanan", C: "Bawah", D: "Belakang" }, answer: "B", discussion: "Kanan peta adalah Timur." },
+            { id: 38, text: "Orang yang memberikan informasi saat wawancara disebut...", options: { A: "Pewawancara", B: "Narasumber", C: "Reporter", D: "Penulis" }, answer: "B", discussion: "Narasumber = Sumber informasi." },
+            { id: 39, text: "Daftar pertanyaan wawancara biasanya menggunakan kata tanya ADIKSIMBA. 'Siapa' digunakan untuk menanyakan...", options: { A: "Waktu", B: "Tempat", C: "Orang/Tokoh", D: "Cara" }, answer: "C", discussion: "Siapa = Orang." },
+            { id: 40, text: "Sikap yang baik saat melakukan wawancara adalah...", options: { A: "Memotong pembicaraan narasumber", B: "Datang terlambat", C: "Berbicara sopan dan santun", D: "Memaksa narasumber menjawa" }, answer: "C", discussion: "Etika wawancara." },
+            { id: 41, text: "Sebelum wawancara, kita harus membuat...", options: { A: "Daftar belanja", B: "Daftar pertanyaan", C: "Kesimpulan", D: "Laporan" }, answer: "B", discussion: "Agar wawancara terarah." },
+            { id: 42, text: "Teks pendek yang berisi penjelasan singkat disebut...", options: { A: "Novel", B: "Sekilas Info / Teks Narasi Pendek", C: "Kamus", D: "Ensiklopedia" }, answer: "B", discussion: "Teks singkat." },
+            { id: 43, text: "Kalimat persuasi dalam iklan bertujuan untuk...", options: { A: "Menakuti pembeli", B: "Menarik minat pembeli agar membeli produk", C: "Menceritakan sejarah", D: "Menghibur" }, answer: "B", discussion: "Mempengaruhi orang lain." },
+            { id: 44, text: "Saat menyampaikan pendapat, kita harus menggunakan bahasa yang...", options: { A: "Kasar", B: "Santun dan logis", C: "Berteriak", D: "Menyinggung" }, answer: "B", discussion: "Sopan dan masuk akal." },
+            { id: 45, text: "Laporan hasil wawancara berisi...", options: { A: "Cerita fiksi", B: "Informasi fakta dari narasumber", C: "Puisi", D: "Dongeng" }, answer: "B", discussion: "Laporan harus sesuai fakta wawancara." }
+        ];
+
+        // --- DATA SOAL PAKET B (45 SOAL - VARIASI) ---
+        const paketB = [
+            { id: 1, text: "Bagian cerita yang menunjukkan masalah mulai muncul disebut...", options: { A: "Orientasi (Pengenalan)", B: "Komplikasi (Konflik)", C: "Resolusi (Penyelesaian)", D: "Koda" }, answer: "B", discussion: "Komplikasi adalah tahap masalah." },
+            { id: 2, text: "Tokoh yang menjadi lawan dari tokoh utama (jahat) disebut...", options: { A: "Protagonis", B: "Antagonis", C: "Tritagonis", D: "Figuran" }, answer: "B", discussion: "Antagonis = Lawan." },
+            { id: 3, text: "Tempat dan waktu terjadinya cerita disebut...", options: { A: "Tokoh", B: "Latar (Setting)", C: "Alur", D: "Tema" }, answer: "B", discussion: "Latar waktu, tempat, suasana." },
+            { id: 4, text: "Pesan moral biasanya terdapat di bagian ... cerita.", options: { A: "Awal", B: "Tengah", C: "Akhir (Koda)", D: "Judul" }, answer: "C", discussion: "Pelajaran ada di akhir." },
+            { id: 5, text: "Sifat tokoh bisa diketahui melalui...", options: { A: "Gambar sampul", B: "Dialog dan tindakan tokoh", C: "Jumlah halaman", D: "Nama pengarang" }, answer: "B", discussion: "Tindakan mencerminkan watak." },
+            { id: 6, text: "Kalimat Intransitif adalah kalimat yang...", options: { A: "Memerlukan objek", B: "Tidak memerlukan objek", C: "Sangat panjang", D: "Berisi perintah" }, answer: "B", discussion: "Contoh: Adik menangis (Tanpa objek)." },
+            { id: 7, text: "Contoh kalimat Intransitif...", options: { A: "Budi menendang bola.", B: "Ibu memasak sayur.", C: "Adik menangis.", D: "Ayah membaca koran." }, answer: "C", discussion: "Menangis tidak butuh objek penderita." },
+            { id: 8, text: "Nama geografi (sungai, gunung, kota) harus ditulis dengan...", options: { A: "Huruf kecil", B: "Huruf miring", C: "Huruf Kapital di awal kata", D: "Huruf tebal" }, answer: "C", discussion: "Contoh: Sungai Kapuas." },
+            { id: 9, text: "Kata baku dari 'Nasehat' adalah...", options: { A: "Nasihat", B: "Nasehat", C: "Nasihart", D: "Nehashat" }, answer: "A", discussion: "Baku: Nasihat (I)." },
+            { id: 10, text: "Tanda seru (!) digunakan untuk kalimat...", options: { A: "Tanya", B: "Berita", C: "Perintah atau seruan", D: "Pernyataan" }, answer: "C", discussion: "Tutup pintu itu!" },
+            { id: 11, text: "Penulisan uang yang benar: 'Ibu memberiku uang ...'", options: { A: "Rp 5.000,00", B: "Rp. 5000,-", C: "5000 rupiah", D: "Rp5.000,00" }, answer: "D", discussion: "Rp tanpa titik dan spasi, diakhiri ,00." },
+            { id: 12, text: "Tokoh yang 'besar kepala' artinya...", options: { A: "Kepalanya besar", B: "Sombong", C: "Pintar", D: "Bodoh" }, answer: "B", discussion: "Kiasan Sombong." },
+            { id: 13, text: "Tokoh yang 'panjang tangan' bermakna...", options: { A: "Tangannya panjang", B: "Suka menolong", C: "Suka mencuri", D: "Suka memukul" }, answer: "C", discussion: "Kiasan Pencuri." },
+            { id: 14, text: "Watak tokoh yang jujur dan dapat dipercaya disebut...", options: { A: "Khianat", B: "Amanah", C: "Dusta", D: "Ceroboh" }, answer: "B", discussion: "Amanah = Dapat dipercaya." },
+            { id: 15, text: "Makna kata 'Reboisasi' adalah...", options: { A: "Penebangan hutan", B: "Penanaman kembali hutan gundul", C: "Pembakaran hutan", D: "Banjir bandang" }, answer: "B", discussion: "Penghijauan kembali." },
+            { id: 16, text: "Sinonim kata 'Melihat' adalah...", options: { A: "Mendengar", B: "Memandang", C: "Meraba", D: "Mencium" }, answer: "B", discussion: "Persamaan kata." },
+            { id: 17, text: "Kata 'Genting' berhomonim. Arti 1: Atap rumah. Arti 2: ...", options: { A: "Kaca", B: "Gawat / Darurat", C: "Santai", D: "Lantai" }, answer: "B", discussion: "Keadaan genting = Gawat." },
+            { id: 18, text: "Homograf (Tulis sama, Baca beda). Contoh: 'Tahu' (makanan) dan 'Tahu' (...)", options: { A: "Mengerti/Paham", B: "Tempe", C: "Tidak", D: "Lupa" }, answer: "A", discussion: "Saya tahu (paham) itu tahu (makanan)." },
+            { id: 19, text: "'Beruang' bisa berarti hewan, bisa juga berarti...", options: { A: "Tidak punya uang", B: "Memiliki uang (Kaya)", C: "Berhutang", D: "Miskin" }, answer: "B", discussion: "Orang beruang = Orang kaya." },
+            { id: 20, text: "Kata 'Potong' + awalan Me- menjadi...", options: { A: "Mempotong", B: "Memotong", C: "Menpotong", D: "Mengpotong" }, answer: "B", discussion: "P luluh jadi M." },
+            { id: 21, text: "Kata 'Kirim' + awalan Me- menjadi...", options: { A: "Mengirim", B: "Mekirim", C: "Menkirim", D: "Memkirim" }, answer: "A", discussion: "K luluh jadi Ng." },
+            { id: 22, text: "Awalan 'Ber-' pada kata 'Bertelur' bermakna...", options: { A: "Mempunyai telur", B: "Menghasilkan/mengeluarkan telur", C: "Makan telur", D: "Membeli telur" }, answer: "B", discussion: "Ayam bertelur." },
+            { id: 23, text: "Kata dasar 'Sapu' + Me- = ...", options: { A: "Mesapu", B: "Menyapu", C: "Mensapu", D: "Mengsapu" }, answer: "B", discussion: "S luluh jadi Ny." },
+            { id: 24, text: "Kata 'Cermin' + Ber- = ...", options: { A: "Bercermin", B: "Becermin", C: "Belcermin", D: "Beracermin" }, answer: "A", discussion: "Bercermin (memakai cermin)." },
+            { id: 25, text: "Paragraf Deduktif kalimat utamanya ada di...", options: { A: "Akhir", B: "Awal", C: "Tengah", D: "Menyebar" }, answer: "B", discussion: "Deduktif = Depan/Awal." },
+            { id: 26, text: "Nama lain ide pokok adalah...", options: { A: "Gagasan pokok/utama", B: "Gagasan pendukung", C: "Kalimat penjelas", D: "Kesimpulan" }, answer: "A", discussion: "Inti paragraf." },
+            { id: 27, text: "Satu paragraf terdiri dari satu kalimat utama dan beberapa...", options: { A: "Judul", B: "Kalimat penjelas", C: "Ide pokok", D: "Kata baku" }, answer: "B", discussion: "Pendukung kalimat utama." },
+            { id: 28, text: "Kata hubung 'Sehingga' menyatakan hubungan...", options: { A: "Pilihan", B: "Akibat", C: "Syarat", D: "Waktu" }, answer: "B", discussion: "Sebab-Akibat." },
+            { id: 29, text: "Ayah membaca koran ... Ibu memasak di dapur.", options: { A: "Tetapi", B: "Sedangkan/Dan", C: "Atau", D: "Supaya" }, answer: "B", discussion: "Kegiatan bersamaan." },
+            { id: 30, text: "Teks persuasi berisi...", options: { A: "Lelucon", B: "Ajakan", C: "Berita duka", D: "Dongeng" }, answer: "B", discussion: "Mempengaruhi pembaca." },
+            { id: 31, text: "Poster 'Hemat Air, Selamatkan Bumi' termasuk kalimat...", options: { A: "Tanya", B: "Berita", C: "Persuasif", D: "Negatif" }, answer: "C", discussion: "Ajakan berhemat." },
+            { id: 32, text: "'Matahari tersenyum menyapaku'. Majasnya adalah...", options: { A: "Hiperbola", B: "Personifikasi", C: "Metafora", D: "Litotes" }, answer: "B", discussion: "Matahari dianggap hidup (tersenyum)." },
+            { id: 33, text: "'Suaranya menggelegar membelah angkasa'. Majasnya...", options: { A: "Personifikasi", B: "Hiperbola", C: "Metafora", D: "Ironi" }, answer: "B", discussion: "Melebih-lebihkan (Hiperbola)." },
+            { id: 34, text: "Pendapat kontra (tidak setuju) biasanya diawali kata...", options: { A: "Saya sependapat...", B: "Saya kurang setuju...", C: "Benar sekali...", D: "Tepat sekali..." }, answer: "B", discussion: "Menyatakan ketidaksetujuan." },
+            { id: 35, text: "Teks argumentasi berisi...", options: { A: "Khayalan", B: "Pendapat disertai alasan/bukti", C: "Percakapan", D: "Puisi" }, answer: "B", discussion: "Argumen = Alasan logis." },
+            { id: 36, text: "Arah mata angin antara Utara dan Timur adalah...", options: { A: "Barat Laut", B: "Timur Laut", C: "Tenggara", D: "Barat Daya" }, answer: "B", discussion: "Timur Laut." },
+            { id: 37, text: "Matahari terbit dari sebelah...", options: { A: "Barat", B: "Timur", C: "Utara", D: "Selatan" }, answer: "B", discussion: "Timur." },
+            { id: 38, text: "Orang yang mewawancarai disebut...", options: { A: "Narasumber", B: "Pewawancara", C: "Kameramen", D: "Penonton" }, answer: "B", discussion: "Pencari berita." },
+            { id: 39, text: "Kata tanya 'Mengapa' menanyakan...", options: { A: "Waktu", B: "Alasan/Sebab", C: "Tempat", D: "Orang" }, answer: "B", discussion: "Alasan." },
+            { id: 40, text: "Bahasa dalam wawancara resmi harus...", options: { A: "Baku dan sopan", B: "Gaul", C: "Kasar", D: "Daerah" }, answer: "A", discussion: "Formal." },
+            { id: 41, text: "Langkah pertama sebelum wawancara...", options: { A: "Menulis laporan", B: "Menentukan topik dan narasumber", C: "Pulang ke rumah", D: "Tidur" }, answer: "B", discussion: "Perencanaan." },
+            { id: 42, text: "Teks deskripsi bertujuan untuk...", options: { A: "Menghibur", B: "Menggambarkan objek secara rinci", C: "Mengajak", D: "Berdebat" }, answer: "B", discussion: "Melukiskan objek." },
+            { id: 43, text: "Kalimat efektif harus...", options: { A: "Panjang lebar", B: "Singkat, padat, jelas (SPOK)", C: "Berulang-ulang", D: "Sulit dimengerti" }, answer: "B", discussion: "Tidak boros kata." },
+            { id: 44, text: "Pendapat yang baik harus disertai...", options: { A: "Marah", B: "Alasan yang logis/masuk akal", C: "Paksaan", D: "Ejekan" }, answer: "B", discussion: "Agar orang percaya." },
+            { id: 45, text: "Laporan wawancara ditulis setelah...", options: { A: "Sebelum wawancara", B: "Saat tidur", C: "Selesai wawancara", D: "Makan siang" }, answer: "C", discussion: "Pelaporan hasil." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Isi nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-pink-50 bg-[url('https://img.freepik.com/free-vector/hand-drawn-back-school-background_23-2149464866.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center">
+                            <h2 className="text-xl font-bold text-pink-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-pink-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Indonesia Kelas 4</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Kamu..." className="w-full p-4 border-2 border-pink-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-pink-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-pink-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-rose-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-red-500 py-4 rounded-xl font-black text-xl border-b-4 border-red-700 btn-fun shadow-lg text-white">MULAI MENGERJAKAN! 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-pink-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-pink-800">SISWA</div><div className="font-bold text-pink-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-lg border border-pink-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-pink-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-pink-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-pink-100 border-pink-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700 font-sans">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-12 mb-10 p-6 bg-pink-50 rounded-2xl border-2 border-pink-200 text-center">
+                            <h3 className="text-sm font-bold text-pink-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-pink-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-pink-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-rose-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-rose-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-pink-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-rose-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-pink-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-pink-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-pink-400 via-rose-400 to-red-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-pink-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-pink-100 text-pink-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Luar Biasa! Pertahankan! 🌟" : score >= 60 ? "Bagus! Tingkatkan lagi! 👍" : "Jangan menyerah, ayo belajar lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-rose-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-rose-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 SEMPURNA! <br/>Semua Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
