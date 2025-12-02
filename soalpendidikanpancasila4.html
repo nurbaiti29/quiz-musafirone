@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Pendidikan Pancasila Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fff1f2; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #fca5a5; box-shadow: 8px 8px 0px #dc2626; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #dc2626; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #b91c1c; font-weight: bold;">Memuat Soal Pancasila...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (45 SOAL) ---
+        const paketA = [
+            // Indikator 1-10: Simbol & Makna Sila
+            { id: 1, text: "Simbol Pancasila yang berbunyi 'Ketuhanan Yang Maha Esa' adalah...", options: { A: "Bintang", B: "Rantai", C: "Pohon Beringin", D: "Kepala Banteng" }, answer: "A", discussion: "Bintang melambangkan cahaya rohani dari Tuhan." },
+            { id: 2, text: "Sikap yang sesuai dengan sila kedua (Rantai Emas) adalah...", options: { A: "Rajin beribadah", B: "Menolong teman yang jatuh", C: "Gotong royong membersihkan selokan", D: "Musyawarah memilih ketua kelas" }, answer: "B", discussion: "Sila ke-2 berkaitan dengan kemanusiaan dan saling menolong." },
+            { id: 3, text: "Kegiatan kerja bakti di sekolah merupakan pengamalan sila dengan simbol...", options: { A: "Bintang", B: "Rantai", C: "Pohon Beringin", D: "Padi dan Kapas" }, answer: "C", discussion: "Kerja bakti mencerminkan Persatuan Indonesia (Sila 3)." },
+            { id: 4, text: "Perilaku tidak membeda-bedakan teman berdasarkan kaya atau miskin sesuai dengan sila...", options: { A: "Pertama", B: "Kedua", C: "Kelima", D: "Ketiga" }, answer: "C", discussion: "Sila ke-5: Keadilan sosial, tidak pilih kasih." },
+            { id: 5, text: "Lambang sila yang berbunyi 'Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan...' adalah...", options: { A: "Pohon Beringin", B: "Kepala Banteng", C: "Padi dan Kapas", D: "Bintang" }, answer: "B", discussion: "Kepala banteng melambangkan hewan sosial yang suka berkumpul (musyawarah)." },
+            { id: 6, text: "Menghargai teman yang sedang berpuasa adalah pengamalan sila ke...", options: { A: "1", B: "2", C: "3", D: "4" }, answer: "A", discussion: "Toleransi beragama (Sila 1)." },
+            { id: 7, text: "Urutan lambang Pancasila dari sila 1 sampai 5 yang benar adalah...", options: { A: "Bintang - Pohon Beringin - Rantai - Banteng - Padi Kapas", B: "Bintang - Rantai - Pohon Beringin - Banteng - Padi Kapas", C: "Bintang - Rantai - Banteng - Pohon Beringin - Padi Kapas", D: "Rantai - Bintang - Pohon Beringin - Banteng - Padi Kapas" }, answer: "B", discussion: "Urutan: 1.Bintang 2.Rantai 3.Beringin 4.Banteng 5.Padi Kapas." },
+            { id: 8, text: "Arti dari semboyan Bhinneka Tunggal Ika pada pita burung Garuda adalah...", options: { A: "Berbeda-beda tetapi tetap satu jua", B: "Bersatu kita teguh bercerai kita runtuh", C: "Maju tak gentar", D: "Satu nusa satu bangsa" }, answer: "A", discussion: "Makna persatuan dalam perbedaan." },
+            { id: 9, text: "Aktivitas musyawarah untuk mufakat sesuai dengan simbol...", options: { A: "Padi dan Kapas", B: "Rantai", C: "Kepala Banteng", D: "Bintang" }, answer: "C", discussion: "Sila ke-4 (Kepala Banteng)." },
+            { id: 10, text: "Contoh perilaku sila ke-5 (Padi dan Kapas) adalah...", options: { A: "Berdoa sebelum makan", B: "Menabung dan hidup hemat", C: "Membantu korban bencana", D: "Memilih ketua kelas" }, answer: "B", discussion: "Hidup hemat dan tidak boros adalah cerminan keadilan sosial." },
+
+            // Indikator 11-18: Sejarah Perumusan
+            { id: 11, text: "Tokoh yang mengusulkan nama 'Pancasila' pada sidang BPUPK adalah...", options: { A: "Moh. Yamin", B: "Dr. Soepomo", C: "Ir. Soekarno", D: "Moh. Hatta" }, answer: "C", discussion: "Ir. Soekarno mengusulkan nama Pancasila pada 1 Juni 1945." },
+            { id: 12, text: "Ayat Al-Qur'an yang mengajarkan untuk bermusyawarah (Sila 4) adalah...", options: { A: "Ali Imran ayat 159", B: "Al-Ikhlas", C: "Al-Fatihah", D: "Al-Falaq" }, answer: "A", discussion: "'Wa syawirhum fil amri' (Dan bermusyawarahlah dengan mereka)." },
+            { id: 13, text: "Salah satu tokoh BPUPK yang juga merumuskan dasar negara adalah...", options: { A: "Jenderal Sudirman", B: "Pangeran Diponegoro", C: "Mohammad Yamin", D: "Imam Bonjol" }, answer: "C", discussion: "Tiga tokoh pengusul: Yamin, Soepomo, Soekarno." },
+            { id: 14, text: "Dasar negara Indonesia disahkan pada tanggal...", options: { A: "17 Agustus 1945", B: "18 Agustus 1945", C: "1 Juni 1945", D: "20 Mei 1908" }, answer: "B", discussion: "Disahkan oleh PPKI sehari setelah merdeka." },
+            { id: 15, text: "Peristiwa lahirnya Pancasila diperingati setiap tanggal...", options: { A: "1 Oktober", B: "17 Agustus", C: "1 Juni", D: "28 Oktober" }, answer: "C", discussion: "1 Juni adalah Hari Lahir Pancasila." },
+            { id: 16, text: "Ketua Panitia Sembilan adalah...", options: { A: "Moh. Hatta", B: "Ir. Soekarno", C: "A.A. Maramis", D: "Abikusno Tjokrosujoso" }, answer: "B", discussion: "Ir. Soekarno mengetuai Panitia Sembilan." },
+            { id: 17, text: "Rumusan dasar negara yang dihasilkan Panitia Sembilan disebut...", options: { A: "Piagam Jakarta (Jakarta Charter)", B: "UUD 1945", C: "Dekrit Presiden", D: "Proklamasi" }, answer: "A", discussion: "Piagam Jakarta adalah hasil kerja Panitia Sembilan." },
+            { id: 18, text: "Nilai luhur yang ditunjukkan para perumus Pancasila adalah...", options: { A: "Mau menang sendiri", B: "Mementingkan golongan", C: "Musyawarah dan mementingkan persatuan", D: "Mengharap imbalan" }, answer: "C", discussion: "Sikap rela berkorban dan mengutamakan kepentingan bangsa." },
+
+            // Indikator 19-29: Keberagaman & Budaya
+            { id: 19, text: "Karakter para perumus Pancasila yang patut diteladani adalah...", options: { A: "Sombong", B: "Rendah diri", C: "Toleransi dan berjiwa besar", D: "Pemarah" }, answer: "C", discussion: "Menghargai perbedaan pendapat." },
+            { id: 20, text: "Sikap terpuji terhadap teman yang berbeda agama adalah...", options: { A: "Mengganggunya saat ibadah", B: "Menghormati dan tidak memaksakan agama", C: "Menjauhinya", D: "Mengejeknya" }, answer: "B", discussion: "Toleransi beragama." },
+            { id: 21, text: "Ilustrasi: Warga desa bergotong royong memperbaiki jembatan. Sikap ini mencerminkan...", options: { A: "Persatuan", B: "Permusuhan", C: "Kecurangan", D: "Ketidakadilan" }, answer: "A", discussion: "Gotong royong = Persatuan." },
+            { id: 22, text: "Sikap terpuji saat melihat teman terjatuh dari sepeda adalah...", options: { A: "Menertawakan", B: "Membiarkan saja", C: "Menolongnya", D: "Memarahinya" }, answer: "C", discussion: "Sila ke-2 (Kemanusiaan)." },
+            { id: 23, text: "Makna QS Al-Hujurat ayat 13 adalah Allah menciptakan manusia...", options: { A: "Hanya satu suku", B: "Berbeda-beda (suku dan bangsa) untuk saling mengenal", C: "Untuk saling bermusuhan", D: "Sama semua" }, answer: "B", discussion: "Lita'arafu (untuk saling mengenal)." },
+            { id: 24, text: "Pakaian adat 'Baju Bodo' berasal dari suku...", options: { A: "Jawa", B: "Bugis (Sulawesi Selatan)", C: "Minang", D: "Dayak" }, answer: "B", discussion: "Baju Bodo dari Bugis/Makassar." },
+            { id: 25, text: "Tujuan diadakan festival budaya di sekolah adalah...", options: { A: "Untuk pamer", B: "Mengenal dan mencintai keberagaman budaya", C: "Menghabiskan uang", D: "Bersaing antar teman" }, answer: "B", discussion: "Melestarikan budaya." },
+            { id: 26, text: "Makanan khas 'Rendang' berasal dari daerah...", options: { A: "Sumatera Barat", B: "Jakarta", C: "Yogyakarta", D: "Papua" }, answer: "A", discussion: "Rendang dari Padang/Minang." },
+            { id: 27, text: "Rumah adat 'Joglo' berasal dari...", options: { A: "Papua", B: "Jawa Tengah", C: "Kalimantan Barat", D: "Sulawesi Utara" }, answer: "B", discussion: "Joglo rumah adat Jawa." },
+            { id: 28, text: "Tari Piring berasal dari...", options: { A: "Bali", B: "Sumatera Barat", C: "Aceh", D: "Jawa Timur" }, answer: "B", discussion: "Tari Piring dari Minangkabau." },
+            { id: 29, text: "Sikap kita jika ada teman yang membawa bekal makanan khas daerahnya adalah...", options: { A: "Menghinanya", B: "Menghargai dan mau mencobanya", C: "Membuangnya", D: "Menutup hidung" }, answer: "B", discussion: "Menghargai kuliner daerah lain." },
+
+            // Indikator 30-34: Pemerintahan Daerah
+            { id: 30, text: "Kegiatan yang mencerminkan persatuan di lingkungan RT adalah...", options: { A: "Tawuran", B: "Kerja bakti membersihkan selokan", C: "Pesta narkoba", D: "Judi" }, answer: "B", discussion: "Kerja bakti menyatukan warga." },
+            { id: 31, text: "Pemimpin sebuah Desa disebut...", options: { A: "Lurah", B: "Kepala Desa (Kades)", C: "Camat", D: "Bupati" }, answer: "B", discussion: "Desa dipimpin Kades, Kelurahan dipimpin Lurah." },
+            { id: 32, text: "Perangkat kelurahan yang bertugas membantu Lurah adalah...", options: { A: "Sekretaris Kelurahan (Seklur)", B: "Kepala Dinas", C: "Presiden", D: "Menteri" }, answer: "A", discussion: "Seklur membantu administrasi Lurah." },
+            { id: 33, text: "Wilayah Kecamatan dipimpin oleh seorang...", options: { A: "Lurah", B: "Camat", C: "Bupati", D: "Gubernur" }, answer: "B", discussion: "Kecamatan dipimpin Camat." },
+            { id: 34, text: "Lembaga yang bertugas menjaga keamanan di tingkat desa/kelurahan adalah...", options: { A: "Posyandu", B: "Linmas / Hansip", C: "Karang Taruna", D: "PKK" }, answer: "B", discussion: "Linmas menjaga ketertiban." },
+
+            // Indikator 35-45: Nilai & Moral
+            { id: 35, text: "Perilaku terpuji yang sesuai dengan QS Al-Ma'un adalah...", options: { A: "Suka pamer (Riya')", B: "Menyayangi anak yatim dan memberi makan orang miskin", C: "Shalat tepat waktu", D: "Berpuasa" }, answer: "B", discussion: "Al-Ma'un mengajarkan kepedulian sosial." },
+            { id: 36, text: "Sikap terbaik saat berbeda pendapat dalam musyawarah adalah...", options: { A: "Marah-marah", B: "Keluar ruangan", C: "Menghargai pendapat orang lain", D: "Memaksakan kehendak" }, answer: "C", discussion: "Ciri musyawarah mufakat." },
+            { id: 37, text: "Contoh kenampakan alam (ciptaan Tuhan) adalah...", options: { A: "Waduk", B: "Jalan Raya", C: "Gunung", D: "Gedung Sekolah" }, answer: "C", discussion: "Gunung terbentuk secara alami." },
+            { id: 38, text: "Contoh kenampakan buatan (ciptaan manusia) adalah...", options: { A: "Sungai", B: "Laut", C: "Bendungan / Waduk", D: "Hutan Rimba" }, answer: "C", discussion: "Bendungan dibuat manusia." },
+            { id: 39, text: "Manfaat hidup rukun dalam keberagaman adalah...", options: { A: "Terjadi pertengkaran", B: "Hidup menjadi tenang dan damai", C: "Saling curiga", D: "Negara hancur" }, answer: "B", discussion: "Rukun membawa damai." },
+            { id: 40, text: "Pernyataan: 'Mengutamakan kepentingan bersama di atas kepentingan pribadi'. Ini sesuai sila...", options: { A: "Ke-1", B: "Ke-2", C: "Ke-3", D: "Ke-4" }, answer: "C", discussion: "Nilai persatuan (Sila 3) atau Musyawarah (Sila 4), konteks persatuan lebih ke Sila 3." },
+            { id: 41, text: "Menjaga keseimbangan antara hak dan kewajiban adalah nilai sila...", options: { A: "Keadilan Sosial (Sila 5)", B: "Ketuhanan", C: "Persatuan", D: "Kemanusiaan" }, answer: "A", discussion: "Butir pengamalan Sila ke-5." },
+            { id: 42, text: "Contoh perilaku adil di rumah adalah...", options: { A: "Menghabiskan semua makanan", B: "Membagi tugas rumah dengan saudara", C: "Tidur sepanjang hari", D: "Meminta uang jajan lebih" }, answer: "B", discussion: "Berbagi tugas secara adil." },
+            { id: 43, text: "Karakter pahlawan Pattimura yang patut ditiru adalah...", options: { A: "Mudah menyerah", B: "Berani melawan penjajah demi kebenaran", C: "Bekerjasama dengan musuh", D: "Penakut" }, answer: "B", discussion: "Keberanian dan patriotisme." },
+            { id: 44, text: "Tokoh yang dijuluki 'Bapak Pendidikan Nasional' adalah...", options: { A: "Ki Hajar Dewantara", B: "Ir. Soekarno", C: "Moh. Hatta", D: "Bung Tomo" }, answer: "A", discussion: "Pendiri Taman Siswa." },
+            { id: 45, text: "Mengapa kita harus melestarikan budaya daerah?", options: { A: "Agar dijual ke luar negeri", B: "Agar tidak punah dan tetap dikenal anak cucu", C: "Supaya dianggap kuno", D: "Hanya untuk tugas sekolah" }, answer: "B", discussion: "Menjaga identitas bangsa." }
+        ];
+
+        // --- DATA SOAL PAKET B (50 SOAL - VARIASI) ---
+        const paketB = [
+            { id: 1, text: "Simbol Rantai Emas melambangkan sila...", options: { A: "Ketuhanan", B: "Kemanusiaan yang Adil dan Beradab", C: "Persatuan", D: "Keadilan Sosial" }, answer: "B", discussion: "Sila ke-2." },
+            { id: 2, text: "Mata rantai berbentuk segi empat melambangkan...", options: { A: "Perempuan", B: "Laki-laki", C: "Anak-anak", D: "Orang tua" }, answer: "B", discussion: "Segi empat (laki-laki), Lingkaran (perempuan)." },
+            { id: 3, text: "Simbol Pohon Beringin memiliki makna...", options: { A: "Kekuatan rakyat", B: "Tempat berteduh dan persatuan", C: "Kebutuhan pokok", D: "Cahaya Tuhan" }, answer: "B", discussion: "Mengayomi semua rakyat (Persatuan)." },
+            { id: 4, text: "Simbol Padi dan Kapas melambangkan...", options: { A: "Musyawarah", B: "Sandang dan Pangan (Kesejahteraan)", C: "Kekuatan", D: "Agama" }, answer: "B", discussion: "Kebutuhan dasar manusia (Keadilan Sosial)." },
+            { id: 5, text: "Warna latar belakang simbol Bintang adalah...", options: { A: "Merah", B: "Putih", C: "Hitam", D: "Emas" }, answer: "C", discussion: "Hitam (keabadian)." },
+            { id: 6, text: "Mengembangkan sikap tenggang rasa (tepa selira) sesuai dengan sila...", options: { A: "Ke-1", B: "Ke-2", C: "Ke-3", D: "Ke-5" }, answer: "B", discussion: "Nilai kemanusiaan." },
+            { id: 7, text: "Bangga menggunakan produk buatan Indonesia (Batik) adalah pengamalan sila...", options: { A: "Ke-1", B: "Ke-3", C: "Ke-4", D: "Ke-5" }, answer: "B", discussion: "Cinta tanah air (Persatuan)." },
+            { id: 8, text: "Tidak memaksakan kehendak kepada orang lain saat rapat sesuai sila...", options: { A: "Ke-4", B: "Ke-2", C: "Ke-1", D: "Ke-5" }, answer: "A", discussion: "Nilai musyawarah." },
+            { id: 9, text: "Menjaga fasilitas umum (halte, taman) adalah pengamalan sila...", options: { A: "Ke-1", B: "Ke-5", C: "Ke-2", D: "Ke-3" }, answer: "B", discussion: "Menghargai hak orang lain (Keadilan Sosial)." },
+            { id: 10, text: "Berani membela kebenaran dan keadilan sesuai dengan sila...", options: { A: "Bintang", B: "Rantai", C: "Pohon Beringin", D: "Padi Kapas" }, answer: "B", discussion: "Sila ke-2." },
+            { id: 11, text: "BPUPK adalah singkatan dari...", options: { A: "Badan Persiapan Umum Penjajah Jepang", B: "Badan Penyelidik Usaha-usaha Persiapan Kemerdekaan", C: "Barisan Pemuda Umum Penegak Keadilan", D: "Badan Perancang Undang-Undang" }, answer: "B", discussion: "Dibentuk Jepang untuk menyelidiki persiapan kemerdekaan." },
+            { id: 12, text: "Sikap para pahlawan yang tidak mudah putus asa disebut...", options: { A: "Pesimis", B: "Pantang Menyerah", C: "Egois", D: "Sombong" }, answer: "B", discussion: "Terus berjuang." },
+            { id: 13, text: "Tokoh yang mengusulkan rumusan 'Peri Kebangsaan, Peri Kemanusiaan...' pada 29 Mei 1945 adalah...", options: { A: "Moh. Yamin", B: "Soepomo", C: "Soekarno", D: "Hatta" }, answer: "A", discussion: "Moh. Yamin adalah pembicara pertama." },
+            { id: 14, text: "Tokoh yang mengusulkan rumusan 'Persatuan, Kekeluargaan...' pada 31 Mei 1945 adalah...", options: { A: "Moh. Yamin", B: "Soepomo", C: "Soekarno", D: "Ahmad Subardjo" }, answer: "B", discussion: "Soepomo menekankan negara integralistik." },
+            { id: 15, text: "Piagam Jakarta dirumuskan pada tanggal...", options: { A: "1 Juni 1945", B: "22 Juni 1945", C: "17 Agustus 1945", D: "18 Agustus 1945" }, answer: "B", discussion: "22 Juni 1945." },
+            { id: 16, text: "Anggota Panitia Sembilan yang mewakili golongan Islam antara lain...", options: { A: "A.A. Maramis", B: "KH. Wahid Hasyim", C: "Moh. Hatta", D: "Soekarno" }, answer: "B", discussion: "KH. Wahid Hasyim (NU)." },
+            { id: 17, text: "Sila pertama pada Piagam Jakarta kemudian diubah menjadi...", options: { A: "Ketuhanan dengan kewajiban menjalankan syariat Islam...", B: "Ketuhanan Yang Maha Esa", C: "Persatuan Indonesia", D: "Kemanusiaan yang adil" }, answer: "B", discussion: "Diubah demi persatuan bangsa." },
+            { id: 18, text: "Tujuan dibentuknya Panitia Sembilan adalah...", options: { A: "Membubarkan BPUPK", B: "Membahas usulan dasar negara dari sidang BPUPK", C: "Menyerang Jepang", D: "Memilih Presiden" }, answer: "B", discussion: "Mematangkan rumusan dasar negara." },
+            { id: 19, text: "Sikap toleransi antar umat beragama disebut...", options: { A: "Etnosentrisme", B: "Kerukunan beragama", C: "Fanatisme", D: "Individualisme" }, answer: "B", discussion: "Saling menghormati." },
+            { id: 20, text: "Walaupun berbeda suku dan bahasa, kita tetap satu bangsa yaitu...", options: { A: "Malaysia", B: "Indonesia", C: "Singapura", D: "Jawa" }, answer: "B", discussion: "NKRI." },
+            { id: 21, text: "Lagu daerah 'Bungong Jeumpa' berasal dari...", options: { A: "Aceh", B: "Papua", C: "Jawa Barat", D: "Bali" }, answer: "A", discussion: "Aceh." },
+            { id: 22, text: "Alat musik tradisional 'Angklung' berasal dari...", options: { A: "Jawa Barat", B: "Sumatera Utara", C: "Kalimantan Timur", D: "Nusa Tenggara" }, answer: "A", discussion: "Jawa Barat (Sunda)." },
+            { id: 23, text: "Makna ayat 'Inna akromakum indallahi atqokum' (Al-Hujurat:13) adalah...", options: { A: "Yang paling mulia adalah yang paling kaya", B: "Yang paling mulia adalah yang paling bertakwa", C: "Yang paling mulia adalah pejabat", D: "Semua manusia sama" }, answer: "B", discussion: "Kemuliaan diukur dari ketakwaan, bukan suku/fisik." },
+            { id: 24, text: "Pakaian adat 'Ulos' berasal dari suku...", options: { A: "Batak (Sumut)", B: "Jawa", C: "Dayak", D: "Betawi" }, answer: "A", discussion: "Kain khas Batak." },
+            { id: 25, text: "Manfaat keberagaman budaya bagi pariwisata adalah...", options: { A: "Membuat macet", B: "Menarik wisatawan asing dan lokal", C: "Menghabiskan anggaran", D: "Membuat keributan" }, answer: "B", discussion: "Daya tarik wisata." },
+            { id: 26, text: "Makanan khas 'Gudeg' rasanya manis, berasal dari...", options: { A: "Padang", B: "Yogyakarta", C: "Surabaya", D: "Makassar" }, answer: "B", discussion: "Gudeg Jogja." },
+            { id: 27, text: "Rumah adat 'Honai' yang berbentuk jamur berasal dari...", options: { A: "Papua", B: "Aceh", C: "Kalimantan", D: "Jawa" }, answer: "A", discussion: "Rumah suku Dani di Papua." },
+            { id: 28, text: "Tari Kecak yang terkenal dilakukan oleh banyak pria berasal dari...", options: { A: "Bali", B: "Lombok", C: "Jawa", D: "Sumatera" }, answer: "A", discussion: "Bali." },
+            { id: 29, text: "Cara menghargai budaya daerah lain adalah...", options: { A: "Menjelek-jelekkan", B: "Mempelajari dan menonton pertunjukannya", C: "Melarang pentas", D: "Masa bodoh" }, answer: "B", discussion: "Apresiasi budaya." },
+            { id: 30, text: "Lingkungan masyarakat terkecil di bawah kelurahan/desa adalah...", options: { A: "RT dan RW", B: "Kecamatan", C: "Kabupaten", D: "Provinsi" }, answer: "A", discussion: "Rukun Tetangga/Warga." },
+            { id: 31, text: "Pemimpin di tingkat Kabupaten disebut...", options: { A: "Walikota", B: "Bupati", C: "Gubernur", D: "Camat" }, answer: "B", discussion: "Kabupaten = Bupati." },
+            { id: 32, text: "Kantor Kelurahan dipimpin oleh seorang...", options: { A: "Lurah (Pegawai Negeri)", B: "Kepala Desa (Dipilih rakyat)", C: "Ketua RT", D: "Satpam" }, answer: "A", discussion: "Lurah adalah PNS/ASN." },
+            { id: 33, text: "Gabungan dari beberapa desa/kelurahan disebut...", options: { A: "Kabupaten", B: "Kecamatan", C: "Provinsi", D: "RT" }, answer: "B", discussion: "Kecamatan." },
+            { id: 34, text: "Tugas Karang Taruna di desa adalah...", options: { A: "Menangkap maling", B: "Membina pemuda dan kesejahteraan sosial", C: "Membuat KTP", D: "Membangun jalan" }, answer: "B", discussion: "Organisasi pemuda desa." },
+            { id: 35, text: "Dalam QS Al-Maidah ayat 2, kita dilarang tolong menolong dalam...", options: { A: "Kebaikan", B: "Takwa", C: "Dosa dan Permusuhan", D: "Kesabaran" }, answer: "C", discussion: "Tolong menolonglah dalam kebaikan, jangan dalam dosa." },
+            { id: 36, text: "Jika tetangga berbeda agama sedang merayakan hari raya, sikap kita...", options: { A: "Membuat keributan", B: "Menghormati dan menjaga ketenangan", C: "Ikut beribadah", D: "Melarangnya" }, answer: "B", discussion: "Toleransi." },
+            { id: 37, text: "Danau Toba adalah contoh kenampakan...", options: { A: "Buatan", B: "Alam", C: "Kota", D: "Industri" }, answer: "B", discussion: "Terbentuk alami (vulkanik)." },
+            { id: 38, text: "Jalan raya dan jembatan adalah contoh kenampakan...", options: { A: "Alam", B: "Buatan", C: "Laut", D: "Gunung" }, answer: "B", discussion: "Dibuat manusia." },
+            { id: 39, text: "Manfaat gotong royong adalah...", options: { A: "Pekerjaan cepat selesai dan ringan", B: "Menambah biaya", C: "Pekerjaan jadi berantakan", D: "Membuang waktu" }, answer: "A", discussion: "Efisiensi dan persatuan." },
+            { id: 40, text: "Pernyataan: 'Tidak bergaya hidup mewah'. Sesuai sila...", options: { A: "Ke-5", B: "Ke-1", C: "Ke-2", D: "Ke-3" }, answer: "A", discussion: "Hidup sederhana (Keadilan Sosial)." },
+            { id: 41, text: "Menghormati hak orang lain sesuai sila...", options: { A: "Ke-5", B: "Ke-4", C: "Ke-1", D: "Ke-2" }, answer: "A", discussion: "Keadilan sosial." },
+            { id: 42, text: "Contoh perilaku cinta tanah air di sekolah...", options: { A: "Bolos sekolah", B: "Mengikuti upacara bendera dengan khidmat", C: "Mencoret tembok", D: "Berkelahi" }, answer: "B", discussion: "Nasionalisme." },
+            { id: 43, text: "Pahlawan wanita dari Aceh yang gigih melawan Belanda adalah...", options: { A: "R.A. Kartini", B: "Cut Nyak Dien", C: "Dewi Sartika", D: "Fatmawati" }, answer: "B", discussion: "Pejuang Aceh." },
+            { id: 44, text: "Sikap pahlawan yang 'Rela Berkorban' artinya...", options: { A: "Memberikan sesuatu dengan ikhlas demi orang lain/bangsa", B: "Memberi karena terpaksa", C: "Tidak mau rugi", D: "Pelit" }, answer: "A", discussion: "Definisi rela berkorban." },
+            { id: 45, text: "Kita tidak boleh membeda-bedakan teman (diskriminasi) karena...", options: { A: "Semua manusia sama derajatnya di mata Tuhan", B: "Takut dimarahi guru", C: "Supaya dapat uang", D: "Teman itu kaya" }, answer: "A", discussion: "Prinsip persamaan derajat." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Isi nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // Tampilan HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-red-50 bg-[url('https://img.freepik.com/free-vector/indonesia-independence-day-background_1017-33023.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/90">
+                            <h2 className="text-xl font-bold text-red-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-red-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Pendidikan Pancasila Kelas 4</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Kamu..." className="w-full p-4 border-2 border-red-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-red-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-red-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-red-700 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-red-600 py-4 rounded-xl font-black text-xl border-b-4 border-red-800 btn-fun shadow-lg text-white">MULAI! 🇮🇩</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Tampilan QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-red-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-red-800">SISWA</div><div className="font-bold text-red-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-red-100 text-red-700 px-3 py-1 rounded-lg border border-red-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-red-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-red-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-red-100 border-red-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-red-50 rounded-2xl border-2 border-red-200 text-center">
+                            <h3 className="text-sm font-bold text-red-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-red-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-red-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-red-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-red-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-red-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-red-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // Tampilan HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-red-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-red-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-red-400 via-white to-red-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-red-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-red-100 text-red-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat! Jiwa Pancasila! 🇮🇩" : score >= 60 ? "Bagus! Terus Belajar! 👍" : "Jangan Menyerah! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-red-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-red-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 SEMPURNA! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
