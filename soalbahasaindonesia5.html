@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Indonesia Kelas 5 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fdf2f8; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #f472b6; box-shadow: 8px 8px 0px #db2777; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #db2777; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #be185d; font-weight: bold;">Memuat Soal Bahasa Indonesia...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (50 SOAL - KELAS 5) ---
+        const paketA = [
+            // Kata Sifat (1-11)
+            { id: 1, text: "Kata sifat dalam kalimat 'Rani anak yang sangat rajin' adalah...", options: { A: "Rani", B: "Anak", C: "Rajin", D: "Yang" }, answer: "C", discussion: "Rajin menjelaskan sifat Rani." },
+            { id: 2, text: "Manakah yang termasuk kata sifat?", options: { A: "Berlari", B: "Meja", C: "Cantik", D: "Tidur" }, answer: "C", discussion: "Cantik adalah kata sifat." },
+            { id: 3, text: "Fungsi kata sifat dalam kalimat adalah untuk...", options: { A: "Menjelaskan benda atau orang", B: "Menunjukkan waktu", C: "Menunjukkan tempat", D: "Melakukan pekerjaan" }, answer: "A", discussion: "Kata sifat menerangkan nomina (benda)." },
+            { id: 4, text: "Makna kata sifat 'Jujur' adalah...", options: { A: "Suka berbohong", B: "Tidak curang dan berkata apa adanya", C: "Suka menolong", D: "Sombong" }, answer: "B", discussion: "Jujur = lurus hati." },
+            { id: 5, text: "Kalimat yang menggunakan kata sifat dengan tepat adalah...", options: { A: "Batu itu sangat empuk", B: "Api itu sangat dingin", C: "Lukisan itu sangat indah", D: "Gula rasanya pedas" }, answer: "C", discussion: "Indah cocok untuk lukisan." },
+            { id: 6, text: "Sinonim (persamaan makna) dari kata 'Cerdas' adalah...", options: { A: "Bodoh", B: "Pintar", C: "Malas", D: "Rajin" }, answer: "B", discussion: "Cerdas = Pintar." },
+            { id: 7, text: "Sinonim dari kata 'Bagus' adalah...", options: { A: "Jelek", B: "Indah", C: "Kotor", D: "Rusak" }, answer: "B", discussion: "Bagus = Indah/Baik." },
+            { id: 8, text: "Antonim (lawan kata) dari 'Panjang' adalah...", options: { A: "Tinggi", B: "Pendek", C: "Luas", D: "Lebar" }, answer: "B", discussion: "Panjang >< Pendek." },
+            { id: 9, text: "Lawan kata dari 'Berani' adalah...", options: { A: "Takut", B: "Kuat", C: "Hebat", D: "Nekat" }, answer: "A", discussion: "Berani >< Takut." },
+            { id: 10, text: "Antonim dari kata sifat 'Kikir' (pelit) adalah...", options: { A: "Boros", B: "Dermawan", C: "Hemat", D: "Sombong" }, answer: "B", discussion: "Kikir >< Dermawan (Pemurah)." },
+            { id: 11, text: "Kata sifat yang tepat untuk pejuang kemerdekaan adalah...", options: { A: "Penakut", B: "Pantang menyerah", C: "Pemalas", D: "Lemah" }, answer: "B", discussion: "Pejuang memiliki sifat gigih." },
+
+            // Kalimat Majemuk (12-13)
+            { id: 12, text: "Pola kalimat majemuk setara biasanya ditandai dengan kata hubung...", options: { A: "Dan, atau, tetapi", B: "Jika, karena", C: "Sehingga, supaya", D: "Walaupun" }, answer: "A", discussion: "Konjungsi setara: dan, atau, tetapi." },
+            { id: 13, text: "'Adik menangis ... mainannya rusak.' Kata hubung yang tepat adalah...", options: { A: "Dan", B: "Karena", C: "Tetapi", D: "Atau" }, answer: "B", discussion: "Menyatakan sebab-akibat." },
+
+            // Kalimat Langsung & Tidak Langsung (14-17)
+            { id: 14, text: "Ciri utama kalimat langsung adalah menggunakan tanda baca...", options: { A: "Tanda kurung ( )", B: "Tanda petik dua ( \"...\" )", C: "Tanda seru (!)", D: "Tanda tanya (?)" }, answer: "B", discussion: "Kalimat langsung diapit tanda petik." },
+            { id: 15, text: "Ubah ke kalimat tidak langsung: Ibu berkata, \"Tolong tutup pintu itu!\"", options: { A: "Ibu berkata bahwa pintu itu tertutup.", B: "Ibu menyuruhku untuk menutup pintu itu.", C: "Ibu bertanya apakah pintu tertutup.", D: "Ibu berkata jangan tutup pintu." }, answer: "B", discussion: "Kalimat perintah menjadi 'menyuruh'." },
+            { id: 16, text: "Kalimat tidak langsung: 'Budi mengatakan bahwa ia sedang sakit.' Bentuk kalimat langsungnya adalah...", options: { A: "Budi berkata, \"Dia sedang sakit.\"", B: "Budi berkata, \"Saya sedang sakit.\"", C: "Budi berkata, \"Kamu sakit.\"", D: "Budi berkata, \"Mereka sakit.\"" }, answer: "B", discussion: "Kata ganti 'ia' berubah jadi 'saya'." },
+            { id: 17, text: "Perubahan kata ganti 'Kami' pada kalimat langsung menjadi ... pada kalimat tidak langsung.", options: { A: "Saya", B: "Mereka", C: "Kita", D: "Kamu" }, answer: "B", discussion: "Kami (jamak orang ke-1) jadi Mereka (jamak orang ke-3)." },
+
+            // Majas (18-22)
+            { id: 18, text: "Majas Metafora adalah...", options: { A: "Melebih-lebihkan sesuatu", B: "Membandingkan dua hal secara langsung (kiasan)", C: "Benda mati seolah hidup", D: "Menyindir" }, answer: "B", discussion: "Contoh: Jago merah (Api)." },
+            { id: 19, text: "Contoh majas Personifikasi adalah...", options: { A: "Wajahnya bersinar seperti bulan", B: "Pena menari-nari di atas kertas", C: "Suaranya memecah gendang telinga", D: "Dia adalah anak emas" }, answer: "B", discussion: "Pena (benda mati) menari (sifat manusia)." },
+            { id: 20, text: "Kalimat yang mengandung majas Hiperbola adalah...", options: { A: "Keringatnya membanjiri lapangan", B: "Daun kelapa melambai-lambai", C: "Dia adalah tulang punggung keluarga", D: "Angin berbisik padaku" }, answer: "A", discussion: "Hiperbola = Berlebihan (keringat banjir)." },
+            { id: 21, text: "'Raja Siang' adalah metafora untuk...", options: { A: "Bulan", B: "Matahari", C: "Bintang", D: "Lampu" }, answer: "B", discussion: "Raja Siang = Matahari." },
+            { id: 22, text: "'Sampah itu menggunung di pinggir jalan.' Majas yang digunakan adalah...", options: { A: "Personifikasi", B: "Metafora", C: "Hiperbola", D: "Litotes" }, answer: "C", discussion: "Menggunung = Sangat banyak (berlebihan)." },
+
+            // Imbuhan (23-30)
+            { id: 23, text: "Bentuk kata berimbuhan 'Pe-' dari kata dasar 'Lari' adalah...", options: { A: "Penlari", B: "Pelari", C: "Pemlari", D: "Penglaris" }, answer: "B", discussion: "Pe + lari = Pelari." },
+            { id: 24, text: "Bentuk kata berimbuhan 'Pe-' dari kata 'Ajar' adalah...", options: { A: "Pengajar", B: "Pelajar", C: "Pemajar", D: "Perajar" }, answer: "B", discussion: "Pengecualian: Pe + ajar = Pelajar." },
+            { id: 25, text: "Makna awalan 'Pe-' pada kata 'Pelukis' adalah...", options: { A: "Orang yang dilukis", B: "Orang yang pekerjaannya melukis", C: "Alat untuk melukis", D: "Sifat melukis" }, answer: "B", discussion: "Pe- bermakna profesi/pelaku." },
+            { id: 26, text: "Makna awalan 'Pe-' pada kata 'Pemalu' adalah...", options: { A: "Alat", B: "Orang yang memiliki sifat malu", C: "Pekerjaan", D: "Sebab" }, answer: "B", discussion: "Pe- bermakna sifat." },
+            { id: 27, text: "Makna 'Pe-' pada kata 'Pendingin' adalah...", options: { A: "Alat untuk mendinginkan", B: "Orang yang dingin", C: "Sifat dingin", D: "Cara mendinginkan" }, answer: "A", discussion: "Pe- bermakna alat." },
+            { id: 28, text: "Kata dasar dari 'Membaca' adalah...", options: { A: "Baca", B: "Maca", C: "Bacha", D: "Mem" }, answer: "A", discussion: "Me + Baca." },
+            { id: 29, text: "Partikel '-lah' biasanya digunakan pada kalimat...", options: { A: "Tanya", B: "Berita", C: "Perintah", D: "Seru" }, answer: "C", discussion: "Contoh: Buanglah, Pergilah." },
+            { id: 30, text: "Imbuhan '-kan' pada kalimat 'Ambilkan buku itu!' berfungsi untuk...", options: { A: "Membuat benda", B: "Menyatakan perintah melakukan sesuatu untuk orang lain", C: "Menanyakan", D: "Menyatakan tempat" }, answer: "B", discussion: "Ambilkan = Ambil untuk saya." },
+
+            // Teks Prosedur (31-33)
+            { id: 31, text: "Ciri utama teks prosedur adalah...", options: { A: "Berisi cerita khayalan", B: "Berisi langkah-langkah melakukan sesuatu", C: "Berisi pantun", D: "Berisi berita terkini" }, answer: "B", discussion: "Prosedur = Cara/Langkah." },
+            { id: 32, text: "Struktur teks prosedur terdiri dari...", options: { A: "Tujuan, Alat/Bahan, Langkah-langkah", B: "Orientasi, Konflik, Resolusi", C: "Pembukaan, Isi, Penutup", D: "Pernyataan umum, Deretan penjelas" }, answer: "A", discussion: "Struktur standar prosedur." },
+            { id: 33, text: "Kalimat yang sering digunakan dalam teks prosedur adalah kalimat...", options: { A: "Tanya", B: "Perintah (Imperatif)", C: "Berita", D: "Larangan" }, answer: "B", discussion: "Contoh: Potonglah, Masukkan, Aduk." },
+
+            // Idiom/Ungkapan (34-39)
+            { id: 34, text: "Ungkapan 'Buah Tangan' artinya...", options: { A: "Buah-buahan", B: "Oleh-oleh", C: "Tangan palsu", D: "Karya seni" }, answer: "B", discussion: "Buah tangan = Oleh-oleh." },
+            { id: 35, text: "Ungkapan 'Kutu Buku' artinya...", options: { A: "Orang yang suka membaca buku", B: "Buku yang banyak kutunya", C: "Orang yang merusak buku", D: "Penjual buku" }, answer: "A", discussion: "Kutu buku = Gemar membaca." },
+            { id: 36, text: "Orang yang 'Besar Kepala' artinya...", options: { A: "Sakit kepala", B: "Sombong", C: "Pintar", D: "Baik hati" }, answer: "B", discussion: "Besar kepala = Sombong." },
+            { id: 37, text: "Ungkapan 'Banting Tulang' artinya...", options: { A: "Tulangnya patah", B: "Bekerja keras", C: "Malas bekerja", D: "Olahraga" }, answer: "B", discussion: "Banting tulang = Kerja keras." },
+            { id: 38, text: "Ungkapan 'Gulung Tikar' bermakna...", options: { A: "Selesai piknik", B: "Bangkrut", C: "Pindah rumah", D: "Tidur" }, answer: "B", discussion: "Gulung tikar = Usaha bangkrut." },
+            { id: 39, text: "Makna 'Naik Pitam' adalah...", options: { A: "Marah besar", B: "Naik tangga", C: "Darah tinggi", D: "Sangat senang" }, answer: "A", discussion: "Naik pitam = Marah." },
+
+            // Literasi & Surat (40-50)
+            { id: 40, text: "Informasi yang berdasarkan kenyataan atau kebenaran disebut...", options: { A: "Opini", B: "Fakta", C: "Hoaks", D: "Imajinasi" }, answer: "B", discussion: "Fakta = Nyata/Terbukti." },
+            { id: 41, text: "Kalimat yang berisi pendapat atau pemikiran seseorang disebut...", options: { A: "Fakta", B: "Opini", C: "Data", D: "Berita" }, answer: "B", discussion: "Opini = Pendapat (belum tentu benar)." },
+            { id: 42, text: "Tokoh utama dalam cerita yang berwatak baik disebut...", options: { A: "Antagonis", B: "Protagonis", C: "Tritagonis", D: "Figuran" }, answer: "B", discussion: "Protagonis = Baik." },
+            { id: 43, text: "Bagian surat yang berisi alamat dan tanggal surat biasanya terletak di...", options: { A: "Pojok kanan atas", B: "Tengah bawah", C: "Pojok kiri bawah", D: "Di dalam amplop" }, answer: "A", discussion: "Posisi standar tanggal surat." },
+            { id: 44, text: "Contoh salam pembuka pada surat pribadi adalah...", options: { A: "Hormat kami,", B: "Halo, apa kabar?", C: "Demikian surat ini,", D: "Tanda tangan," }, answer: "B", discussion: "Salam akrab untuk teman/saudara." },
+            { id: 45, text: "Tujuan menulis surat pribadi adalah untuk...", options: { A: "Melamar kerja", B: "Menanyakan kabar teman/saudara", C: "Meminta izin resmi", D: "Menawarkan barang" }, answer: "B", discussion: "Surat pribadi bersifat santai." },
+            { id: 46, text: "Penulisan tempat dan tanggal surat yang benar adalah...", options: { A: "Pontianak 20 Mei 2025", B: "Pontianak, 20 Mei 2025", C: "Pontianak: 20 Mei 2025", D: "Pontianak; 20 Mei 2025" }, answer: "B", discussion: "Kota koma Tanggal." },
+            { id: 47, text: "Struktur teks eksposisi biasanya berisi...", options: { A: "Dongeng", B: "Penjelasan informasi/ilmu pengetahuan", C: "Langkah-langkah", D: "Percakapan" }, answer: "B", discussion: "Eksposisi = Menjelaskan info." },
+            { id: 48, text: "Salah satu manfaat menulis jurnal harian adalah...", options: { A: "Agar dipuji guru", B: "Mengingat pengalaman dan perasaan diri sendiri", C: "Menjiplak karya orang", D: "Membuang waktu" }, answer: "B", discussion: "Refleksi diri." },
+            { id: 49, text: "Unsur intrinsik cerita meliputi...", options: { A: "Penerbit, Harga buku", B: "Tema, Tokoh, Latar, Alur", C: "Kertas, Sampul", D: "Penulis, Editor" }, answer: "B", discussion: "Unsur pembangun dari dalam cerita." },
+            { id: 50, text: "Kalimat penutup surat pribadi biasanya berbunyi...", options: { A: "Sekian dulu ya, sampai jumpa.", B: "Dengan hormat,", C: "Kepada Yth,", D: "Mengingat pentingnya acara ini..." }, answer: "A", discussion: "Salam penutup akrab." }
+        ];
+
+        // --- DATA SOAL PAKET B (50 SOAL - VARIASI) ---
+        const paketB = [
+            { id: 1, text: "Antonim dari kata 'Gagal' adalah...", options: { A: "Kalah", B: "Berhasil", C: "Jatuh", D: "Rugi" }, answer: "B", discussion: "Gagal >< Berhasil." },
+            { id: 2, text: "Sinonim kata 'Melihat' adalah...", options: { A: "Memandang", B: "Mendengar", C: "Mencium", D: "Meraba" }, answer: "A", discussion: "Melihat = Memandang." },
+            { id: 3, text: "Kata sifat 'Ramah' artinya...", options: { A: "Suka marah", B: "Baik hati dan manis tutur katanya", C: "Sombong", D: "Pendiam" }, answer: "B", discussion: "Definisi ramah." },
+            { id: 4, text: "Lawan kata 'Optimis' adalah...", options: { A: "Pesimis", B: "Realistis", C: "Egois", D: "Sinis" }, answer: "A", discussion: "Optimis (yakin) >< Pesimis (ragu)." },
+            { id: 5, text: "Kata sifat yang cocok untuk menggambarkan pahlawan adalah...", options: { A: "Penakut", B: "Gagah berani", C: "Lemah", D: "Putus asa" }, answer: "B", discussion: "Sifat kepahlawanan." },
+            { id: 6, text: "Antonim kata 'Sedih'...", options: { A: "Duka", B: "Senang/Gembira", C: "Tangis", D: "Kecewa" }, answer: "B", discussion: "Sedih >< Senang." },
+            { id: 7, text: "Sinonim 'Luwes' dalam menari...", options: { A: "Kaku", B: "Gemulai", C: "Keras", D: "Cepat" }, answer: "B", discussion: "Luwes = Gemulai/Lentur." },
+            { id: 8, text: "Ibu sangat 'Hemat'. Lawan kata hemat...", options: { A: "Irit", B: "Boros", C: "Pelit", D: "Kaya" }, answer: "B", discussion: "Hemat >< Boros." },
+            { id: 9, text: "Anak itu 'Jenius'. Sinonim jenius...", options: { A: "Bodoh", B: "Cerdas sekali", C: "Nakal", D: "Malas" }, answer: "B", discussion: "Jenius = Sangat pintar." },
+            { id: 10, text: "Suasana di pasar sangat 'Bising'. Antonim bising...", options: { A: "Ramai", B: "Sepi/Tenang", C: "Ribut", D: "Gaduh" }, answer: "B", discussion: "Bising >< Sepi." },
+            { id: 11, text: "Kata sifat 'Jauh' lawan katanya...", options: { A: "Tinggi", B: "Dekat", C: "Luas", D: "Dalam" }, answer: "B", discussion: "Jauh >< Dekat." },
+            { id: 12, text: "Contoh kalimat majemuk bertingkat...", options: { A: "Adik makan dan minum.", B: "Ayah bekerja sedangkan Ibu memasak.", C: "Aku tidak sekolah karena sakit.", D: "Budi atau Ani yang pergi?" }, answer: "C", discussion: "Ada induk dan anak kalimat (sebab-akibat)." },
+            { id: 13, text: "Kata hubung untuk menyatakan pilihan adalah...", options: { A: "Dan", B: "Atau", C: "Tetapi", D: "Karena" }, answer: "B", discussion: "Atau = Memilih." },
+            { id: 14, text: "Ciri kalimat tidak langsung...", options: { A: "Ada tanda petik", B: "Menggunakan kata hubung 'bahwa'", C: "Intonasi tinggi", D: "Ada tanda tanya" }, answer: "B", discussion: "Penghubung 'bahwa'." },
+            { id: 15, text: "Ayah bertanya, \"Kapan kamu ujian?\" Ubah ke tidak langsung...", options: { A: "Ayah bertanya kapan aku ujian.", B: "Ayah bertanya kapan kamu ujian.", C: "Ayah berkata aku ujian.", D: "Ayah menyuruh ujian." }, answer: "A", discussion: "Kamu menjadi Aku." },
+            { id: 16, text: "Kalimat langsung dari: Dokter menyarankan agar aku istirahat.", options: { A: "Dokter berkata, \"Kamu harus istirahat.\"", B: "Dokter berkata, \"Aku istirahat.\"", C: "Dokter menyuruh istirahat.", D: "Dokter diam saja." }, answer: "A", discussion: "Aku menjadi Kamu." },
+            { id: 17, text: "Tanda baca di akhir kalimat perintah dalam tanda petik adalah...", options: { A: "Titik (.)", B: "Koma (,)", C: "Seru (!)", D: "Tanya (?)" }, answer: "C", discussion: "Perintah pakai seru." },
+            { id: 18, text: "Majas yang membandingkan dua hal dengan kata 'seperti' atau 'laksana' disebut...", options: { A: "Metafora", B: "Simile/Asosiasi", C: "Personifikasi", D: "Hiperbola" }, answer: "B", discussion: "Asosiasi (perumpamaan)." },
+            { id: 19, text: "'Ombak berlari-lari mengejar pasir pantai'. Majas...", options: { A: "Personifikasi", B: "Metafora", C: "Hiperbola", D: "Litotes" }, answer: "A", discussion: "Ombak dianggap hidup." },
+            { id: 20, text: "'Harga kebutuhan pokok meroket tinggi'. Meroket artinya...", options: { A: "Naik pesawat", B: "Naik sangat cepat/mahal", C: "Turun", D: "Meledak" }, answer: "B", discussion: "Hiperbola/Metafora kenaikan harga." },
+            { id: 21, text: "'Dia adalah tangan kanan bos'. Arti tangan kanan...", options: { A: "Tangan sebelah kanan", B: "Orang kepercayaan", C: "Orang kuat", D: "Supir" }, answer: "B", discussion: "Metafora kepercayaan." },
+            { id: 22, text: "'Suaranya menggelegar membelah bumi'. Majas...", options: { A: "Personifikasi", B: "Hiperbola", C: "Metafora", D: "Ironi" }, answer: "B", discussion: "Berlebihan." },
+            { id: 23, text: "Kata dasar 'Sapu' + Pe- = ...", options: { A: "Pesapu", B: "Penyapu", C: "Pensapu", D: "Pemusapu" }, answer: "B", discussion: "S luluh jadi Ny." },
+            { id: 24, text: "Pe- + Tulis = ...", options: { A: "Petulis", B: "Penulis", C: "Pemulis", D: "Pengtulis" }, answer: "B", discussion: "T luluh jadi N." },
+            { id: 25, text: "Makna 'Pedagang' adalah...", options: { A: "Orang yang berdagang", B: "Alat dagang", C: "Sifat dagang", D: "Tempat dagang" }, answer: "A", discussion: "Profesi." },
+            { id: 26, text: "Makna 'Pemaaf' adalah...", options: { A: "Orang yang suka memaafkan (Sifat)", B: "Alat maaf", C: "Tukang maaf", D: "Surat maaf" }, answer: "A", discussion: "Sifat." },
+            { id: 27, text: "Pe- + Kayuh = ...", options: { A: "Pekayuh", B: "Pengayuh", C: "Penkayuh", D: "Pemayuh" }, answer: "B", discussion: "K luluh jadi Ng." },
+            { id: 28, text: "Akhiran -kan pada 'Bersihkan' bermakna...", options: { A: "Perintah membuat jadi bersih", B: "Sifat bersih", C: "Sudah bersih", D: "Alat bersih" }, answer: "A", discussion: "Imperatif kausatif." },
+            { id: 29, text: "Partikel -lah berfungsi untuk...", options: { A: "Melembutkan perintah/penekanan", B: "Bertanya", C: "Menyangkal", D: "Marah" }, answer: "A", discussion: "Penegas halus." },
+            { id: 30, text: "Pe- + Rusak = ...", options: { A: "Perusak", B: "Pengrusak", C: "Penrusak", D: "Pemrusak" }, answer: "A", discussion: "R tidak luluh (Perusak)." },
+            { id: 31, text: "Tujuan teks prosedur adalah...", options: { A: "Menghibur", B: "Memberi petunjuk cara melakukan sesuatu", C: "Menceritakan pengalaman", D: "Menggambarkan objek" }, answer: "B", discussion: "Panduan langkah." },
+            { id: 32, text: "Bagian 'Bahan dan Alat' dalam prosedur berisi...", options: { A: "Langkah kerja", B: "Material yang dibutuhkan", C: "Hasil akhir", D: "Salam penutup" }, answer: "B", discussion: "Daftar kebutuhan." },
+            { id: 33, text: "Kata kerja dalam prosedur: Potong, Aduk, Masak. Disebut kata kerja...", options: { A: "Imperatif (Perintah)", B: "Pasif", C: "Sifat", D: "Benda" }, answer: "A", discussion: "Kata kerja perintah." },
+            { id: 34, text: "Ungkapan 'Ringan Tangan' artinya...", options: { A: "Tangannya ringan", B: "Suka memukul atau Suka menolong (tergantung konteks)", C: "Pencuri", D: "Malas" }, answer: "B", discussion: "Bisa positif (menolong) atau negatif (memukul)." },
+            { id: 35, text: "Ungkapan 'Bintang Lapangan' artinya...", options: { A: "Pemain terbaik", B: "Lampu lapangan", C: "Penonton", D: "Wasit" }, answer: "A", discussion: "Atlet hebat." },
+            { id: 36, text: "'Kabar Angin' bermakna...", options: { A: "Berita cuaca", B: "Gosip / Berita belum pasti", C: "Angin ribut", D: "Pesan suara" }, answer: "B", discussion: "Desas-desus." },
+            { id: 37, text: "'Rendah Hati' artinya...", options: { A: "Sombong", B: "Tidak sombong", C: "Minder", D: "Penakut" }, answer: "B", discussion: "Baik hati/Tawadhu." },
+            { id: 38, text: "'Angkat Kaki' bermakna...", options: { A: "Lari pagi", B: "Pergi / Diusir", C: "Menari", D: "Sakit kaki" }, answer: "B", discussion: "Meninggalkan tempat." },
+            { id: 39, text: "'Jago Merah' artinya...", options: { A: "Ayam jago", B: "Api (Kebakaran)", C: "Baju merah", D: "Darah" }, answer: "B", discussion: "Kebakaran." },
+            { id: 40, text: "Fakta adalah...", options: { A: "Sesuatu yang benar-benar terjadi", B: "Pendapat orang", C: "Khayalan", D: "Ramalan" }, answer: "A", discussion: "Kebenaran." },
+            { id: 41, text: "Opini ditandai dengan kata...", options: { A: "Adalah", B: "Terjadi pada", C: "Menurut saya / Sepertinya", D: "Tanggal" }, answer: "C", discussion: "Subjektif." },
+            { id: 42, text: "Watak tokoh yang jahat disebut...", options: { A: "Protagonis", B: "Antagonis", C: "Tritagonis", D: "Figuran" }, answer: "B", discussion: "Lawan tokoh utama." },
+            { id: 43, text: "Salam pembuka surat resmi...", options: { A: "Halo Bro,", B: "Dengan hormat,", C: "Hai,", D: "Sayangku," }, answer: "B", discussion: "Formal." },
+            { id: 44, text: "Bagian surat yang berisi pesan utama disebut...", options: { A: "Kop surat", B: "Isi surat", C: "Tanda tangan", D: "Lampiran" }, answer: "B", discussion: "Pesan inti." },
+            { id: 45, text: "Surat untuk teman termasuk surat...", options: { A: "Dinas", B: "Pribadi", C: "Niaga", D: "Resmi" }, answer: "B", discussion: "Non-formal." },
+            { id: 46, text: "Refleksi diri bertujuan untuk...", options: { A: "Menilai kekurangan dan kelebihan diri", B: "Menghukum diri", C: "Melupakan masalah", D: "Tidur nyenyak" }, answer: "A", discussion: "Evaluasi diri." },
+            { id: 47, text: "Tujuan menulis jurnal harian...", options: { A: "Agar dibaca orang lain", B: "Mencatat peristiwa dan perasaan", C: "Tugas negara", D: "Menulis berita" }, answer: "B", discussion: "Catatan pribadi." },
+            { id: 48, text: "Langkah pertama menulis prosedur...", options: { A: "Menulis hasil", B: "Menentukan judul/topik", C: "Menutup teks", D: "Menggambar" }, answer: "B", discussion: "Judul kegiatan." },
+            { id: 49, text: "Imbuhan ter- pada 'Terbawa' bermakna...", options: { A: "Sengaja dibawa", B: "Tidak sengaja dibawa", C: "Paling bawa", D: "Dapat dibawa" }, answer: "B", discussion: "Ketidaksengajaan." },
+            { id: 50, text: "Kalimat perintah diakhiri tanda...", options: { A: "Titik (.)", B: "Tanya (?)", C: "Seru (!)", D: "Koma (,)" }, answer: "C", discussion: "Tanda seru." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Isi nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // Tampilan HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-pink-50 bg-[url('https://img.freepik.com/free-vector/hand-drawn-flat-design-stack-books-illustration_23-2149341898.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/90">
+                            <h2 className="text-xl font-bold text-pink-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-pink-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Indonesia Kelas 5</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Kamu..." className="w-full p-4 border-2 border-pink-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-pink-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-pink-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-pink-700 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-pink-600 py-4 rounded-xl font-black text-xl border-b-4 border-pink-800 btn-fun shadow-lg text-white">MULAI! 📚</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Tampilan QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-pink-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-pink-800">SISWA</div><div className="font-bold text-pink-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-pink-100 text-pink-700 px-3 py-1 rounded-lg border border-pink-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-pink-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-pink-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-pink-100 border-pink-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700 font-sans">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-pink-50 rounded-2xl border-2 border-pink-200 text-center">
+                            <h3 className="text-sm font-bold text-pink-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-pink-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-pink-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-pink-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-pink-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-pink-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-pink-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // Tampilan HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-pink-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-pink-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-pink-400 via-white to-pink-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-pink-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-pink-100 text-pink-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat! Ahli Bahasa! 📖" : score >= 60 ? "Bagus! Tingkatkan Membaca! 👍" : "Ayo Belajar Lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-pink-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-pink-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-pink-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-pink-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-pink-100 text-pink-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 SEMPURNA! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
