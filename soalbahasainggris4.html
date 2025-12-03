@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Inggris Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #eff6ff; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #60a5fa; box-shadow: 8px 8px 0px #2563eb; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #3b82f6; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #1d4ed8; font-weight: bold;">Loading English Quiz...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Error Occurred</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Reload</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (45 SOAL - KELAS 4) ---
+        const paketA = [
+            // 1-5: Activities (Present Continuous)
+            { id: 1, text: "[Picture: A boy is reading a book]. What is Joshua doing?", options: { A: "He is sleeping", B: "He is reading a book", C: "He is swimming", D: "He is eating" }, answer: "B", discussion: "Gambar menunjukkan membaca (Reading)." },
+            { id: 2, text: "Made ... playing football in the field.", options: { A: "Am", B: "Are", C: "Is", D: "Do" }, answer: "C", discussion: "Made (He) pasangannya Is." },
+            { id: 3, text: "[Picture: Cici is cooking]. Is Cici studying?", options: { A: "Yes, she is", B: "No, she is not", C: "Yes, he is", D: "No, he is not" }, answer: "B", discussion: "Cici sedang memasak (Cooking), bukan belajar." },
+            { id: 4, text: "What are you doing? ... am eating fried chicken.", options: { A: "You", B: "She", C: "He", D: "I" }, answer: "D", discussion: "Pertanyaan 'You' dijawab 'I' (Saya)." },
+            { id: 5, text: "Arrange the words: ( sleeping - is - Joshua - bedroom - in - the ).", options: { A: "Joshua sleeping is in the bedroom", B: "Joshua is sleeping in the bedroom", C: "In the bedroom is sleeping Joshua", D: "Is Joshua sleeping in the bedroom" }, answer: "B", discussion: "Susunan S-P-O-K yang benar." },
+
+            // 6-10: Numbers & Math
+            { id: 6, text: "There are ... (25) pencils on the table.", options: { A: "Twenty", B: "Twenty five", C: "Fifty two", D: "Twelve" }, answer: "B", discussion: "25 = Twenty five." },
+            { id: 7, text: "Ten plus ten is ... (10 + 10 = ?)", options: { A: "Ten", B: "Twenty", C: "Thirty", D: "Forty" }, answer: "B", discussion: "10 + 10 = 20 (Twenty)." },
+            { id: 8, text: "What number is it? [78]", options: { A: "Seventy eight", B: "Eighty seven", C: "Seven eight", D: "Seventeen" }, answer: "A", discussion: "78 = Seventy eight." },
+            { id: 9, text: "Fifty minus twenty is ... (50 - 20 = ?)", options: { A: "Twenty", B: "Thirty", C: "Forty", D: "Fifty" }, answer: "B", discussion: "50 - 20 = 30 (Thirty)." },
+            { id: 10, text: "My house number is 'One hundred'. The number is...", options: { A: "10", B: "100", C: "1000", D: "01" }, answer: "B", discussion: "One hundred = 100." },
+
+            // 11-15: Rooms & Activities
+            { id: 11, text: "We sleep in the...", options: { A: "Bathroom", B: "Living room", C: "Bedroom", D: "Kitchen" }, answer: "C", discussion: "Tidur di kamar tidur (Bedroom)." },
+            { id: 12, text: "Mother cooks in the...", options: { A: "Garage", B: "Kitchen", C: "Bathroom", D: "Bedroom" }, answer: "B", discussion: "Memasak di dapur (Kitchen)." },
+            { id: 13, text: "We take a bath in the...", options: { A: "Living room", B: "Dining room", C: "Bathroom", D: "Garden" }, answer: "C", discussion: "Mandi di kamar mandi (Bathroom)." },
+            { id: 14, text: "We watch TV in the...", options: { A: "Bathroom", B: "Kitchen", C: "Living room", D: "Garage" }, answer: "C", discussion: "Nonton TV di ruang keluarga/tamu." },
+            { id: 15, text: "The living room is very ... (bersih).", options: { A: "Dirty", B: "Clean", C: "Big", D: "Messy" }, answer: "B", discussion: "Bersih = Clean." },
+
+            // 16-24: Prepositions (In, On, Under, etc)
+            { id: 16, text: "[Picture: A cat under the table]. Where is the cat?", options: { A: "It is on the table", B: "It is under the table", C: "It is in the table", D: "It is beside the table" }, answer: "B", discussion: "Di bawah = Under." },
+            { id: 17, text: "The flower vase is ... (di atas) the table.", options: { A: "In", B: "On", C: "Under", D: "Behind" }, answer: "B", discussion: "Di atas permukaan = On." },
+            { id: 18, text: "Is the broom behind the door? (Ya).", options: { A: "Yes, it is", B: "No, it is not", C: "Yes, she is", D: "No, he is not" }, answer: "A", discussion: "Jawaban Yes untuk benda (It)." },
+            { id: 19, text: "The car is in the...", options: { A: "Living room", B: "Kitchen", C: "Garage", D: "Bathroom" }, answer: "C", discussion: "Mobil di garasi." },
+            { id: 20, text: "Arrange: ( beside - kitchen - The - is - bathroom - the ).", options: { A: "The kitchen is beside the bathroom", B: "Beside kitchen is the bathroom", C: "The is kitchen beside bathroom", D: "Bathroom the beside kitchen is" }, answer: "A", discussion: "Dapur di samping kamar mandi." },
+            { id: 21, text: "Where do you have lunch?", options: { A: "In the bedroom", B: "In the dining room", C: "In the bathroom", D: "In the garage" }, answer: "B", discussion: "Makan siang di ruang makan." },
+            { id: 22, text: "Father washes the car in the...", options: { A: "Bedroom", B: "Living room", C: "Garage / Yard", D: "Kitchen" }, answer: "C", discussion: "Cuci mobil di garasi/halaman." },
+            { id: 23, text: "There ... two pillows on the bed.", options: { A: "Is", B: "Am", C: "Are", D: "Do" }, answer: "C", discussion: "Jamak (Two pillows) pakai Are." },
+            { id: 24, text: "There ... a soap in the bathroom.", options: { A: "Is", B: "Are", C: "Am", D: "Do" }, answer: "A", discussion: "Tunggal (A soap) pakai Is." },
+
+            // 25-30: Things in the room
+            { id: 25, text: "I brush my teeth using...", options: { A: "Shampoo", B: "Soap", C: "Toothbrush", D: "Dipper" }, answer: "C", discussion: "Sikat gigi = Toothbrush." },
+            { id: 26, text: "We use ... to fry the fish.", options: { A: "Stove", B: "Bed", C: "Sofa", D: "Lamp" }, answer: "A", discussion: "Kompor (Stove) untuk menggoreng." },
+            { id: 27, text: "A place to sleep is...", options: { A: "Table", B: "Bed", C: "Chair", D: "Cupboard" }, answer: "B", discussion: "Tempat tidur = Bed." },
+            { id: 28, text: "[Picture: Shampoo]. What is this?", options: { A: "Soap", B: "Toothpaste", C: "Shampoo", D: "Towel" }, answer: "C", discussion: "Sampo." },
+            { id: 29, text: "Where is the pillow? It is on the...", options: { A: "Bed", B: "Stove", C: "Bathtub", D: "Table" }, answer: "A", discussion: "Bantal ada di kasur." },
+            { id: 30, text: "The clothes are in the ... (lemari).", options: { A: "Table", B: "Cupboard / Wardrobe", C: "Chair", D: "Shelf" }, answer: "B", discussion: "Lemari baju." },
+
+            // 31-45: Spelling, Can, & Jumbled Words
+            { id: 31, text: "Spell the word 'KITCHEN'!", options: { A: "Ke-ai-ti-si-eich-i-en", B: "Ke-ai-ti-es-en", C: "Ke-ti-si-en", D: "Ke-ai-ti-si-en" }, answer: "A", discussion: "K-I-T-C-H-E-N." },
+            { id: 32, text: "Missing letters: B_T_R_OM (Kamar mandi).", options: { A: "A, H, O", B: "E, H, O", C: "A, R, O", D: "O, O, O" }, answer: "A", discussion: "BATHROOM." },
+            { id: 33, text: "Huruf 'G' in English is read...", options: { A: "Ji", B: "Je", C: "Ge", D: "Jie" }, answer: "A", discussion: "G dibaca Ji." },
+            { id: 34, text: "Where is the dipper? It is ... (di dalam) the water tank.", options: { A: "On", B: "In", C: "Under", D: "Beside" }, answer: "B", discussion: "Di dalam = In." },
+            { id: 35, text: "Can Joshua swim? (Ya, dia bisa).", options: { A: "Yes, he can", B: "No, he cannot", C: "Yes, she can", D: "No, she cannot" }, answer: "A", discussion: "Jawaban Can." },
+            { id: 36, text: "My father ... drive a car. (Bisa).", options: { A: "Can", B: "Cannot", C: "Do", D: "Is" }, answer: "A", discussion: "Bisa = Can." },
+            { id: 37, text: "A baby ... run fast. (Tidak bisa).", options: { A: "Can", B: "Cannot / Can't", C: "Is", D: "Are" }, answer: "B", discussion: "Bayi tidak bisa lari." },
+            { id: 38, text: "Use 'Can' or 'Cannot': Birds ... fly.", options: { A: "Can", B: "Cannot", C: "Is", D: "Are" }, answer: "A", discussion: "Burung bisa terbang." },
+            { id: 39, text: "Indonesia: Saya tidak bisa memasak.", options: { A: "I can cook", B: "I cannot cook", C: "I cooking", D: "I cook" }, answer: "B", discussion: "Tidak bisa = Cannot." },
+            { id: 40, text: "[Picture: Fish]. A fish ... swim.", options: { A: "Can", B: "Cannot", C: "Do", D: "Does" }, answer: "A", discussion: "Ikan bisa berenang." },
+            { id: 41, text: "Count the books! (Ada 12 buku).", options: { A: "Ten", B: "Eleven", C: "Twelve", D: "Thirteen" }, answer: "C", discussion: "12 = Twelve." },
+            { id: 42, text: "Arrange: ( house - is - My - big ).", options: { A: "My house is big", B: "House is my big", C: "Big is my house", D: "Is big my house" }, answer: "A", discussion: "Rumahku besar." },
+            { id: 43, text: "Cici is ... (belajar) in the bedroom.", options: { A: "Cooking", B: "Studying", C: "Playing", D: "Sleeping" }, answer: "B", discussion: "Belajar = Studying." },
+            { id: 44, text: "The lamp is ... (di antara) the sofa and the table.", options: { A: "Beside", B: "Between", C: "Behind", D: "In front of" }, answer: "B", discussion: "Di antara = Between." },
+            { id: 45, text: "What do you do in the garden? I am...", options: { A: "Sleeping", B: "Watering flowers", C: "Taking a bath", D: "Cooking" }, answer: "B", discussion: "Menyiram bunga di taman." }
+        ];
+
+        // --- DATA SOAL PAKET B (45 SOAL - VARIASI) ---
+        const paketB = [
+            // Activities
+            { id: 1, text: "What is Aisyah doing? She is ... (menari).", options: { A: "Singing", B: "Dancing", C: "Cooking", D: "Eating" }, answer: "B", discussion: "Dancing." },
+            { id: 2, text: "Are they playing football? (Tidak).", options: { A: "Yes, they are", B: "No, they are not", C: "Yes, he is", D: "No, she is not" }, answer: "B", discussion: "Jawaban negatif jamak." },
+            { id: 3, text: "We ... watching TV.", options: { A: "Is", B: "Am", C: "Are", D: "Do" }, answer: "C", discussion: "We are." },
+            { id: 4, text: "[Picture: Eating]. He is...", options: { A: "Drinking", B: "Eating", C: "Sleeping", D: "Running" }, answer: "B", discussion: "Makan." },
+            { id: 5, text: "Cici and Joshua are ... (bermain) in the park.", options: { A: "Playing", B: "Studying", C: "Cooking", D: "Bathing" }, answer: "A", discussion: "Playing." },
+            // Numbers
+            { id: 6, text: "Number after 49 is...", options: { A: "Forty eight", B: "Fifty", C: "Fifty one", D: "Thirty nine" }, answer: "B", discussion: "Setelah 49 adalah 50." },
+            { id: 7, text: "25 + 25 = ...", options: { A: "Forty", B: "Fifty", C: "Sixty", D: "Seventy" }, answer: "B", discussion: "50." },
+            { id: 8, text: "One hundred minus ten is... (100 - 10)", options: { A: "Eighty", B: "Ninety", C: "Seventy", D: "Sixty" }, answer: "B", discussion: "90 (Ninety)." },
+            { id: 9, text: "My number is 65. It is...", options: { A: "Sixty five", B: "Fifty six", C: "Six five", D: "Seventy five" }, answer: "A", discussion: "Sixty five." },
+            { id: 10, text: "Thirty multiplied by two is... (30 x 2)", options: { A: "Fifty", B: "Sixty", C: "Forty", D: "Twenty" }, answer: "B", discussion: "60." },
+            // Rooms
+            { id: 11, text: "Where is the stove? It is in the...", options: { A: "Bedroom", B: "Kitchen", C: "Bathroom", D: "Garage" }, answer: "B", discussion: "Kompor di dapur." },
+            { id: 12, text: "We brush teeth in the...", options: { A: "Kitchen", B: "Bathroom", C: "Living room", D: "Garden" }, answer: "B", discussion: "Sikat gigi di kamar mandi." },
+            { id: 13, text: "Guests (tamu) sit in the...", options: { A: "Living room", B: "Bedroom", C: "Bathroom", D: "Kitchen" }, answer: "A", discussion: "Ruang tamu." },
+            { id: 14, text: "The car is dirty. Wash it in the...", options: { A: "Living room", B: "Garage", C: "Bedroom", D: "Kitchen" }, answer: "B", discussion: "Garasi." },
+            { id: 15, text: "The bedroom is ... (berantakan).", options: { A: "Clean", B: "Tidy", C: "Messy", D: "Big" }, answer: "C", discussion: "Messy." },
+            // Prepositions
+            { id: 16, text: "The book is ... (di atas) the table.", options: { A: "In", B: "On", C: "Under", D: "Beside" }, answer: "B", discussion: "On." },
+            { id: 17, text: "The shoes are ... (di bawah) the chair.", options: { A: "On", B: "Under", C: "In", D: "Behind" }, answer: "B", discussion: "Under." },
+            { id: 18, text: "The TV is ... (di depan) the sofa.", options: { A: "Behind", B: "In front of", C: "Beside", D: "Under" }, answer: "B", discussion: "In front of." },
+            { id: 19, text: "My house is ... (di samping) the school.", options: { A: "Beside / Next to", B: "Behind", C: "In", D: "On" }, answer: "A", discussion: "Beside." },
+            { id: 20, text: "Where is the pencil? It is ... (di dalam) the pencil case.", options: { A: "On", B: "In", C: "Under", D: "At" }, answer: "B", discussion: "In." },
+            // Things
+            { id: 21, text: "I need a ... (handuk) after bath.", options: { A: "Soap", B: "Towel", C: "Dipper", D: "Brush" }, answer: "B", discussion: "Towel." },
+            { id: 22, text: "We sleep on the...", options: { A: "Mattress / Bed", B: "Table", C: "Stove", D: "Floor" }, answer: "A", discussion: "Kasur." },
+            { id: 23, text: "Use ... to wash hands.", options: { A: "Soap", B: "Shampoo", C: "Paste", D: "Oil" }, answer: "A", discussion: "Sabun." },
+            { id: 24, text: "The bolsters are on the bed. Bolster is...", options: { A: "Bantal", B: "Guling", C: "Selimut", D: "Sprei" }, answer: "B", discussion: "Guling." },
+            { id: 25, text: "There is a ... (jam) on the wall.", options: { A: "Picture", B: "Clock", C: "Lamp", D: "Fan" }, answer: "B", discussion: "Clock." },
+            // Can/Cannot & Others
+            { id: 26, text: "Can elephants fly?", options: { A: "Yes, they can", B: "No, they cannot", C: "Yes, it is", D: "No, it is not" }, answer: "B", discussion: "Gajah tidak bisa terbang." },
+            { id: 27, text: "I ... read English book. (Bisa).", options: { A: "Can", B: "Cannot", C: "Am", D: "Do" }, answer: "A", discussion: "Can." },
+            { id: 28, text: "A monkey can ...", options: { A: "Fly", B: "Climb tree", C: "Swim fast", D: "Write" }, answer: "B", discussion: "Monyet memanjat." },
+            { id: 29, text: "Fish cannot ...", options: { A: "Swim", B: "Walk / Run", C: "Eat", D: "Sleep" }, answer: "B", discussion: "Ikan tidak bisa jalan." },
+            { id: 30, text: "Can you help me? Yes, ...", options: { A: "I can", B: "I cannot", C: "I am", D: "I do" }, answer: "A", discussion: "Yes I can." },
+            { id: 31, text: "Spell 'BOOK'!", options: { A: "Bi-ou-ou-kei", B: "Bi-u-u-ka", C: "Bi-o-o-ke", D: "Bi-ei-bi-i" }, answer: "A", discussion: "B-O-O-K." },
+            { id: 32, text: "There ... (ada) five books.", options: { A: "Is", B: "Are", C: "Am", D: "Do" }, answer: "B", discussion: "Are (Jamak)." },
+            { id: 33, text: "There ... (ada) a cat.", options: { A: "Is", B: "Are", C: "Am", D: "Do" }, answer: "A", discussion: "Is (Tunggal)." },
+            { id: 34, text: "Arrange: ( clean - room - is - The ).", options: { A: "The room is clean", B: "Is room the clean", C: "Clean is the room", D: "The clean is room" }, answer: "A", discussion: "Ruangan itu bersih." },
+            { id: 35, text: "Translate: 'Dapur itu kotor'.", options: { A: "The kitchen is clean", B: "The kitchen is dirty", C: "The kitchen is big", D: "The kitchen is small" }, answer: "B", discussion: "Dirty." },
+            { id: 36, text: "Blanket means...", options: { A: "Bantal", B: "Selimut", C: "Guling", D: "Kasur" }, answer: "B", discussion: "Selimut." },
+            { id: 37, text: "Toothpaste means...", options: { A: "Sikat gigi", B: "Pasta gigi / Odol", C: "Sabun", D: "Gayung" }, answer: "B", discussion: "Pasta gigi." },
+            { id: 38, text: "Frying pan is in the...", options: { A: "Bedroom", B: "Kitchen", C: "Bathroom", D: "Garden" }, answer: "B", discussion: "Wajan di dapur." },
+            { id: 39, text: "Watering can is used for...", options: { A: "Cooking", B: "Watering flowers", C: "Drinking", D: "Eating" }, answer: "B", discussion: "Menyiram tanaman." },
+            { id: 40, text: "Seventy five is...", options: { A: "65", B: "75", C: "57", D: "70" }, answer: "B", discussion: "75." },
+            { id: 41, text: "What are they doing? They are ... (bermain layangan).", options: { A: "Playing kites", B: "Playing dolls", C: "Playing marbles", D: "Playing football" }, answer: "A", discussion: "Layangan." },
+            { id: 42, text: "Made is ... (lapar).", options: { A: "Thirsty", B: "Hungry", C: "Happy", D: "Sad" }, answer: "B", discussion: "Lapar." },
+            { id: 43, text: "Joshua is ... (haus).", options: { A: "Hungry", B: "Thirsty", C: "Angry", D: "Sleepy" }, answer: "B", discussion: "Haus." },
+            { id: 44, text: "I eat breakfast in the...", options: { A: "Evening", B: "Morning", C: "Afternoon", D: "Night" }, answer: "B", discussion: "Sarapan pagi." },
+            { id: 45, text: "Good night means...", options: { A: "Selamat pagi", B: "Selamat tidur/malam", C: "Selamat sore", D: "Selamat siang" }, answer: "B", discussion: "Salam perpisahan malam." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Please write your name!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-blue-50 bg-[url('https://img.freepik.com/free-vector/hand-drawn-english-book-background_23-2149483324.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/90">
+                            <h2 className="text-xl font-bold text-blue-800">Welcome to</h2>
+                            <h1 className="text-3xl font-black text-blue-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">English Quiz Grade 4</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Enter Your Name..." className="w-full p-4 border-2 border-blue-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-blue-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-blue-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-sky-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-indigo-600 py-4 rounded-xl font-black text-xl border-b-4 border-indigo-800 btn-fun shadow-lg text-white">START! 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 10;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-blue-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-blue-800">STUDENT</div><div className="font-bold text-blue-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-lg border border-blue-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-blue-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-blue-100 border-blue-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-blue-50 rounded-2xl border-2 border-blue-200 text-center">
+                            <h3 className="text-sm font-bold text-blue-800 mb-4 uppercase tracking-widest">Navigation</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Back</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-blue-800 btn-fun">FINISH ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-sky-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-sky-700 btn-fun">NEXT →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Page {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold shadow btn-fun">Finish</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-sky-500 text-white rounded-xl font-bold shadow btn-fun">Next</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-blue-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-blue-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-400 via-sky-400 to-indigo-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Final Score</h2>
+                            <h1 className="text-7xl font-black text-blue-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Excellent! (Luar Biasa) 🌟" : score >= 60 ? "Good Job! (Bagus) 👍" : "Keep Learning! (Semangat) 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-sky-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-sky-600 transition shadow-lg w-full">Try Again ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Review Answers ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Empty"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 PERFECT! <br/>All Correct!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
