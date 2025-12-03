@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal PAI Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Arab & Latin -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0fdf4; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        /* Font Arab khusus */
+        .ar { font-family: 'Amiri', serif; direction: rtl; font-size: 1.4rem; line-height: 2.2rem; display: inline-block; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #4ade80; box-shadow: 8px 8px 0px #16a34a; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #16a34a; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #15803d; font-weight: bold;">Memuat Soal PAI...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (45 SOAL - SESUAI KISI-KISI) ---
+        const paketA = [
+            // QS Al-Hujurat Ayat 13 (1-8)
+            { id: 1, text: "Berdasarkan QS Al-Hujurat ayat 13, manusia diciptakan dari...", options: { A: "Tanah liat", B: "Cahaya", C: "Seorang laki-laki dan seorang perempuan", D: "Bangsa jin" }, answer: "C", discussion: "Min dzakarin wa untsa (dari laki-laki dan perempuan)." },
+            { id: 2, text: "Tujuan Allah menciptakan manusia berbangsa-bangsa dan bersuku-suku adalah untuk...", options: { A: "Saling bermusuhan", B: "Saling mengenal (Lita'arafu)", C: "Saling bersaing", D: "Saling mengejek" }, answer: "B", discussion: "Lita'arafu = Saling mengenal." },
+            { id: 3, text: "Potongan ayat: <span class='ar'>إِنَّ أَكْرَمَكُمْ عِنْدَ اللَّهِ</span> ... Lanjutan yang tepat adalah...", options: { A: "ATQAKUM (أَتْقَاكُمْ)", B: "LITA'ARAFU", C: "KHABIR", D: "AZIZ" }, answer: "A", discussion: "Sesungguhnya yang paling mulia di antara kamu adalah yang paling bertakwa (Atqakum)." },
+            { id: 4, text: "Hukum bacaan pada kata <span class='ar'>مِنْ ذَكَرٍ</span> (Nun sukun bertemu Dzal) adalah...", options: { A: "Izhar", B: "Ikhfa", C: "Idgham", D: "Iqlab" }, answer: "B", discussion: "Ikhfa (Samar)." },
+            { id: 5, text: "Arti kata <span class='ar'>شُعُوبًا</span> (Syu'uban) adalah...", options: { A: "Berbangsa-bangsa", B: "Bersuku-suku", C: "Laki-laki", D: "Perempuan" }, answer: "A", discussion: "Syu'uban = Berbangsa-bangsa." },
+            { id: 6, text: "Sikap yang sesuai dengan QS Al-Hujurat ayat 13 adalah...", options: { A: "Membeda-bedakan teman", B: "Merasa suku sendiri paling hebat", C: "Berteman tanpa memandang suku/warna kulit", D: "Sombong karena kaya" }, answer: "C", discussion: "Keragaman adalah sunnatullah untuk saling mengenal." },
+            { id: 7, text: "Kemuliaan seseorang di sisi Allah dinilai berdasarkan...", options: { A: "Kekayaannya", B: "Jabatannya", C: "Ketampanannya", D: "Ketakwaannya" }, answer: "D", discussion: "Inna akromakum indallahi atqokum." },
+            { id: 8, text: "Pesan pokok QS Al-Hujurat ayat 13 mengajarkan tentang...", options: { A: "Tauhid", B: "Toleransi dan kesetaraan", C: "Ibadah haji", D: "Sejarah nabi" }, answer: "B", discussion: "Persamaan derajat manusia." },
+
+            // Asmaul Husna (9-17)
+            { id: 9, text: "Allah Maha Merajai/Penguasa adalah arti dari Asmaul Husna...", options: { A: "Al-Quddus", B: "Al-Malik", C: "Al-Aziz", D: "As-Salam" }, answer: "B", discussion: "Al-Malik = Maha Raja." },
+            { id: 10, text: "Arti dari Asmaul Husna 'Al-Aziz' adalah...", options: { A: "Maha Suci", B: "Maha Perkasa/Mulia", C: "Maha Sejahtera", D: "Maha Pemberi Aman" }, answer: "B", discussion: "Al-Aziz = Maha Perkasa/Mulia." },
+            { id: 11, text: "Allah Maha Suci dari segala kekurangan. Ini makna dari...", options: { A: "Al-Quddus", B: "Al-Malik", C: "Al-Mu'min", D: "Al-Aziz" }, answer: "A", discussion: "Al-Quddus = Maha Suci." },
+            { id: 12, text: "Sikap meneladani Al-Quddus adalah...", options: { A: "Menjadi pemimpin yang sombong", B: "Menjaga kebersihan hati dan badan", C: "Mencari kekayaan", D: "Takut kepada musuh" }, answer: "B", discussion: "Menyucikan diri." },
+            { id: 13, text: "As-Salam artinya Allah Maha...", options: { A: "Penyayang", B: "Pemberi Keselamatan/Sejahtera", C: "Pencipta", D: "Pengampun" }, answer: "B", discussion: "As-Salam = Maha Sejahtera/Selamat." },
+            { id: 14, text: "Cara meneladani As-Salam adalah...", options: { A: "Suka berkelahi", B: "Menyebarkan kedamaian dan rukun", C: "Membuat keributan", D: "Mengotori lingkungan" }, answer: "B", discussion: "Menebar salam/damai." },
+            { id: 15, text: "Ilustrasi: Ahmad selalu menjaga keamanan kelas agar teman-temannya nyaman. Ahmad meneladani...", options: { A: "Al-Mu'min", B: "Al-Malik", C: "Al-Aziz", D: "Al-Quddus" }, answer: "A", discussion: "Al-Mu'min = Maha Pemberi Keamanan." },
+            { id: 16, text: "Kaligrafi yang bertuliskan <span class='ar'>الْمَلِكُ</span> dibaca...", options: { A: "Al-Malik", B: "Al-Maalik", C: "Al-Mulk", D: "Al-Milki" }, answer: "A", discussion: "Al-Malik." },
+            { id: 17, text: "Allah tidak membutuhkan bantuan siapapun karena Dia Al-Aziz (Maha Perkasa). Sikap kita sebaiknya...", options: { A: "Sombong", B: "Mandiri dan tegar", C: "Manja", D: "Putus asa" }, answer: "B", discussion: "Kemandirian dan kemuliaan." },
+
+            // Tanda Baligh (18-24, 43)
+            { id: 18, text: "Ciri utama baligh bagi anak laki-laki adalah...", options: { A: "Haid", B: "Mimpi basah (Ihtilam)", C: "Suara melengking", D: "Pinggul membesar" }, answer: "B", discussion: "Ihtilam tanda khas laki-laki." },
+            { id: 19, text: "Ciri utama baligh bagi anak perempuan adalah...", options: { A: "Mimpi basah", B: "Menstruasi (Haid)", C: "Tumbuh jakun", D: "Suara berat" }, answer: "B", discussion: "Haid tanda khas perempuan." },
+            { id: 20, text: "Jika seseorang sudah baligh, maka ia disebut...", options: { A: "Mumayyiz", B: "Mukallaf", C: "Mualaf", D: "Muhsin" }, answer: "B", discussion: "Mukallaf = Terbebani hukum syariat (wajib ibadah)." },
+            { id: 21, text: "Batas usia maksimal baligh jika tidak mengalami haid/mimpi basah menurut ulama Syafi'i adalah...", options: { A: "10 tahun", B: "12 tahun", C: "15 tahun", D: "17 tahun" }, answer: "C", discussion: "15 tahun (Hijriyah)." },
+            { id: 22, text: "Larangan bagi perempuan yang sedang haid adalah...", options: { A: "Makan dan minum", B: "Shalat dan Puasa", C: "Tidur", D: "Belajar" }, answer: "B", discussion: "Ibadah shalat dan puasa dilarang saat haid." },
+            { id: 23, text: "Hadas besar (seperti haid/mimpi basah) harus disucikan dengan cara...", options: { A: "Wudhu", B: "Mandi Wajib", C: "Tayamum", D: "Cuci tangan" }, answer: "B", discussion: "Mandi besar/junub." },
+            { id: 24, text: "Rukun mandi wajib yang pertama adalah...", options: { A: "Membasuh kaki", B: "Niat", C: "Berkumur", D: "Memakai sabun" }, answer: "B", discussion: "Innamal a'malu binniyat." },
+            { id: 43, text: "Air yang digunakan untuk mandi wajib harus air yang...", options: { A: "Suci dan Mensucikan", B: "Musta'mal", C: "Bernajis", D: "Campur sabun" }, answer: "A", discussion: "Air mutlak." },
+
+            // Akhlak (25-31)
+            { id: 25, text: "Anak yang shaleh selalu ... kepada orang tua.", options: { A: "Membantah", B: "Patuh dan hormat", C: "Marah", D: "Cuek" }, answer: "B", discussion: "Birrul walidain." },
+            { id: 26, text: "Contoh perilaku terpuji di sekolah adalah...", options: { A: "Menyontek", B: "Berkelahi", C: "Memperhatikan guru", D: "Membuang sampah sembarangan" }, answer: "C", discussion: "Adab menuntut ilmu." },
+            { id: 27, text: "Manfaat berperilaku jujur adalah...", options: { A: "Dijauhi teman", B: "Dipercaya orang lain", C: "Mendapat dosa", D: "Hati gelisah" }, answer: "B", discussion: "Kejujuran membawa kepercayaan." },
+            { id: 28, text: "Gambar anak sedang bersalaman dengan guru. Ini menunjukkan sikap...", options: { A: "Sombong", B: "Hormat dan santun", C: "Pamer", D: "Cari muka" }, answer: "B", discussion: "Sopan santun." },
+            { id: 29, text: "Jika berbuat salah kepada teman, kita harus...", options: { A: "Lari", B: "Meminta maaf", C: "Pura-pura tidak tahu", D: "Menyalahkan orang lain" }, answer: "B", discussion: "Tanggung jawab." },
+            { id: 30, text: "Sikap menghargai perbedaan pendapat disebut...", options: { A: "Egois", B: "Tasamuh (Toleransi)", C: "Dendam", D: "Hasad" }, answer: "B", discussion: "Toleransi." },
+            { id: 31, text: "Kita harus hormat kepada...", options: { A: "Orang tua dan Guru", B: "Orang kaya saja", C: "Teman yang pintar saja", D: "Diri sendiri" }, answer: "A", discussion: "Orang tua di rumah dan di sekolah." },
+
+            // Kisah Hijrah (32-45)
+            { id: 32, text: "Penyebab utama Nabi Muhammad SAW hijrah ke Madinah adalah...", options: { A: "Mencari kekayaan", B: "Perintah Allah dan tekanan kafir Quraisy", C: "Ingin jalan-jalan", D: "Diundang pesta" }, answer: "B", discussion: "Perintah Allah turun karena ancaman pembunuhan." },
+            { id: 33, text: "Sahabat yang menggantikan tidur di tempat tidur Nabi saat malam hijrah adalah...", options: { A: "Abu Bakar", B: "Umar bin Khattab", C: "Ali bin Abi Thalib", D: "Utsman bin Affan" }, answer: "C", discussion: "Ali bin Abi Thalib dengan berani menggantikan Nabi." },
+            { id: 34, text: "Nabi dan Abu Bakar bersembunyi selama 3 hari di...", options: { A: "Gua Hira", B: "Gua Tsur", C: "Gua Kahfi", D: "Rumah Arqam" }, answer: "B", discussion: "Gua Tsur." },
+            { id: 35, text: "Hijrah Nabi terjadi pada tahun ... Masehi.", options: { A: "571", B: "610", C: "622", D: "632" }, answer: "C", discussion: "Tahun 622 M." },
+            { id: 36, text: "Kota tujuan hijrah Nabi sebelumnya bernama...", options: { A: "Makkah", B: "Yastrib", C: "Taif", D: "Syam" }, answer: "B", discussion: "Yastrib kemudian menjadi Madinah." },
+            { id: 37, text: "Sahabat yang menemani Nabi dalam perjalanan hijrah adalah...", options: { A: "Ali bin Abi Thalib", B: "Abu Bakar Ash-Shiddiq", C: "Umar bin Khattab", D: "Bilal" }, answer: "B", discussion: "Abu Bakar Ash-Shiddiq." },
+            { id: 38, text: "Penduduk Madinah yang menolong kaum pendatang disebut kaum...", options: { A: "Muhajirin", B: "Anshar", C: "Quraisy", D: "Yahudi" }, answer: "B", discussion: "Anshar = Penolong." },
+            { id: 39, text: "Kaum muslimin yang ikut hijrah dari Makkah ke Madinah disebut kaum...", options: { A: "Anshar", B: "Muhajirin", C: "Musyrikin", D: "Munafikin" }, answer: "B", discussion: "Muhajirin = Orang yang berhijrah." },
+            { id: 40, text: "Sikap kaum Anshar menyambut kaum Muhajirin adalah...", options: { A: "Menolak", B: "Menerima dengan senang hati dan membantu", C: "Mengusir", D: "Acuh tak acuh" }, answer: "B", discussion: "Persaudaraan Islam (Ukhuwah)." },
+            { id: 41, text: "Masjid pertama yang dibangun Nabi saat hijrah adalah...", options: { A: "Masjidil Haram", B: "Masjid Nabawi", C: "Masjid Quba", D: "Masjid Aqsa" }, answer: "C", discussion: "Masjid Quba." },
+            { id: 42, text: "Kaligrafi <span class='ar'>السَّلَامُ</span> dibaca...", options: { A: "Al-Malik", B: "As-Salam", C: "Al-Quddus", D: "Al-Aziz" }, answer: "B", discussion: "As-Salam." },
+            { id: 44, text: "Sikap terpuji Abu Bakar saat hijrah adalah...", options: { A: "Ragu-ragu", B: "Setia kawan dan rela berkorban", C: "Takut", D: "Egois" }, answer: "B", discussion: "Kesetiaan menemani Nabi." },
+            { id: 45, text: "Hikmah dari peristiwa hijrah adalah...", options: { A: "Islam semakin lemah", B: "Dakwah Islam semakin berkembang pesat", C: "Terjadi perpecahan", D: "Nabi menjadi kaya" }, answer: "B", discussion: "Awal kejayaan Islam." }
+        ];
+
+        // --- DATA SOAL PAKET B (45 SOAL - VARIASI) ---
+        const paketB = [
+            { id: 1, text: "Potongan ayat <span class='ar'>يَا أَيُّهَا النَّاسُ</span> artinya...", options: { A: "Wahai orang-orang beriman", B: "Wahai manusia", C: "Wahai orang kafir", D: "Wahai para nabi" }, answer: "B", discussion: "Ya Ayyuhan Naas = Wahai manusia." },
+            { id: 2, text: "Manusia diciptakan berbeda-beda agar saling...", options: { A: "Mengenal", B: "Mengejek", C: "Membunuh", D: "Menjauhi" }, answer: "A", discussion: "Lita'arafu." },
+            { id: 3, text: "Orang yang paling mulia di sisi Allah adalah...", options: { A: "Paling kaya", B: "Paling kuat", C: "Paling bertakwa", D: "Paling tampan" }, answer: "C", discussion: "Takwa adalah ukuran kemuliaan." },
+            { id: 4, text: "Asmaul Husna Al-Malik artinya...", options: { A: "Maha Raja", B: "Maha Suci", C: "Maha Perkasa", D: "Maha Melihat" }, answer: "A", discussion: "Raja/Penguasa." },
+            { id: 5, text: "Asmaul Husna Al-Mu'min artinya...", options: { A: "Maha Suci", B: "Maha Pemberi Keamanan", C: "Maha Besar", D: "Maha Esa" }, answer: "B", discussion: "Pemberi rasa aman." },
+            { id: 6, text: "Menjaga lisan agar tidak menyakiti orang lain adalah meneladani...", options: { A: "Al-Malik", B: "As-Salam", C: "Al-Khaliq", D: "Al-Ahad" }, answer: "B", discussion: "Menebar keselamatan (salam)." },
+            { id: 7, text: "Tanda baligh bagi laki-laki adalah...", options: { A: "Haid", B: "Mimpi basah", C: "Melahirkan", D: "Menyusui" }, answer: "B", discussion: "Ihtilam." },
+            { id: 8, text: "Mukallaf artinya...", options: { A: "Anak kecil", B: "Orang gila", C: "Orang dewasa yang wajib menjalankan hukum agama", D: "Orang musafir" }, answer: "C", discussion: "Terbebani hukum." },
+            { id: 9, text: "Larangan bagi wanita haid...", options: { A: "Makan", B: "Shalat", C: "Tidur", D: "Bekerja" }, answer: "B", discussion: "Shalat haram bagi wanita haid." },
+            { id: 10, text: "Niat mandi wajib diucapkan...", options: { A: "Setelah mandi", B: "Bersamaan saat air pertama menyentuh tubuh", C: "Saat memakai baju", D: "Saat tidur" }, answer: "B", discussion: "Niat di awal." },
+            { id: 11, text: "Hijrah artinya...", options: { A: "Perang", B: "Pindah", C: "Diam", D: "Lari" }, answer: "B", discussion: "Berpindah tempat." },
+            { id: 12, text: "Nabi hijrah dari Makkah ke...", options: { A: "Mesir", B: "Madinah", C: "Yaman", D: "Palestina" }, answer: "B", discussion: "Madinah." },
+            { id: 13, text: "Gua tempat persembunyian Nabi...", options: { A: "Hira", B: "Tsur", C: "Uhud", D: "Rahmah" }, answer: "B", discussion: "Gua Tsur." },
+            { id: 14, text: "Teman setia Nabi saat hijrah...", options: { A: "Umar", B: "Abu Bakar", C: "Utsman", D: "Ali" }, answer: "B", discussion: "Abu Bakar." },
+            { id: 15, text: "Kaum Anshar adalah...", options: { A: "Pendatang", B: "Penolong (Penduduk Madinah)", C: "Musuh", D: "Pedagang" }, answer: "B", discussion: "Penolong." },
+            { id: 16, text: "Kaum Muhajirin adalah...", options: { A: "Penduduk Madinah", B: "Pendatang dari Makkah", C: "Orang Yahudi", D: "Orang Nasrani" }, answer: "B", discussion: "Yang berhijrah." },
+            { id: 17, text: "Masjid Quba adalah masjid yang...", options: { A: "Terbesar", B: "Pertama dibangun Nabi", C: "Termewah", D: "Terjauh" }, answer: "B", discussion: "Pertama dibangun." },
+            { id: 18, text: "Suroqah bin Malik adalah...", options: { A: "Sahabat Nabi", B: "Pengejar Nabi saat hijrah", C: "Raja Madinah", D: "Paman Nabi" }, answer: "B", discussion: "Ingin hadiah sayembara." },
+            { id: 19, text: "Putri Abu Bakar yang mengantar makanan ke Gua Tsur adalah...", options: { A: "Aisyah", B: "Asma binti Abu Bakar", C: "Fatimah", D: "Khadijah" }, answer: "B", discussion: "Asma." },
+            { id: 20, text: "Meneladani Al-Aziz dengan cara...", options: { A: "Menjaga kemuliaan dan harga diri", B: "Meminta-minta", C: "Berbuat curang", D: "Malas belajar" }, answer: "A", discussion: "Izzah (kemuliaan)." },
+            { id: 21, text: "Al-Quddus artinya...", options: { A: "Maha Raja", B: "Maha Suci", C: "Maha Kuat", D: "Maha Kaya" }, answer: "B", discussion: "Suci dari kekurangan." },
+            { id: 22, text: "Kebersihan sebagian dari...", options: { A: "Sehat", B: "Iman", C: "Kaya", D: "Sakit" }, answer: "B", discussion: "Hadits." },
+            { id: 23, text: "Mandi wajib menggunakan air...", options: { A: "Teh", B: "Mutlak (Suci mensucikan)", C: "Kelapa", D: "Kopi" }, answer: "B", discussion: "Air murni." },
+            { id: 24, text: "Usia baligh maksimal...", options: { A: "9 tahun", B: "15 tahun", C: "20 tahun", D: "12 tahun" }, answer: "B", discussion: "15 tahun Hijriyah." },
+            { id: 25, text: "Haid dialami oleh...", options: { A: "Laki-laki", B: "Perempuan", C: "Bayi", D: "Nenek" }, answer: "B", discussion: "Kodrat perempuan." },
+            { id: 26, text: "Ali bin Abi Thalib tidur di kasur Nabi agar...", options: { A: "Nabi bisa tidur", B: "Mengelabui kaum Quraisy", C: "Sakit", D: "Lelah" }, answer: "B", discussion: "Strategi hijrah." },
+            { id: 27, text: "Binatang yang bersarang di mulut Gua Tsur...", options: { A: "Laba-laba dan Merpati", B: "Ular", C: "Harimau", D: "Lebah" }, answer: "A", discussion: "Keajaiban Allah." },
+            { id: 28, text: "Sikap persaudaraan Muhajirin dan Anshar disebut...", options: { A: "Ukhuwah Islamiyah", B: "Permusuhan", C: "Persaingan", D: "Perdagangan" }, answer: "A", discussion: "Persaudaraan sesama muslim." },
+            { id: 29, text: "Tahun Hijriyah dimulai dari peristiwa...", options: { A: "Kelahiran Nabi", B: "Hijrah Nabi", C: "Wafat Nabi", D: "Turun Wahyu" }, answer: "B", discussion: "Penetapan kalender Islam." },
+            { id: 30, text: "Al-Hujurat artinya...", options: { A: "Kamar-kamar", B: "Lebah", C: "Sapi", D: "Manusia" }, answer: "A", discussion: "Nama surat." },
+            { id: 31, text: "Hukum bacaan <span class='ar'>مِنْ بَعْدِ</span> (Nun sukun ketemu Ba)...", options: { A: "Izhar", B: "Iqlab", C: "Idgham", D: "Ikhfa" }, answer: "B", discussion: "Iqlab (Membalik bunyi ke M)." },
+            { id: 32, text: "Sikap rendah hati disebut...", options: { A: "Takabur", B: "Tawadhu", C: "Riya", D: "Ujub" }, answer: "B", discussion: "Lawan sombong." },
+            { id: 33, text: "Hormat kepada guru termasuk...", options: { A: "Akhlak tercela", B: "Akhlak terpuji", C: "Dosa", D: "Sia-sia" }, answer: "B", discussion: "Mahmudah." },
+            { id: 34, text: "Mandi wajib meratakan air ke...", options: { A: "Tangan saja", B: "Seluruh tubuh", C: "Kepala saja", D: "Kaki saja" }, answer: "B", discussion: "Rukun mandi." },
+            { id: 35, text: "Setelah baligh, dosa ditanggung...", options: { A: "Orang tua", B: "Sendiri", C: "Guru", D: "Teman" }, answer: "B", discussion: "Tanggung jawab mukallaf." },
+            { id: 36, text: "Allah Maha Sejahtera adalah arti...", options: { A: "As-Salam", B: "Al-Mukmin", C: "Al-Aziz", D: "Al-Jabbar" }, answer: "A", discussion: "Salam = Selamat/Sejahtera." },
+            { id: 37, text: "Membaca Al-Qur'an mendapat...", options: { A: "Uang", B: "Pahala", C: "Dosa", D: "Makanan" }, answer: "B", discussion: "Ibadah." },
+            { id: 38, text: "Kaum kafir Quraisy ingin ... Nabi.", options: { A: "Menolong", B: "Membunuh", C: "Memberi hadiah", D: "Mengangkat raja" }, answer: "B", discussion: "Rencana jahat di Darun Nadwah." },
+            { id: 39, text: "Perjalanan hijrah dilakukan pada...", options: { A: "Siang hari", B: "Malam hari", C: "Pagi hari", D: "Sore hari" }, answer: "B", discussion: "Sembunyi-sembunyi." },
+            { id: 40, text: "Hikmah hijrah bagi kita adalah...", options: { A: "Semangat berubah menjadi lebih baik", B: "Pindah rumah terus", C: "Lari dari masalah", D: "Takut musuh" }, answer: "A", discussion: "Hijrah maknawiyah." },
+            { id: 41, text: "Mandiri artinya...", options: { A: "Menyuruh orang", B: "Mengerjakan sendiri", C: "Malas", D: "Manja" }, answer: "B", discussion: "Tidak bergantung." },
+            { id: 42, text: "Kebersihan adalah pangkal...", options: { A: "Kesehatan", B: "Kekayaan", C: "Kepintaran", D: "Kejahatan" }, answer: "A", discussion: "Bersih itu sehat." },
+            { id: 43, text: "Berbicara sopan kepada...", options: { A: "Guru saja", B: "Semua orang", C: "Teman kaya", D: "Pejabat" }, answer: "B", discussion: "Akhlak mulia." },
+            { id: 44, text: "Jika teman sakit kita...", options: { A: "Syukuri", B: "Jenguk dan doakan", C: "Biarkan", D: "Ejek" }, answer: "B", discussion: "Kewajiban muslim." },
+            { id: 45, text: "Allah menciptakan manusia berbeda agar...", options: { A: "Perang", B: "Saling mengenal", C: "Sombong", D: "Jauh" }, answer: "B", discussion: "Tujuan keragaman." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-green-50 bg-[url('https://img.freepik.com/free-vector/gradient-islamic-new-year-background_23-2148968037.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-green-800">Assalamu'alaikum di</h2>
+                            <h1 className="text-3xl font-black text-green-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan PAI Kelas 4</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Antum..." className="w-full p-4 border-2 border-green-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-green-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-green-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-emerald-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-lime-500 py-4 rounded-xl font-black text-xl border-b-4 border-lime-700 btn-fun shadow-lg text-white">MULAI (BISMILLAH) 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-green-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-green-800">SISWA</div><div className="font-bold text-green-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-green-100 text-green-700 px-3 py-1 rounded-lg border border-green-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-green-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-green-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed" dangerouslySetInnerHTML={{__html: q.text}}></p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-green-100 border-green-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-green-50 rounded-2xl border-2 border-green-200 text-center">
+                            <h3 className="text-sm font-bold text-green-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-emerald-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-emerald-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-emerald-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-green-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-green-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-green-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-green-100 text-green-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Masya Allah! Mumtaz! 🌟" : score >= 60 ? "Alhamdulillah! Bagus! 👍" : "Semangat Belajar Lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug" dangerouslySetInnerHTML={{__html: q.text}}></p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 ALHAMDULILLAH! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
