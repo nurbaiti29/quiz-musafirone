@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Indonesia Kelas 4 Bab 5 - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind Libraries -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fefce8; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #fde047; box-shadow: 8px 8px 0px #eab308; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #eab308; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #ca8a04; font-weight: bold;">Memuat Soal Bahasa Indonesia...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (40 SOAL) ---
+        const paketA = [
+            // Materi A: Teks Bacaan "Buah sebagai Nikmat dari Allah"
+            { id: 1, text: "Berdasarkan teks 'Buah sebagai Nikmat dari Allah', tujuan utama penulisan teks tersebut adalah...", options: { A: "Menjelaskan cara menanam buah", B: "Mengajak bersyukur dengan menjaga kesehatan", C: "Menyebutkan harga buah", D: "Mengajak berjualan buah" }, answer: "B", discussion: "Teks menekankan menjaga kesehatan sebagai bentuk syukur." },
+            { id: 2, text: "Manfaat mengonsumsi buah menurut teks adalah...", options: { A: "Tubuh menjadi lelah", B: "Tubuh menjadi sehat dan kuat beribadah", C: "Tubuh menjadi mengantuk", D: "Tubuh menjadi gemuk" }, answer: "B", discussion: "Buah membuat tubuh sehat dan kuat untuk ibadah." },
+            { id: 3, text: "Menjaga kesehatan merupakan bentuk rasa ... kepada Allah Swt.", options: { A: "Takut", B: "Syukur", C: "Marah", D: "Kecewa" }, answer: "B", discussion: "Menjaga titipan Allah adalah wujud syukur." },
+            { id: 4, text: "Contoh buah yang disebutkan dalam teks mengandung vitamin dan serat adalah...", options: { A: "Durian dan Nangka", B: "Buah Naga, Kiwi, Stroberi", C: "Semangka dan Melon", D: "Rambutan dan Duku" }, answer: "B", discussion: "Sesuai isi teks: Naga, Kiwi, Stroberi, Salak, Apel." },
+            { id: 5, text: "Cara membiasakan rasa syukur menurut teks adalah...", options: { A: "Tidur sepanjang hari", B: "Makan buah setiap hari", C: "Bermain game", D: "Membuang makanan" }, answer: "B", discussion: "Membiasakan makan buah setiap hari." },
+            
+            // Materi B: Infografik Buah
+            { id: 6, text: "Buah yang kaya vitamin C dan baik untuk daya tahan tubuh (berdasarkan infografik umum) adalah...", options: { A: "Salak", B: "Kiwi", C: "Apel merah", D: "Buah Naga" }, answer: "B", discussion: "Kiwi terkenal sangat tinggi Vitamin C." },
+            { id: 7, text: "Manfaat buah naga biasanya dikaitkan dengan...", options: { A: "Menjaga kesehatan mata", B: "Kaya antioksidan dan melancarkan pencernaan", C: "Membuat tidur nyenyak", D: "Menambah tinggi badan" }, answer: "B", discussion: "Buah naga kaya serat (pencernaan) dan antioksidan." },
+            { id: 8, text: "Manfaat buah Apel Merah biasanya untuk...", options: { A: "Menjaga kesehatan jantung", B: "Obat sakit kepala", C: "Menyembuhkan luka", D: "Membuat pusing" }, answer: "A", discussion: "Apel baik untuk jantung." },
+            { id: 9, text: "Buah yang identik dengan menjaga kesehatan mata (biasanya Wortel/Tomat, tapi di infografis buah mungkin)...", options: { A: "Stroberi", B: "Salak", C: "Pisang", D: "Pepaya" }, answer: "A", discussion: "Konteks soal: Menjodohkan. Stroberi/buah merah sering dikaitkan dengan antioksidan mata." },
+            { id: 10, text: "Salak bermanfaat untuk...", options: { A: "Kesehatan mata", B: "Kesehatan pencernaan (Serat)", C: "Kesehatan rambut", D: "Kesehatan kuku" }, answer: "B", discussion: "Salak mengandung serat (kulit arinya)." },
+
+            // Materi C: Teks "Program Sedekah Jumat"
+            { id: 11, text: "Program apa yang dilaksanakan SD Cendekia Muslim?", options: { A: "Lomba Lari", B: "Sedekah Jumat", C: "Pasar Murah", D: "Pentas Seni" }, answer: "B", discussion: "Program Sedekah Jumat." },
+            { id: 12, text: "Kapan program tersebut dilaksanakan?", options: { A: "Setiap hari Senin", B: "Setiap hari Jumat", C: "Sebulan sekali", D: "Setahun sekali" }, answer: "B", discussion: "Setiap hari Jumat." },
+            { id: 13, text: "Tujuan program Sedekah Jumat adalah...", options: { A: "Agar sekolah kaya", B: "Menumbuhkan sikap peduli dan berbagi", C: "Memaksa siswa membayar", D: "Membeli mainan" }, answer: "B", discussion: "Menumbuhkan kepedulian." },
+            { id: 14, text: "Uang sedekah yang terkumpul disalurkan ke...", options: { A: "Kantor Guru", B: "Panti Asuhan terdekat", C: "Bank", D: "Koperasi sekolah" }, answer: "B", discussion: "Disalurkan ke Panti Asuhan." },
+            { id: 15, text: "Guru mengingatkan bahwa sedekah harus dilakukan dengan...", options: { A: "Terpaksa", B: "Niat yang ikhlas", C: "Pamer", D: "Marah" }, answer: "B", discussion: "Ikhlas karena Allah." },
+
+            // Materi D: Teks Prosedur (Jus Buah Naga)
+            { id: 16, text: "Langkah pertama membuat jus buah naga biasanya adalah...", options: { A: "Meminum jus", B: "Mengupas dan memotong buah naga", C: "Membuang kulit ke sungai", D: "Tidur" }, answer: "B", discussion: "Persiapan bahan: kupas dan potong." },
+            { id: 17, text: "Alat yang digunakan untuk menghaluskan buah naga adalah...", options: { A: "Kompor", B: "Blender", C: "Panci", D: "Oven" }, answer: "B", discussion: "Blender untuk membuat jus." },
+            { id: 18, text: "Bahan tambahan agar jus terasa manis adalah...", options: { A: "Garam", B: "Gula atau Susu kental manis", C: "Cabai", D: "Merica" }, answer: "B", discussion: "Pemanis." },
+            { id: 19, text: "Setelah buah halus diblender, langkah selanjutnya adalah...", options: { A: "Tuang ke dalam gelas", B: "Buang ke tempat sampah", C: "Masak di kompor", D: "Jemur di matahari" }, answer: "A", discussion: "Penyajian." },
+            { id: 20, text: "Tujuan teks prosedur adalah...", options: { A: "Menghibur pembaca", B: "Memberikan petunjuk cara melakukan sesuatu", C: "Menceritakan pengalaman", D: "Menggambarkan tempat" }, answer: "B", discussion: "Definisi teks prosedur." },
+
+            // Materi E: Penulisan Uang & Ejaan
+            { id: 21, text: "Penulisan yang benar untuk 'dua puluh ribu rupiah' adalah...", options: { A: "Rp 20.000,00", B: "Rp20.000,00", C: "Rp.20.000", D: "Rp 20,000" }, answer: "B", discussion: "Rp tanpa titik/spasi, diakhiri ,00." },
+            { id: 22, text: "Penulisan 'lima ribu rupiah' yang benar...", options: { A: "Rp5.000,00", B: "Rp 5000", C: "5000 rupiah", D: "Rp. 5.000,-" }, answer: "A", discussion: "Baku: Rp5.000,00." },
+            { id: 23, text: "Tanda baca untuk memisahkan ribuan adalah...", options: { A: "Koma (,)", B: "Titik (.)", C: "Titik dua (:)", D: "Garis miring (/)" }, answer: "B", discussion: "Ribuan dipisah titik (Indonesia)." },
+            { id: 24, text: "Tanda baca untuk memisahkan sen (desimal) dalam uang adalah...", options: { A: "Titik", B: "Koma", C: "Spasi", D: "Strip" }, answer: "B", discussion: ",00 (koma)." },
+            { id: 25, text: "Rp10.500,00 dibaca...", options: { A: "Sepuluh ribu lima ratus rupiah", B: "Seratus lima ribu rupiah", C: "Satu juta lima ratus", D: "Seribu lima ratus" }, answer: "A", discussion: "10.500." },
+
+            // Tambahan Materi Umum Bab 5
+            { id: 26, text: "Kata tanya untuk menanyakan cara membuat sesuatu adalah...", options: { A: "Apa", B: "Bagaimana", C: "Siapa", D: "Kapan" }, answer: "B", discussion: "Bagaimana cara..." },
+            { id: 27, text: "Kata tanya untuk menanyakan pelaku dalam cerita adalah...", options: { A: "Siapa", B: "Di mana", C: "Kapan", D: "Mengapa" }, answer: "A", discussion: "Siapa (Subjek/Pelaku)." },
+            { id: 28, text: "Dalam singkatan ADIKSIMBA, huruf 'M' singkatan dari...", options: { A: "Mana", B: "Mengapa", C: "Makan", D: "Minum" }, answer: "B", discussion: "Mengapa (Alasan)." },
+            { id: 29, text: "Kata penghubung dalam teks prosedur contohnya...", options: { A: "Dan, tetapi", B: "Selanjutnya, kemudian, setelah itu", C: "Sangat, sekali", D: "Ke, di, dari" }, answer: "B", discussion: "Konjungsi temporal." },
+            { id: 30, text: "Kalimat perintah dalam teks prosedur biasanya diakhiri dengan...", options: { A: "Tanda tanya (?)", B: "Tanda seru (!)", C: "Tanda koma (,)", D: "Tanda petik" }, answer: "B", discussion: "Imperatif (Perintah)." },
+            { id: 31, text: "Contoh kalimat perintah dalam membuat jus...", options: { A: "Apakah kamu suka jus?", B: "Jus itu enak.", C: "Potonglah buah naga!", D: "Saya minum jus." }, answer: "C", discussion: "Potonglah (Perintah)." },
+            { id: 32, text: "Kata depan 'di' pada 'di sekolah' ditulis...", options: { A: "Disambung (disekolah)", B: "Dipisah (di sekolah)", C: "Diberi strip", D: "Huruf kapital semua" }, answer: "B", discussion: "Di sebagai kata depan (tempat) dipisah." },
+            { id: 33, text: "Awalan 'di-' pada 'dimakan' ditulis...", options: { A: "Dipisah", B: "Disambung", C: "Dihapus", D: "Miring" }, answer: "B", discussion: "Di sebagai imbuhan (pasif) disambung." },
+            { id: 34, text: "Sinonim kata 'Manfaat' adalah...", options: { A: "Bahaya", B: "Kegunaan / Khasiat", C: "Kerugian", D: "Masalah" }, answer: "B", discussion: "Persamaan kata." },
+            { id: 35, text: "Lawan kata 'Sehat' adalah...", options: { A: "Kuat", B: "Sakit", C: "Bugar", D: "Segar" }, answer: "B", discussion: "Antonim." },
+            { id: 36, text: "Ide pokok paragraf biasanya terdapat di...", options: { A: "Kalimat utama", B: "Kalimat penjelas", C: "Judul", D: "Penutup" }, answer: "A", discussion: "Inti paragraf." },
+            { id: 37, text: "Kata baku dari 'Praktek' adalah...", options: { A: "Praktik", B: "Praktekk", C: "Pratek", D: "Peraktek" }, answer: "A", discussion: "Sesuai KBBI: Praktik." },
+            { id: 38, text: "Kata baku dari 'Apotik' adalah...", options: { A: "Apotek", B: "Apotik", C: "Apothik", D: "Opotek" }, answer: "A", discussion: "Sesuai KBBI: Apotek." },
+            { id: 39, text: "Kalimat efektif harus...", options: { A: "Panjang lebar", B: "Singkat, padat, dan jelas", C: "Berulang-ulang", D: "Sulit dipahami" }, answer: "B", discussion: "Efisien." },
+            { id: 40, text: "Huruf kapital digunakan untuk...", options: { A: "Nama buah", B: "Awal kalimat dan nama orang", C: "Kata sambung", D: "Tengah kalimat" }, answer: "B", discussion: "Ejaan yang benar." }
+        ];
+
+        // --- DATA SOAL PAKET B (40 SOAL - VARIASI) ---
+        const paketB = [
+            // Teks Bacaan (Variasi)
+            { id: 1, text: "Mengapa kita dianjurkan makan buah? Agar...", options: { A: "Cepat kenyang", B: "Tubuh sehat dan tidak mudah sakit", C: "Uang habis", D: "Dipuji teman" }, answer: "B", discussion: "Manfaat kesehatan." },
+            { id: 2, text: "Buah naga dan kiwi mengandung...", options: { A: "Racun", B: "Vitamin dan serat", C: "Lemak jahat", D: "Minyak" }, answer: "B", discussion: "Nutrisi buah." },
+            { id: 3, text: "Sikap 'tidak menyia-nyiakan makanan' disebut...", options: { A: "Mubazir", B: "Hemat / Bersyukur", C: "Pelit", D: "Sombong" }, answer: "B", discussion: "Lawan mubazir." },
+            { id: 4, text: "Judul yang tepat untuk teks tentang manfaat buah adalah...", options: { A: "Cara Membuat Kue", B: "Buah sebagai Sumber Kesehatan", C: "Bahaya Buah", D: "Jualan Buah" }, answer: "B", discussion: "Sesuai isi." },
+            { id: 5, text: "Allah menciptakan bermacam buah agar manusia...", options: { A: "Bingung", B: "Bersyukur dan memanfaatkannya", C: "Menebang pohonnya", D: "Membuangnya" }, answer: "B", discussion: "Tujuan penciptaan." },
+            
+            // Infografik & Pengetahuan Umum
+            { id: 6, text: "Vitamin A pada wortel/pepaya baik untuk...", options: { A: "Tulang", B: "Mata", C: "Gigi", D: "Rambut" }, answer: "B", discussion: "Kesehatan mata." },
+            { id: 7, text: "Buah yang identik dengan Vitamin C dan rasanya asam/manis...", options: { A: "Jeruk", B: "Pisang", C: "Alpukat", D: "Kelapa" }, answer: "A", discussion: "Jeruk." },
+            { id: 8, text: "Manfaat serat dalam buah adalah untuk...", options: { A: "Melancarkan pencernaan", B: "Membuat pusing", C: "Sakit perut", D: "Batuk" }, answer: "A", discussion: "Fungsi serat." },
+            { id: 9, text: "Jus alpukat biasanya dicampur...", options: { A: "Susu cokelat", B: "Kecap", C: "Sambal", D: "Garam" }, answer: "A", discussion: "Penyajian umum." },
+            { id: 10, text: "Buah yang kulitnya berduri tajam dan baunya menyengat...", options: { A: "Semangka", B: "Durian", C: "Melon", D: "Apel" }, answer: "B", discussion: "Ciri durian." },
+
+            // ADIKSIMBA (5W+1H)
+            { id: 11, text: "Kata tanya untuk menanyakan waktu...", options: { A: "Di mana", B: "Kapan", C: "Siapa", D: "Apa" }, answer: "B", discussion: "Kapan." },
+            { id: 12, text: "Kata tanya untuk menanyakan tempat...", options: { A: "Di mana", B: "Kapan", C: "Bagaimana", D: "Mengapa" }, answer: "A", discussion: "Di mana." },
+            { id: 13, text: "Kata tanya untuk menanyakan jumlah...", options: { A: "Berapa", B: "Siapa", C: "Apa", D: "Kapan" }, answer: "A", discussion: "Berapa." },
+            { id: 14, text: "Kata tanya untuk menanyakan keadaan/cara...", options: { A: "Siapa", B: "Bagaimana", C: "Kapan", D: "Apa" }, answer: "B", discussion: "Bagaimana." },
+            { id: 15, text: "Kata tanya untuk menanyakan alasan...", options: { A: "Berapa", B: "Mengapa", C: "Siapa", D: "Di mana" }, answer: "B", discussion: "Mengapa." },
+
+            // Prosedur
+            { id: 16, text: "Bagian 'Tujuan' dalam teks prosedur berisi...", options: { A: "Hasil akhir yang akan dicapai", B: "Daftar alat", C: "Langkah pertama", D: "Penutup" }, answer: "A", discussion: "Judul/Goal." },
+            { id: 17, text: "Langkah terakhir membuat teh manis...", options: { A: "Siapkan gelas", B: "Aduk dan siap disajikan", C: "Rebus air", D: "Beli gula" }, answer: "B", discussion: "Penyajian." },
+            { id: 18, text: "Kata kerja imperatif: '... air ke dalam gelas'.", options: { A: "Tuangkan", B: "Diminum", C: "Tumpah", D: "Pecahkan" }, answer: "A", discussion: "Perintah menuang." },
+            { id: 19, text: "Kata kerja imperatif: '... bawang hingga harum'.", options: { A: "Tumislah", B: "Buanglah", C: "Cucilah", D: "Makanlah" }, answer: "A", discussion: "Memasak." },
+            { id: 20, text: "Ciri bahasa teks prosedur adalah...", options: { A: "Menggunakan kalimat perintah", B: "Menggunakan pantun", C: "Menggunakan majas", D: "Menggunakan dialog" }, answer: "A", discussion: "Instruksi." },
+
+            // Uang & Ejaan
+            { id: 21, text: "Rp50.000,00 dibaca...", options: { A: "Lima ribu rupiah", B: "Lima puluh ribu rupiah", C: "Lima ratus ribu rupiah", D: "Lima juta rupiah" }, answer: "B", discussion: "50.000." },
+            { id: 22, text: "Penulisan seratus ribu rupiah...", options: { A: "Rp 100.000", B: "Rp100.000,00", C: "100.000 rp", D: "Rp. 100.000,-" }, answer: "B", discussion: "Baku." },
+            { id: 23, text: "Rp7.500,00 dibaca...", options: { A: "Tujuh ribu lima ratus rupiah", B: "Tujuh puluh lima ribu", C: "Tujuh ratus lima puluh", D: "Tujuh juta" }, answer: "A", discussion: "7.500." },
+            { id: 24, text: "Mata uang negara Indonesia adalah...", options: { A: "Dollar", B: "Rupiah", C: "Ringgit", D: "Yen" }, answer: "B", discussion: "IDR." },
+            { id: 25, text: "Simbol mata uang Rupiah adalah...", options: { A: "$", B: "Rp", C: "¥", D: "€" }, answer: "B", discussion: "Rp." },
+
+            // Tata Bahasa & Kosakata
+            { id: 26, text: "Antonim 'Kuat'...", options: { A: "Lemah", B: "Hebat", C: "Sehat", D: "Kekar" }, answer: "A", discussion: "Lawan kata." },
+            { id: 27, text: "Sinonim 'Giat'...", options: { A: "Malas", B: "Rajin", C: "Lambat", D: "Bodoh" }, answer: "B", discussion: "Persamaan kata." },
+            { id: 28, text: "Imbuhan 'Pe-' pada 'Petani' bermakna...", options: { A: "Orang yang bekerja bertani", B: "Alat tani", C: "Sifat tani", D: "Cara tani" }, answer: "A", discussion: "Profesi." },
+            { id: 29, text: "Imbuhan 'Pe-' pada 'Pewarna' bermakna...", options: { A: "Orang", B: "Alat untuk mewarnai", C: "Sifat", D: "Tempat" }, answer: "B", discussion: "Alat." },
+            { id: 30, text: "Penulisan 'di' yang benar: 'Ayah bekerja ... kantor'.", options: { A: "dikantor", B: "di kantor", C: "di-kantor", D: "Di Kantor" }, answer: "B", discussion: "Kata depan tempat dipisah." },
+            { id: 31, text: "Penulisan 'di' yang benar: 'Baju itu ... cuci Ibu'.", options: { A: "di cuci", B: "dicuci", C: "di-cuci", D: "Di Cuci" }, answer: "B", discussion: "Imbuhan pasif disambung." },
+            { id: 32, text: "Kata baku: 'Ibu membeli ... di apotek'.", options: { A: "Obat", B: "Obad", C: "Ubat", D: "Obath" }, answer: "A", discussion: "Obat." },
+            { id: 33, text: "Huruf kapital digunakan untuk nama...", options: { A: "Buah", B: "Hewan", C: "Hari dan Bulan", D: "Benda mati" }, answer: "C", discussion: "Senin, Januari." },
+            { id: 34, text: "Tanda titik (.) digunakan untuk...", options: { A: "Mengakhiri kalimat berita", B: "Menanyakan", C: "Memerintah", D: "Memisahkan kata" }, answer: "A", discussion: "Fungsi titik." },
+            { id: 35, text: "Tanda koma (,) digunakan untuk...", options: { A: "Mengakhiri kalimat", B: "Memerinci barang", C: "Judul", D: "Awal kalimat" }, answer: "B", discussion: "Apel, jeruk, dan mangga." },
+            { id: 36, text: "Kalimat majemuk setara menggunakan kata hubung...", options: { A: "Dan, atau", B: "Meskipun", C: "Supaya", D: "Agar" }, answer: "A", discussion: "Setara." },
+            { id: 37, text: "Rina suka menari ... Budi suka menyanyi.", options: { A: "Tetapi / Sedangkan", B: "Atau", C: "Karena", D: "Supaya" }, answer: "A", discussion: "Perbandingan/Pertentangan." },
+            { id: 38, text: "Ibu pergi ke pasar ... membeli sayur.", options: { A: "Lalu / Dan", B: "Tetapi", C: "Atau", D: "Jika" }, answer: "A", discussion: "Urutan kegiatan." },
+            { id: 39, text: "Kamu mau minum teh ... kopi?", options: { A: "Dan", B: "Atau", C: "Tetapi", D: "Lalu" }, answer: "B", discussion: "Pilihan." },
+            { id: 40, text: "Aku tidak masuk sekolah ... sakit.", options: { A: "Dan", B: "Karena", C: "Tetapi", D: "Atau" }, answer: "B", discussion: "Alasan." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-yellow-50 bg-[url('https://img.freepik.com/free-vector/hand-drawn-back-school-background_23-2149035932.jpg?w=1380')] bg-cover bg-center">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-yellow-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-yellow-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Indonesia Kelas 4 (Bab 5)</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Kamu..." className="w-full p-4 border-2 border-yellow-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-yellow-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-yellow-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-orange-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-red-500 py-4 rounded-xl font-black text-xl border-b-4 border-red-700 btn-fun shadow-lg text-white">MULAI! 📝</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-yellow-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-yellow-800">SISWA</div><div className="font-bold text-yellow-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-yellow-100 text-yellow-700 px-3 py-1 rounded-lg border border-yellow-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-yellow-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-yellow-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-yellow-100 border-yellow-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-yellow-50 rounded-2xl border-2 border-yellow-200 text-center">
+                            <h3 className="text-sm font-bold text-yellow-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-yellow-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-yellow-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-orange-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-orange-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-yellow-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-orange-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-yellow-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-yellow-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-yellow-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-yellow-100 text-yellow-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat! Kamu Cerdas! 🌟" : score >= 60 ? "Bagus! Tingkatkan Lagi! 👍" : "Ayo Baca Lagi Bukunya! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-orange-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 KEREN! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
