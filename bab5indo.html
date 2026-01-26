@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Indonesia Bab 5 - Bertukar dan Membayar</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #ecfdf5; /* Emerald-50 */
+            background-image: radial-gradient(#6ee7b7 1px, transparent 1px);
+            background-size: 20px 20px;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #10b981; box-shadow: 8px 8px 0px #047857; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #059669; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #047857; font-weight: bold;">Memuat Soal...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (40 SOAL) ---
+        const paketA = [
+            // 1. Memahami Informasi (Teks & Infografik)
+            { id: 1, text: "Teks: 'Uang adalah alat tukar yang sah untuk kegiatan jual beli. Sebelum ada uang, manusia menggunakan sistem barter, yaitu menukar barang dengan barang.' Informasi utama dari teks tersebut adalah...", options: { A: "Cara membuat uang", B: "Pengertian dan sejarah singkat uang", C: "Tempat menukar barang", D: "Harga barang" }, answer: "B", discussion: "Teks menjelaskan definisi uang dan sistem barter." },
+            { id: 2, text: "Sistem tukar menukar barang dengan barang disebut...", options: { A: "Jual beli", B: "Barter", C: "Kredit", D: "Lelang" }, answer: "B", discussion: "Definisi barter." },
+            { id: 3, text: "Infografik: 'Manfaat Menabung: 1. Melatih disiplin 2. Persiapan masa depan 3. Hidup hemat'. Salah satu manfaat menabung adalah...", options: { A: "Menjadi boros", B: "Bisa membeli semua mainan", C: "Melatih kedisiplinan", D: "Uang cepat habis" }, answer: "C", discussion: "Sesuai poin 1 infografik." },
+            { id: 4, text: "Mata uang negara Indonesia adalah...", options: { A: "Dollar", B: "Rupiah", C: "Ringgit", D: "Yen" }, answer: "B", discussion: "Rupiah (IDR)." },
+            { id: 5, text: "Tempat yang paling aman untuk menyimpan uang dalam jumlah banyak adalah...", options: { A: "Di bawah bantal", B: "Di saku celana", C: "Di bank", D: "Di laci meja" }, answer: "C", discussion: "Bank memiliki sistem keamanan." },
+            { id: 6, text: "Apa fungsi utama uang?", options: { A: "Sebagai hiasan dinding", B: "Sebagai alat tukar/pembayaran yang sah", C: "Untuk pamer", D: "Untuk mainan" }, answer: "B", discussion: "Fungsi asli uang." },
+            { id: 7, text: "Teks: 'Pasar tradisional adalah tempat bertemunya penjual dan pembeli secara langsung. Di sana masih berlaku tawar-menawar.' Ciri khas pasar tradisional menurut teks adalah...", options: { A: "Harganya pas", B: "Ada kasir", C: "Bisa tawar-menawar", D: "Tempatnya ber-AC" }, answer: "C", discussion: "Tawar-menawar ciri pasar tradisional." },
+            { id: 8, text: "Orang yang menjual barang disebut...", options: { A: "Pembeli", B: "Penjual / Pedagang", C: "Konsumen", D: "Distributor" }, answer: "B", discussion: "Penjual." },
+            { id: 9, text: "Orang yang membeli barang disebut...", options: { A: "Produsen", B: "Pembeli / Konsumen", C: "Pedagang", D: "Kasir" }, answer: "B", discussion: "Pembeli." },
+            { id: 10, text: "Uang kembalian akan diterima jika...", options: { A: "Uang yang dibayarkan pas", B: "Uang yang dibayarkan kurang", C: "Uang yang dibayarkan lebih besar dari harga barang", D: "Tidak membawa uang" }, answer: "C", discussion: "Kembalian = Uang Bayar - Harga." },
+
+            // 2. Rangkuman (ADIKSIMBA)
+            { id: 11, text: "Kata tanya untuk menanyakan alasan terjadinya sesuatu adalah...", options: { A: "Apa", B: "Di mana", C: "Mengapa", D: "Bagaimana" }, answer: "C", discussion: "Mengapa menanyakan sebab/alasan." },
+            { id: 12, text: "Kata tanya 'Kapan' digunakan untuk menanyakan...", options: { A: "Tempat", B: "Waktu", C: "Orang", D: "Cara" }, answer: "B", discussion: "Kapan = Waktu." },
+            { id: 13, text: "Kata tanya 'Bagaimana' digunakan untuk menanyakan...", options: { A: "Keadaan atau cara", B: "Jumlah", C: "Pelaku", D: "Lokasi" }, answer: "A", discussion: "Bagaimana cara/proses/keadaan." },
+            { id: 14, text: "Teks: 'Budi menabung di celengan setiap hari Jumat.' Pertanyaan: 'Kapan Budi menabung?' Jawabannya...", options: { A: "Budi", B: "Di celengan", C: "Setiap hari Jumat", D: "Menabung" }, answer: "C", discussion: "Menanyakan waktu." },
+            { id: 15, text: "Singkatan ADIKSIMBA terdiri dari...", options: { A: "Apa, Di mana, Kapan, Siapa, Mengapa, Bagaimana", B: "Aku, Dia, Kita, Siapa, Mereka, Beliau", C: "Ayo, Di sana, Kemari, Sini, Mari, Baca", D: "Aman, Damai, Indah, Kuat, Sehat, Mampu" }, answer: "A", discussion: "5W+1H dalam bahasa Indonesia." },
+            { id: 16, text: "Teks: 'Harga cabai naik karena gagal panen.' Pertanyaan yang tepat untuk jawaban 'karena gagal panen' adalah...", options: { A: "Apa yang naik?", B: "Mengapa harga cabai naik?", C: "Di mana cabai dijual?", D: "Siapa yang menanam cabai?" }, answer: "B", discussion: "Mengapa menanyakan sebab." },
+            { id: 17, text: "Teks: 'Ibu membeli sayur di pasar.' Pertanyaan: 'Di mana Ibu membeli sayur?' Jawabannya...", options: { A: "Ibu", B: "Membeli", C: "Sayur", D: "Di pasar" }, answer: "D", discussion: "Menanyakan tempat." },
+            { id: 18, text: "Rangkuman teks sebaiknya ditulis dengan bahasa yang...", options: { A: "Panjang dan bertele-tele", B: "Singkat, padat, dan jelas", C: "Menggunakan bahasa gaul", D: "Sama persis dengan teks asli" }, answer: "B", discussion: "Prinsip rangkuman." },
+            { id: 19, text: "Langkah pertama membuat rangkuman adalah...", options: { A: "Menulis kembali semua kalimat", B: "Membaca teks dengan seksama", C: "Mengarang cerita baru", D: "Menebak isi cerita" }, answer: "B", discussion: "Membaca adalah kunci." },
+            { id: 20, text: "Inti dari sebuah paragraf disebut...", options: { A: "Kalimat penjelas", B: "Ide pokok / Gagasan utama", C: "Judul", D: "Kesimpulan" }, answer: "B", discussion: "Ide pokok." },
+
+            // 3. Teks Prosedur
+            { id: 21, text: "Tujuan teks prosedur adalah...", options: { A: "Menghibur pembaca", B: "Memberikan petunjuk cara melakukan/membuat sesuatu", C: "Menceritakan pengalaman", D: "Menggambarkan suatu tempat" }, answer: "B", discussion: "Prosedur = Langkah-langkah." },
+            { id: 22, text: "Struktur teks prosedur terdiri dari...", options: { A: "Pembukaan, Isi, Penutup", B: "Tujuan, Alat/Bahan, Langkah-langkah", C: "Orientasi, Komplikasi, Resolusi", D: "Pernyataan umum, Deretan penjelas" }, answer: "B", discussion: "Struktur standar prosedur." },
+            { id: 23, text: "Kalimat dalam teks prosedur biasanya berupa kalimat...", options: { A: "Tanya", B: "Berita", C: "Perintah (Imperatif)", D: "Seru" }, answer: "C", discussion: "Contoh: Masukkan, Potonglah, Aduklah." },
+            { id: 24, text: "Contoh kalimat prosedur yang tepat adalah...", options: { A: "Apakah kamu suka menabung?", B: "Menabung itu baik.", C: "Masukkan uang koin ke dalam celengan!", D: "Saya sedang menabung." }, answer: "C", discussion: "Kalimat perintah." },
+            { id: 25, text: "Kata penghubung (konjungsi) urutan waktu dalam prosedur adalah...", options: { A: "Dan, atau, tetapi", B: "Pertama, kemudian, setelah itu, akhirnya", C: "Karena, sebab, sehingga", D: "Di, ke, dari" }, answer: "B", discussion: "Konjungsi temporal." },
+            { id: 26, text: "Langkah 'Siapkan buku tabungan dan uang' biasanya ada di bagian ... teks prosedur menabung di bank.", options: { A: "Penutup", B: "Awal", C: "Akhir", D: "Hasil" }, answer: "B", discussion: "Persiapan." },
+            { id: 27, text: "Judul yang tepat untuk teks berisi langkah-langkah membuat kerajinan dari botol bekas adalah...", options: { A: "Botol Bekasku", B: "Cara Membuat Tempat Pensil dari Botol Bekas", C: "Sejarah Botol Plastik", D: "Bahaya Sampah Botol" }, answer: "B", discussion: "Judul harus mewakili proses." },
+            { id: 28, text: "Kata kerja berimbuhan -lah/-kan pada teks prosedur: '... adonan hingga kalis.'", options: { A: "Mengaduk", B: "Diaduk", C: "Aduklah / Uleni", D: "Adukan" }, answer: "C", discussion: "Kata kerja perintah." },
+            { id: 29, text: "Bagian 'Bahan-bahan' dalam resep makanan berisi...", options: { A: "Daftar alat masak", B: "Daftar makanan yang akan dimasak", C: "Cara memasak", D: "Waktu memasak" }, answer: "B", discussion: "Material masakan." },
+            { id: 30, text: "Teks prosedur harus ditulis secara ...", options: { A: "Acak", B: "Urut dan sistematis", C: "Berantakan", D: "Puitis" }, answer: "B", discussion: "Agar mudah diikuti." },
+
+            // 4. Penulisan Uang
+            { id: 31, text: "Penulisan angka 'sepuluh ribu rupiah' yang benar sesuai EYD adalah...", options: { A: "Rp 10.000", B: "Rp. 10.000,-", C: "Rp10.000,00", D: "10.000 rupiah" }, answer: "C", discussion: "Rp tanpa titik spasi, diakhiri ,00." },
+            { id: 32, text: "Penulisan huruf untuk 'Rp5.500,00' adalah...", options: { A: "Lima ribu lima ratus rupiah", B: "Lima ribu lima ratus", C: "Lima koma lima ribu rupiah", D: "Lima juta lima ratus" }, answer: "A", discussion: "Ditulis lengkap dengan 'rupiah'." },
+            { id: 33, text: "Angka '25.000' dibaca...", options: { A: "Dua lima ribu", B: "Dua puluh lima ribu", C: "Dua ratus lima puluh", D: "Dua puluh lima ratus" }, answer: "B", discussion: "Dua puluh lima ribu." },
+            { id: 34, text: "Penulisan 'Satu juta rupiah' dalam angka adalah...", options: { A: "Rp1.000,00", B: "Rp10.000,00", C: "Rp100.000,00", D: "Rp1.000.000,00" }, answer: "D", discussion: "Juta nolnya 6." },
+            { id: 35, text: "Tanda baca untuk memisahkan ribuan adalah...", options: { A: "Koma (,)", B: "Titik (.)", C: "Spasi", D: "Titik dua (:)" }, answer: "B", discussion: "Di Indonesia, ribuan dipisah titik." },
+            { id: 36, text: "Tanda baca untuk memisahkan sen (desimal) adalah...", options: { A: "Titik (.)", B: "Koma (,)", C: "Garis miring (/)", D: "Strip (-)" }, answer: "B", discussion: "Sen dipisah koma (,00)." },
+            { id: 37, text: "Rp750,00 dibaca...", options: { A: "Tujuh ribu lima ratus rupiah", B: "Tujuh ratus lima puluh rupiah", C: "Tujuh puluh lima ribu rupiah", D: "Tujuh lima nol rupiah" }, answer: "B", discussion: "750 = tujuh ratus lima puluh." },
+            { id: 38, text: "Uang kertas pecahan terbesar di Indonesia saat ini bernilai...", options: { A: "Rp50.000,00", B: "Rp100.000,00", C: "Rp150.000,00", D: "Rp200.000,00" }, answer: "B", discussion: "Seratus ribu rupiah." },
+            { id: 39, text: "Manakah penulisan yang SALAH?", options: { A: "Rp500,00", B: "Rp 500", C: "lima ratus rupiah", D: "Rp1.000,00" }, answer: "B", discussion: "Rp 500 salah karena ada spasi dan tidak baku." },
+            { id: 40, text: "Jumlah dari Rp2.000,00 + Rp5.000,00 adalah...", options: { A: "Rp6.000,00", B: "Rp7.000,00", C: "Rp8.000,00", D: "Rp10.000,00" }, answer: "B", discussion: "2+5 = 7 ribu." }
+        ];
+
+        // --- DATA SOAL PAKET B (40 SOAL - VARIASI) ---
+        const paketB = [
+            // Informasi Teks
+            { id: 1, text: "Literasi keuangan adalah kemampuan untuk...", options: { A: "Mencetak uang sendiri", B: "Memahami dan mengelola uang dengan bijak", C: "Menghabiskan uang", D: "Meminta uang" }, answer: "B", discussion: "Definisi literasi keuangan." },
+            { id: 2, text: "Kebutuhan adalah...", options: { A: "Segala sesuatu yang harus dipenuhi untuk hidup", B: "Segala sesuatu yang diinginkan", C: "Barang mewah", D: "Mainan mahal" }, answer: "A", discussion: "Kebutuhan vs Keinginan." },
+            { id: 3, text: "Keinginan adalah...", options: { A: "Sesuatu yang wajib ada", B: "Sesuatu yang tidak harus dipenuhi segera", C: "Makanan pokok", D: "Seragam sekolah" }, answer: "B", discussion: "Bisa ditunda." },
+            { id: 4, text: "Contoh kebutuhan seorang pelajar adalah...", options: { A: "Video game terbaru", B: "Buku tulis dan pena", C: "Sepeda baru", D: "Liburan ke luar negeri" }, answer: "B", discussion: "Alat sekolah." },
+            { id: 5, text: "Contoh keinginan adalah...", options: { A: "Makan saat lapar", B: "Obat saat sakit", C: "Tas sekolah model terbaru (padahal tas lama masih bagus)", D: "Air minum" }, answer: "C", discussion: "Gaya hidup." },
+            { id: 6, text: "Uang elektronik (e-money) biasanya berbentuk...", options: { A: "Logam emas", B: "Kertas", C: "Kartu atau Aplikasi di HP", D: "Daun" }, answer: "C", discussion: "Uang digital." },
+            { id: 7, text: "Kelebihan menabung di bank adalah...", options: { A: "Uang berbunga/bagi hasil dan aman", B: "Bisa diambil teman", C: "Uang dimakan rayap", D: "Tidak ada catatan" }, answer: "A", discussion: "Keamanan dan keuntungan." },
+            { id: 8, text: "Nilai tukar mata uang disebut...", options: { A: "Kurs", B: "Kuras", C: "Karcis", D: "Kredit" }, answer: "A", discussion: "Kurs mata uang." },
+            { id: 9, text: "Pasar yang tidak ada tawar-menawar dan barangnya sudah berlabel harga disebut...", options: { A: "Pasar tradisional", B: "Pasar malam", C: "Pasar swalayan / Modern", D: "Pasar kaget" }, answer: "C", discussion: "Harga pas (fixed price)." },
+            { id: 10, text: "Mata uang negara Amerika Serikat adalah...", options: { A: "Rupiah", B: "Ringgit", C: "Dollar", D: "Euro" }, answer: "C", discussion: "USD." },
+
+            // ADIKSIMBA
+            { id: 11, text: "Kalimat tanya: '... harga sepatu ini?' Kata tanya yang tepat adalah...", options: { A: "Siapa", B: "Berapa", C: "Kapan", D: "Mengapa" }, answer: "B", discussion: "Menanyakan harga/jumlah." },
+            { id: 12, text: "Kalimat tanya: '... yang menjual kue ini?'", options: { A: "Siapa", B: "Apa", C: "Kapan", D: "Di mana" }, answer: "A", discussion: "Menanyakan orang." },
+            { id: 13, text: "Teks: 'Rani membeli buku karena ingin pintar.' Pertanyaan: 'Mengapa Rani membeli buku?' Jawabannya...", options: { A: "Rani", B: "Membeli buku", C: "Karena ingin pintar", D: "Di toko buku" }, answer: "C", discussion: "Menjawab alasan." },
+            { id: 14, text: "Fungsi kata tanya 'Apa' adalah untuk menanyakan...", options: { A: "Benda, perbuatan, atau keadaan", B: "Orang", C: "Waktu", D: "Tempat" }, answer: "A", discussion: "Objek/Hal." },
+            { id: 15, text: "Teks: 'Pameran buku diadakan di Gedung Serbaguna.' Pertanyaan: 'Di mana pameran diadakan?' Jawabannya...", options: { A: "Pameran buku", B: "Diadakan", C: "Di Gedung Serbaguna", D: "Kemarin" }, answer: "C", discussion: "Lokasi." },
+            { id: 16, text: "Cara menemukan informasi penting dalam teks adalah...", options: { A: "Membaca sekilas judul saja", B: "Membaca intensif dengan teliti", C: "Melihat gambar saja", D: "Bertanya teman" }, answer: "B", discussion: "Membaca cermat." },
+            { id: 17, text: "Dalam wawancara, narasumber adalah...", options: { A: "Orang yang bertanya", B: "Orang yang memberi informasi/jawaban", C: "Penulis berita", D: "Pembaca berita" }, answer: "B", discussion: "Sumber info." },
+            { id: 18, text: "Pewawancara adalah...", options: { A: "Orang yang mengajukan pertanyaan", B: "Orang yang menjawab", C: "Orang yang diam", D: "Orang yang lewat" }, answer: "A", discussion: "Penanya." },
+            { id: 19, text: "Kalimat tanya diakhiri dengan tanda...", options: { A: "Seru (!)", B: "Titik (.)", C: "Tanya (?)", D: "Koma (,)" }, answer: "C", discussion: "Tanda tanya." },
+            { id: 20, text: "Kata tanya untuk menanyakan pilihan adalah...", options: { A: "Mana / Yang mana", B: "Apa", C: "Siapa", D: "Kapan" }, answer: "A", discussion: "Memilih." },
+
+            // Prosedur
+            { id: 21, text: "Teks prosedur cara menggunakan ATM. Langkah pertama biasanya...", options: { A: "Ambil uang", B: "Masukkan kartu ATM", C: "Masukkan PIN", D: "Tekan nominal" }, answer: "B", discussion: "Langkah awal." },
+            { id: 22, text: "Kata imperatif 'Cucilah' berasal dari kata dasar...", options: { A: "Cuci", B: "Cucian", C: "Mencuci", D: "Cucikan" }, answer: "A", discussion: "Cuci." },
+            { id: 23, text: "Langkah-langkah dalam prosedur harus logis, artinya...", options: { A: "Masuk akal dan berurutan", B: "Acak-acakan", C: "Sulit dimengerti", D: "Menggunakan bahasa asing" }, answer: "A", discussion: "Logis." },
+            { id: 24, text: "Teks prosedur kompleks adalah...", options: { A: "Teks prosedur yang langkahnya sedikit", B: "Teks prosedur yang langkahnya banyak dan rumit", C: "Teks prosedur tanpa alat", D: "Teks prosedur mainan" }, answer: "B", discussion: "Kompleks = Rumit/Detail." },
+            { id: 25, text: "Contoh teks prosedur sederhana...", options: { A: "Cara membuat KTP", B: "Cara menghidupkan senter", C: "Cara merakit robot", D: "Cara membuat paspor" }, answer: "B", discussion: "Langkahnya sedikit." },
+            { id: 26, text: "Dalam resep, takaran 'sdt' singkatan dari...", options: { A: "Sendok takar", B: "Sendok teh", C: "Sudah tentu", D: "Sedikit" }, answer: "B", discussion: "Satuan ukur." },
+            { id: 27, text: "Takaran 'sdm' singkatan dari...", options: { A: "Sendok makan", B: "Sudah makan", C: "Sedang makan", D: "Sendok manis" }, answer: "A", discussion: "Satuan ukur." },
+            { id: 28, text: "Kata 'Kemudian' dalam prosedur berfungsi sebagai...", options: { A: "Kata benda", B: "Konjungsi urutan waktu", C: "Kata sifat", D: "Kata ganti" }, answer: "B", discussion: "Penanda urutan." },
+            { id: 29, text: "Tips berbelanja hemat: 'Buatlah ... belanjaan sebelum ke pasar'.", options: { A: "Daftar / List", B: "Gambar", C: "Video", D: "Lagu" }, answer: "A", discussion: "Perencanaan belanja." },
+            { id: 30, text: "Prosedur cara menanam bunga: '... lubang di tanah'. Kata yang tepat...", options: { A: "Gali / Buatlah", B: "Tutuplah", C: "Siramlah", D: "Potonglah" }, answer: "A", discussion: "Membuat lubang tanam." },
+
+            // Uang & Ejaan
+            { id: 31, text: "Rp12.500,00 dibaca...", options: { A: "Dua belas ribu lima ratus rupiah", B: "Satu dua lima nol nol", C: "Seratus dua puluh lima", D: "Dua belas juta" }, answer: "A", discussion: "12.500." },
+            { id: 32, text: "Penulisan 'Delapan ribu rupiah'...", options: { A: "Rp8.000,00", B: "Rp 8000", C: "8000 rp", D: "Rp. 8.000,-" }, answer: "A", discussion: "Baku." },
+            { id: 33, text: "Kembalian dari uang Rp10.000,00 jika belanja Rp7.000,00 adalah...", options: { A: "Rp2.000,00", B: "Rp3.000,00", C: "Rp4.000,00", D: "Rp1.000,00" }, answer: "B", discussion: "10-7 = 3." },
+            { id: 34, text: "Uang logam disebut juga uang...", options: { A: "Kertas", B: "Kartal", C: "Receh / Koin", D: "Giral" }, answer: "C", discussion: "Uang logam." },
+            { id: 35, text: "Uang giral contohnya...", options: { A: "Uang kertas", B: "Cek, Giro, Kartu Kredit", C: "Uang logam", D: "Emas batangan" }, answer: "B", discussion: "Uang simpanan di bank." },
+            { id: 36, text: "Fungsi asli uang adalah sebagai alat tukar dan alat...", options: { A: "Satuan hitung", B: "Penimbun kekayaan", C: "Pemindah kekayaan", D: "Pembayaran utang" }, answer: "A", discussion: "Fungsi asli." },
+            { id: 37, text: "Gambar pahlawan pada uang Rp100.000,00 adalah...", options: { A: "Pattimura", B: "Soekarno - Hatta", C: "Cut Nyak Dien", D: "Imam Bonjol" }, answer: "B", discussion: "Proklamator." },
+            { id: 38, text: "Warna dominan uang Rp50.000,00 adalah...", options: { A: "Merah", B: "Biru", C: "Hijau", D: "Ungu" }, answer: "B", discussion: "Biru." },
+            { id: 39, text: "Warna dominan uang Rp100.000,00 adalah...", options: { A: "Merah", B: "Biru", C: "Abu-abu", D: "Kuning" }, answer: "A", discussion: "Merah." },
+            { id: 40, text: "Penulisan angka 1 juta memiliki jumlah nol sebanyak...", options: { A: "5", B: "6", C: "7", D: "9" }, answer: "B", discussion: "1.000.000 (6 nol)." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama dulu ya!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-emerald-50">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-emerald-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-emerald-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Indonesia Bab 5</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Kamu..." className="w-full p-4 border-2 border-emerald-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-emerald-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-emerald-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-teal-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-green-600 py-4 rounded-xl font-black text-xl border-b-4 border-green-800 btn-fun shadow-lg text-white">MULAI! 💰</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-emerald-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-emerald-800">SISWA</div><div className="font-bold text-emerald-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-emerald-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-emerald-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-emerald-100 border-emerald-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-emerald-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-emerald-50 rounded-2xl border-2 border-emerald-200 text-center">
+                            <h3 className="text-sm font-bold text-emerald-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-emerald-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-teal-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-teal-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-teal-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-emerald-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-emerald-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-400 via-teal-400 to-green-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-emerald-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-emerald-100 text-emerald-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat! Kamu Pintar Berhemat! 💰" : score >= 60 ? "Bagus! Belajar Lagi Ya! 👍" : "Jangan Menyerah! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-teal-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 KEREN! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
