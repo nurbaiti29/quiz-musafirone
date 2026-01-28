@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Arab Kelas 4 - Tempat Tinggal</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f0fdfa; /* Teal-50 */
+            /* Pola background titik-titik halus */
+            background-image: radial-gradient(#99f6e4 1px, transparent 1px);
+            background-size: 20px 20px;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        /* Font Arab Khusus */
+        .ar { font-family: 'Amiri', serif; direction: rtl; line-height: 2.2; font-size: 1.6rem; color: #0f766e; }
+        .ar-sm { font-family: 'Amiri', serif; direction: rtl; line-height: 1.8; font-size: 1.2rem; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #5eead4; box-shadow: 8px 8px 0px #14b8a6; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #0d9488; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #0f766e; font-weight: bold;">Memuat Soal Bahasa Arab...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (40 SOAL) ---
+        const paketA = [
+            // Kosakata Dasar (1-10)
+            { id: 1, text: "Bahasa Arab dari kata 'Pohon' adalah...", options: { A: "بِرْكَةٌ (Birkatun)", B: "شَجَرَةٌ (Syajaratun)", C: "سَاحَةٌ (Sahatun)", D: "أَرِيْكَةٌ (Arikatun)" }, answer: "B", discussion: "Syajaratun = Pohon." },
+            { id: 2, text: "Arti kata <span class='ar'>مَطْبَخٌ</span> (Matbakhun) adalah...", options: { A: "Dapur", B: "Kamar Tidur", C: "Kamar Mandi", D: "Ruang Tamu" }, answer: "A", discussion: "Matbakhun = Dapur." },
+            { id: 3, text: "Bahasa Arab dari 'Kamar Mandi' adalah...", options: { A: "حُجْرَةٌ", B: "مَطْبَخٌ", C: "حَمَّامٌ (Hammamun)", D: "بُسْتَانٌ" }, answer: "C", discussion: "Hammamun = Kamar Mandi." },
+            { id: 4, text: "Kata <span class='ar'>بُسْتَانٌ</span> (Bustanun) artinya...", options: { A: "Sekolah", B: "Rumah", C: "Kebun", D: "Kelas" }, answer: "C", discussion: "Bustanun = Kebun." },
+            { id: 5, text: "Bahasa Arab 'Halaman' adalah...", options: { A: "سَاحَةٌ (Sahatun)", B: "شَجَرَةٌ", C: "بِرْكَةٌ", D: "فَصْلٌ" }, answer: "A", discussion: "Sahatun = Halaman." },
+            { id: 6, text: "Arti kata <span class='ar'>بِرْكَةٌ</span> (Birkatun) adalah...", options: { A: "Sungai", B: "Laut", C: "Kolam", D: "Sumur" }, answer: "C", discussion: "Birkatun = Kolam." },
+            { id: 7, text: "Bahasa Arab 'Rumah' adalah...", options: { A: "مَدْرَسَةٌ", B: "بَيْتٌ (Baitun)", C: "مَسْجِدٌ", D: "فَصْلٌ" }, answer: "B", discussion: "Baitun = Rumah." },
+            { id: 8, text: "Kata <span class='ar'>حُجْرَةٌ</span> (Hujratun) artinya...", options: { A: "Kamar / Ruangan", B: "Atap", C: "Lantai", D: "Pintu" }, answer: "A", discussion: "Hujratun = Kamar." },
+            { id: 9, text: "Bahasa Arab 'Sekolah' adalah...", options: { A: "مَدْرَسَةٌ (Madrasatun)", B: "مَكْتَبٌ", C: "كُرْسِيٌّ", D: "سَبُّوْرَةٌ" }, answer: "A", discussion: "Madrasatun = Sekolah." },
+            { id: 10, text: "Bahasa Arab 'Kelas' adalah...", options: { A: "فَصْلٌ (Fashlun)", B: "مَسْجِدٌ", C: "بَيْتٌ", D: "حَمَّامٌ" }, answer: "A", discussion: "Fashlun = Kelas." },
+
+            // Kata Sifat (11-15)
+            { id: 11, text: "Arti kata <span class='ar'>وَاسِعَةٌ</span> (Wasi'atun) adalah...", options: { A: "Kecil", B: "Luas", C: "Sempit", D: "Tinggi" }, answer: "B", discussion: "Wasi'un/Wasi'atun = Luas." },
+            { id: 12, text: "Bahasa Arab 'Besar' adalah...", options: { A: "صَغِيْرٌ", B: "جَمِيْلٌ", C: "كَبِيْرٌ (Kabirun)", D: "نَظِيْفٌ" }, answer: "C", discussion: "Kabirun = Besar." },
+            { id: 13, text: "Kata <span class='ar'>جَمِيْلٌ</span> (Jamilun) artinya...", options: { A: "Indah / Bagus", B: "Jelek", C: "Kotor", D: "Rusak" }, answer: "A", discussion: "Jamilun = Indah." },
+            { id: 14, text: "Bahasa Arab 'Banyak' (seperti dalam 'ikan yang banyak') adalah...", options: { A: "قَلِيْلٌ", B: "كَثِيْرٌ (Katsirun)", C: "كَبِيْرٌ", D: "وَاسِعٌ" }, answer: "B", discussion: "Katsirun = Banyak." },
+            { id: 15, text: "Lawan kata dari 'Kabirun' (Besar) adalah...", options: { A: "Wasi'un", B: "Shaghirun (صَغِيْرٌ)", C: "Jamilun", D: "Thawilun" }, answer: "B", discussion: "Shaghirun = Kecil." },
+
+            // Posisi / Zharaf Makan (16-25)
+            { id: 16, text: "Arti kata <span class='ar'>أَمَامَ</span> (Amama) adalah...", options: { A: "Di belakang", B: "Di depan", C: "Di samping", D: "Di dalam" }, answer: "B", discussion: "Amama = Di depan." },
+            { id: 17, text: "Lawan kata 'Amama' (Di depan) adalah...", options: { A: "Fauqa", B: "Tahta", C: "Wara'a (وَرَاءَ)", D: "Janiba" }, answer: "C", discussion: "Wara'a = Di belakang." },
+            { id: 18, text: "Arti kata <span class='ar'>جَانِبَ</span> (Janiba) adalah...", options: { A: "Di samping", B: "Di atas", C: "Di bawah", D: "Di antara" }, answer: "A", discussion: "Janiba = Di samping." },
+            { id: 19, text: "Bahasa Arab 'Di dalam' adalah...", options: { A: "عَلَى", B: "فِي (Fi)", C: "تَحْتَ", D: "فَوْقَ" }, answer: "B", discussion: "Fi = Di dalam." },
+            { id: 20, text: "Bahasa Arab 'Di atas' (menempel pada benda) adalah...", options: { A: "فَوْقَ", B: "تَحْتَ", C: "عَلَى ('Ala)", D: "أَمَامَ" }, answer: "C", discussion: "'Ala = Di atas permukaan." },
+            { id: 21, text: "Arti kata <span class='ar'>تَحْتَ</span> (Tahta) adalah...", options: { A: "Di atas", B: "Di bawah", C: "Di samping", D: "Di depan" }, answer: "B", discussion: "Tahta = Di bawah." },
+            { id: 22, text: "Kucing itu di bawah meja. <span class='ar'>الْقِطُّ ... الْمَكْتَبِ</span>", options: { A: "فَوْقَ", B: "تَحْتَ (Tahta)", C: "عَلَى", D: "فِي" }, answer: "B", discussion: "Tahta = Di bawah." },
+            { id: 23, text: "Buku tulis itu di atas meja. <span class='ar'>الْكُرَّاسَةُ ... الْمَكْتَبِ</span>", options: { A: "فِي", B: "عَلَى ('Ala)", C: "تَحْتَ", D: "وَرَاءَ" }, answer: "B", discussion: "'Ala = Di atas." },
+            { id: 24, text: "Kebun itu di belakang sekolah. <span class='ar'>الْبُسْتَانُ ... الْمَدْرَسَةِ</span>", options: { A: "أَمَامَ", B: "وَرَاءَ (Wara'a)", C: "جَانِبَ", D: "فِي" }, answer: "B", discussion: "Wara'a = Di belakang." },
+            { id: 25, text: "Di depan sekolah ada halaman. <span class='ar'>... الْمَدْرَسَةِ سَاحَةٌ</span>", options: { A: "أَمَامَ (Amama)", B: "وَرَاءَ", C: "فِي", D: "عَلَى" }, answer: "A", discussion: "Amama = Di depan." },
+
+            // Tata Bahasa (Isim Nakirah & Ma'rifat) (26-35)
+            { id: 26, text: "Ciri Isim Nakirah (Kata Umum) adalah...", options: { A: "Diawali Alif Lam (Al)", B: "Diakhiri Tanwin", C: "Nama orang", D: "Diakhiri Sukun" }, answer: "B", discussion: "Nakirah bertanwin (un/an/in) dan tanpa Al." },
+            { id: 27, text: "Ciri Isim Ma'rifat (Kata Khusus) adalah...", options: { A: "Diakhiri Tanwin", B: "Diawali Alif Lam (Al-)", C: "Tidak punya arti", D: "Selalu berharakat Fathah" }, answer: "B", discussion: "Ma'rifat diawali Al." },
+            { id: 28, text: "Manakah yang termasuk Isim Nakirah?", options: { A: "الْبَيْتُ", B: "بَيْتٌ (Baitun)", C: "الْمَدْرَسَةُ", D: "الْفَصْلُ" }, answer: "B", discussion: "Baitun (bertanwin)." },
+            { id: 29, text: "Manakah yang termasuk Isim Ma'rifat?", options: { A: "مَسْجِدٌ", B: "الْمَسْجِدُ (Al-Masjidu)", C: "فَصْلٌ", D: "بُسْتَانٌ" }, answer: "B", discussion: "Al-Masjidu (Ada Al)." },
+            { id: 30, text: "Kata <span class='ar'>مَدْرَسَةٌ</span> jika diberi 'Al' menjadi...", options: { A: "الْمَدْرَسَةٌ", B: "الْمَدْرَسَةُ (Al-Madrasatu)", C: "مَدْرَسَةُ", D: "الْمَدْرَسَةِ" }, answer: "B", discussion: "Jika ada Al, tanwin hilang." },
+            { id: 31, text: "Kata <span class='ar'>بَيْتٌ</span> artinya...", options: { A: "Rumah itu (khusus)", B: "Sebuah rumah (umum)", C: "Rumah saya", D: "Rumah kamu" }, answer: "B", discussion: "Nakirah = Sebuah (umum)." },
+            { id: 32, text: "Kata <span class='ar'>الْكِتَابُ</span> artinya...", options: { A: "Sebuah buku", B: "Buku itu / Buku ini (khusus)", C: "Buku tulis", D: "Kertas" }, answer: "B", discussion: "Ma'rifat = Benda tertentu." },
+            { id: 33, text: "Ubah ke Ma'rifat: <span class='ar'>قَلَمٌ</span> (Qolamun)", options: { A: "القَلَمٌ", B: "القَلَمُ (Al-Qolamu)", C: "قَلَمُ", D: "القَلَمِ" }, answer: "B", discussion: "Al-Qolamu." },
+            { id: 34, text: "Ubah ke Nakirah: <span class='ar'>الْحَقِيْبَةُ</span> (Al-Haqibatu)", options: { A: "حَقِيْبَةٌ (Haqibatun)", B: "الحَقِيْبَةٌ", C: "حَقِيْبَةُ", D: "حَقِيْبَةِ" }, answer: "A", discussion: "Haqibatun (Al hilang, tanwin kembali)." },
+            { id: 35, text: "Kalimat yang benar adalah...", options: { A: "الْكِتَابٌ عَلَى الْمَكْتَبِ", B: "الْكِتَابُ عَلَى الْمَكْتَبِ", C: "كِتَابُ عَلَى الْمَكْتَبِ", D: "الْكِتَابُ عَلَى مَكْتَبُ" }, answer: "B", discussion: "Al-Kitabu 'ala Al-Maktabi." },
+
+            // Pemahaman Teks (36-40)
+            { id: 36, text: "<span class='ar'>فِي الْبُسْتَانِ شَجَرَةٌ وَ ...</span> (Di kebun ada pohon dan...)", options: { A: "سَاحَةٌ", B: "بِرْكَةٌ (Birkatun)", C: "فَصْلٌ", D: "بَيْتٌ" }, answer: "B", discussion: "Sesuai teks: Pohon dan Kolam." },
+            { id: 37, text: "<span class='ar'>الْبَيْتُ كَبِيرٌ وَ ...</span> (Rumah itu besar dan...)", options: { A: "وَاسِعٌ", B: "جَمِيْلٌ (Jamilun)", C: "صَغِيْرٌ", D: "قَدِيْمٌ" }, answer: "B", discussion: "Sesuai teks: Besar dan Indah." },
+            { id: 38, text: "<span class='ar'>وَرَاءَ الْبَيْتِ سَاحَةٌ ...</span> (Di belakang rumah ada halaman yang...)", options: { A: "كَبِيرَةٌ", B: "وَاسِعَةٌ (Wasi'atun)", C: "ضَيِّقَةٌ", D: "صَغِيْرَةٌ" }, answer: "B", discussion: "Halaman yang luas." },
+            { id: 39, text: "Di dalam kolam ada... <span class='ar'>فِي الْبِرَكَةِ ...</span>", options: { A: "طَائِرٌ", B: "سَمَكٌ كَثِيْرٌ (Samakun katsirun)", C: "قِطٌّ", D: "دَجَاجٌ" }, answer: "B", discussion: "Ikan yang banyak." },
+            { id: 40, text: "Apa yang ada di samping sekolah? <span class='ar'>جَانِبَ الْمَدْرَسَةِ ...</span>", options: { A: "بَيْتٌ", B: "مَسْجِدٌ كَبِيرٌ (Masjidun kabirun)", C: "بُسْتَانٌ", D: "سَاحَةٌ" }, answer: "B", discussion: "Masjid besar." }
+        ];
+
+        // --- DATA SOAL PAKET B (40 SOAL - VARIASI) ---
+        const paketB = [
+            // Kosakata
+            { id: 1, text: "Bahasa Arab 'Meja' adalah...", options: { A: "مَكْتَبٌ (Maktabun)", B: "كُرْسِيٌّ", C: "سَبُّوْرَةٌ", D: "قَلَمٌ" }, answer: "A", discussion: "Maktabun = Meja." },
+            { id: 2, text: "Bahasa Arab 'Kursi' adalah...", options: { A: "مَكْتَبٌ", B: "كُرْسِيٌّ (Kursiyyun)", C: "بَابٌ", D: "نَافِذَةٌ" }, answer: "B", discussion: "Kursiyyun = Kursi." },
+            { id: 3, text: "Bahasa Arab 'Buku Tulis' adalah...", options: { A: "كِتَابٌ", B: "كُرَّاسَةٌ (Kurrasatun)", C: "وَرَقَةٌ", D: "حَقِيْبَةٌ" }, answer: "B", discussion: "Kurrasatun = Buku tulis." },
+            { id: 4, text: "Bahasa Arab 'Tas' adalah...", options: { A: "حَقِيْبَةٌ (Haqibatun)", B: "مِسْطَرَةٌ", C: "مِمْسَحَةٌ", D: "كُرَّاسَةٌ" }, answer: "A", discussion: "Haqibatun = Tas." },
+            { id: 5, text: "Bahasa Arab 'Pena' adalah...", options: { A: "كِتَابٌ", B: "قَلَمٌ (Qolamun)", C: "مِرْسَمٌ", D: "مَكْتَبٌ" }, answer: "B", discussion: "Qolamun = Pena." },
+            { id: 6, text: "Bahasa Arab 'Masjid Besar' adalah...", options: { A: "مَسْجِدٌ صَغِيْرٌ", B: "مَسْجِدٌ كَبِيْرٌ (Masjidun kabirun)", C: "مَسْجِدٌ جَمِيْلٌ", D: "مَسْجِدٌ وَاسِعٌ" }, answer: "B", discussion: "Kabirun = Besar." },
+            { id: 7, text: "Bahasa Arab 'Kebun Luas' adalah...", options: { A: "بُسْتَانٌ جَمِيْلٌ", B: "بُسْتَانٌ وَاسِعٌ (Bustanun wasi'un)", C: "بُسْتَانٌ صَغِيْرٌ", D: "بُسْتَانٌ نَظِيْفٌ" }, answer: "B", discussion: "Wasi'un = Luas." },
+            { id: 8, text: "Bahasa Arab 'Ikan Banyak' adalah...", options: { A: "سَمَكٌ كَبِيْرٌ", B: "سَمَكٌ كَثِيْرٌ (Samakun katsirun)", C: "سَمَكٌ صَغِيْرٌ", D: "سَمَكٌ جَمِيْلٌ" }, answer: "B", discussion: "Katsirun = Banyak." },
+            { id: 9, text: "Apa arti <span class='ar'>مَسْجِدٌ</span>?", options: { A: "Rumah", B: "Masjid", C: "Sekolah", D: "Kantor" }, answer: "B", discussion: "Masjid." },
+            { id: 10, text: "Apa arti <span class='ar'>مَدْرَسَةٌ</span>?", options: { A: "Rumah", B: "Sekolah", C: "Kelas", D: "Kantin" }, answer: "B", discussion: "Sekolah." },
+            
+            // Posisi
+            { id: 11, text: "Di mana posisi papan tulis? <span class='ar'>السَّبُّوْرَةُ ... الْفَصْلِ</span>", options: { A: "وَرَاءَ", B: "أَمَامَ (Amama)", C: "تَحْتَ", D: "عَلَى" }, answer: "B", discussion: "Di depan kelas." },
+            { id: 12, text: "Di mana posisi lampu? <span class='ar'>الْمِصْبَاحُ ... الْمَكْتَبِ</span>", options: { A: "تَحْتَ", B: "فَوْقَ (Fauqa)", C: "عَلَى", D: "أَمَامَ" }, answer: "B", discussion: "Di atas (menggantung)." },
+            { id: 13, text: "Di mana posisi lantai? <span class='ar'>الْبِلاَطُ ... الْقَدَمِ</span>", options: { A: "فَوْقَ", B: "تَحْتَ (Tahta)", C: "أَمَامَ", D: "وَرَاءَ" }, answer: "B", discussion: "Di bawah kaki." },
+            { id: 14, text: "Murid di dalam kelas. <span class='ar'>التِّلْمِيْذُ ... الْفَصْلِ</span>", options: { A: "عَلَى", B: "فِي (Fi)", C: "أَمَامَ", D: "وَرَاءَ" }, answer: "B", discussion: "Di dalam." },
+            { id: 15, text: "Guru di depan murid. <span class='ar'>الْمُدَرِّسُ ... التِّلْمِيْذِ</span>", options: { A: "وَرَاءَ", B: "أَمَامَ (Amama)", C: "تَحْتَ", D: "فَوْقَ" }, answer: "B", discussion: "Di depan." },
+            { id: 16, text: "Tas di atas meja. <span class='ar'>الْحَقِيْبَةُ ... الْمَكْتَبِ</span>", options: { A: "فِي", B: "عَلَى ('Ala)", C: "تَحْتَ", D: "أَمَامَ" }, answer: "B", discussion: "Di atas (menempel)." },
+            { id: 17, text: "Rumah di samping masjid. <span class='ar'>الْبَيْتُ ... الْمَسْجِدِ</span>", options: { A: "أَمَامَ", B: "جَانِبَ (Janiba)", C: "وَرَاءَ", D: "فَوْقَ" }, answer: "B", discussion: "Di samping." },
+            { id: 18, text: "Apa yang ada di belakang sekolah? <span class='ar'>مَاذَا ... الْمَدْرَسَةِ؟</span>", options: { A: "أَمَامَ", B: "وَرَاءَ (Wara'a)", C: "فِي", D: "عَلَى" }, answer: "B", discussion: "Wara'a = Belakang." },
+            { id: 19, text: "Apa yang ada di dalam tas? <span class='ar'>مَاذَا ... الْحَقِيْبَةِ؟</span>", options: { A: "عَلَى", B: "فِي (Fi)", C: "تَحْتَ", D: "أَمَامَ" }, answer: "B", discussion: "Fi = Di dalam." },
+            { id: 20, text: "Kucing di antara meja dan kursi. <span class='ar'>الْقِطُّ ... الْمَكْتَبِ وَ الْكُرْسِيِّ</span>", options: { A: "بَيْنَ (Baina)", B: "فَوْقَ", C: "تَحْتَ", D: "عَلَى" }, answer: "A", discussion: "Baina = Di antara." },
+
+            // Tata Bahasa & Terjemah
+            { id: 21, text: "Terjemahkan: <span class='ar'>هَذَا بَيْتٌ جَمِيْلٌ</span>", options: { A: "Ini rumah besar", B: "Ini rumah indah", C: "Ini rumah bersih", D: "Ini rumah baru" }, answer: "B", discussion: "Jamilun = Indah." },
+            { id: 22, text: "Terjemahkan: <span class='ar'>ذَلِكَ بُسْتَانٌ وَاسِعٌ</span>", options: { A: "Itu kebun luas", B: "Itu kebun kecil", C: "Itu kebun indah", D: "Itu sekolah luas" }, answer: "A", discussion: "Wasi'un = Luas." },
+            { id: 23, text: "Terjemahkan: <span class='ar'>تِلْكَ مَدْرَسَةٌ نَظِيْفَةٌ</span>", options: { A: "Itu sekolah besar", B: "Itu sekolah bersih", C: "Itu sekolah indah", D: "Itu sekolah baru" }, answer: "B", discussion: "Nazhifah = Bersih." },
+            { id: 24, text: "Susun kata: <span class='ar'>الْمَدْرَسَةِ - أَمَامَ - سَاحَةٌ</span>", options: { A: "Sahatun amama al-madrasati", B: "Amama al-madrasati sahatun", C: "Al-Madrasati sahatun amama", D: "Sahatun al-madrasati amama" }, answer: "B", discussion: "Di depan sekolah ada halaman." },
+            { id: 25, text: "Susun kata: <span class='ar'>عَلَى - الْكِتَابُ - الْمَكْتَبِ</span>", options: { A: "Al-Kitabu 'ala al-maktabi", B: "Al-Maktabi 'ala al-kitabu", C: "'Ala al-kitabu al-maktabi", D: "Al-Kitabu al-maktabi 'ala" }, answer: "A", discussion: "Buku itu di atas meja." },
+            { id: 26, text: "Manakah kalimat yang benar?", options: { A: "الْقَلَمُ فِي الْحَقِيْبَةِ", B: "الْقَلَمٌ فِي الْحَقِيْبَةِ", C: "قَلَمُ فِي الْحَقِيْبَةِ", D: "الْقَلَمُ فِي حَقِيْبَةُ" }, answer: "A", discussion: "Al-Qolamu fi al-haqibati." },
+            { id: 27, text: "Manakah kalimat yang salah?", options: { A: "الْبَيْتُ كَبِيرٌ", B: "الْمَدْرَسَةُ وَاسِعَةٌ", C: "الْبَيْتٌ كَبِيرٌ", D: "الْفَصْلُ نَظِيْفٌ" }, answer: "C", discussion: "Al-Baitun (Salah, Al tidak boleh tanwin)." },
+            { id: 28, text: "Ubah ke bentuk Nakirah: <span class='ar'>الْمَسْجِدُ</span>", options: { A: "مَسْجِدٌ (Masjidun)", B: "مَسْجِدُ", C: "الْمَسْجِدٌ", D: "مَسْجِدَ" }, answer: "A", discussion: "Hilangkan Al, beri Tanwin." },
+            { id: 29, text: "Ubah ke bentuk Ma'rifat: <span class='ar'>مَكْتَبٌ</span>", options: { A: "الْمَكْتَبٌ", B: "الْمَكْتَبُ (Al-Maktabu)", C: "مَكْتَبُ", D: "الْمَكْتَبَ" }, answer: "B", discussion: "Tambah Al, hilangkan Tanwin." },
+            { id: 30, text: "Apa arti <span class='ar'>مَاذَا</span> (Madza)?", options: { A: "Siapa", B: "Apa yang", C: "Di mana", D: "Kapan" }, answer: "B", discussion: "Apa yang (ada...)." },
+
+            // Campuran & Pengayaan
+            { id: 31, text: "Nama saya Faiq. <span class='ar'>... فَائِقٌ</span>", options: { A: "اِسْمُكَ", B: "اِسْمِيْ (Ismi)", C: "هَذَا", D: "ذَلِكَ" }, answer: "B", discussion: "Ismi = Nama saya." },
+            { id: 32, text: "Ini sekolahku. <span class='ar'>هَذِهِ ...</span>", options: { A: "مَدْرَسَتِي (Madrasati)", B: "مَدْرَسَةٌ", C: "بَيْتِي", D: "فَصْلِي" }, answer: "A", discussion: "Madrasati = Sekolahku." },
+            { id: 33, text: "Itu kelasku. <span class='ar'>ذَلِكَ ...</span>", options: { A: "فَصْلٌ", B: "فَصْلِي (Fashli)", C: "مَدْرَسَتِي", D: "بَيْتِي" }, answer: "B", discussion: "Fashli = Kelasku." },
+            { id: 34, text: "<span class='ar'>مَنْ هَذَا؟</span> (Siapa ini?)", options: { A: "هَذَا بَيْتٌ", B: "هَذَا أَحْمَدُ", C: "هَذَا مَكْتَبٌ", D: "هَذَا قَلَمٌ" }, answer: "B", discussion: "Man (Siapa) untuk orang (Ahmad)." },
+            { id: 35, text: "<span class='ar'>مَا هَذَا؟</span> (Apa ini?)", options: { A: "هَذَا عُمَرُ", B: "هَذَا كِتَابٌ", C: "هَذَا فَاطِمَةُ", D: "هَذَا أُسْتَاذٌ" }, answer: "B", discussion: "Ma (Apa) untuk benda (Kitabun)." },
+            { id: 36, text: "Bahasa Arab 'Di sana' adalah...", options: { A: "هُنَا", B: "هُنَاكَ (Hunaka)", C: "أَيْنَ", D: "مَتَى" }, answer: "B", discussion: "Hunaka = Di sana." },
+            { id: 37, text: "Bahasa Arab 'Di sini' adalah...", options: { A: "هُنَا (Huna)", B: "هُنَاكَ", C: "أَيْنَ", D: "مَنْ" }, answer: "A", discussion: "Huna = Di sini." },
+            { id: 38, text: "Kata tanya untuk menanyakan tempat adalah...", options: { A: "مَنْ", B: "أَيْنَ (Aina)", C: "مَا", D: "هَلْ" }, answer: "B", discussion: "Aina = Di mana." },
+            { id: 39, text: "Kata tanya untuk memastikan (Apakah) adalah...", options: { A: "مَا", B: "هَلْ (Hal)", C: "مَنْ", D: "أَيْنَ" }, answer: "B", discussion: "Hal = Apakah." },
+            { id: 40, text: "Jawaban jika ditanya 'Hal' (Apakah) adalah...", options: { A: "Ahmad", B: "Na'am / La (Ya/Tidak)", C: "Baitun", D: "Fi" }, answer: "B", discussion: "Ya atau Tidak." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 menit
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama antum!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(60 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 bg-teal-50">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-teal-800">Ahlan wa Sahlan di</h2>
+                            <h1 className="text-3xl font-black text-teal-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Arab Kelas 4</p>
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Antum..." className="w-full p-4 border-2 border-teal-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-teal-500" />
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-teal-500 text-white shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-green-500 text-white shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-emerald-600 py-4 rounded-xl font-black text-xl border-b-4 border-emerald-800 btn-fun shadow-lg text-white">MULAI (إِبْدَأْ) 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-teal-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-teal-800">SISWA</div><div className="font-bold text-teal-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-teal-100 text-teal-700 px-3 py-1 rounded-lg border border-teal-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-teal-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-teal-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed" dangerouslySetInnerHTML={{__html: q.text}}></p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-teal-100 border-teal-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-teal-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-xl font-medium text-gray-700 font-sans">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-teal-50 rounded-2xl border-2 border-teal-200 text-center">
+                            <h3 className="text-sm font-bold text-teal-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-teal-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-green-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-teal-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-green-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-teal-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-teal-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-teal-400 via-green-400 to-emerald-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-teal-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-teal-100 text-teal-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Mumtaz! (Luar Biasa) 🌟" : score >= 60 ? "Jayyid! (Bagus) 👍" : "Ayo Belajar Lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-green-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug" dangerouslySetInnerHTML={{__html: q.text}}></p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 MUMTAZ! <br/>Semua Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+
