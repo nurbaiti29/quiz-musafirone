@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Arab Kelas 4 (Bab 5) - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #f0fdfa; /* Teal-50 */
+            /* Pola background geometris islami abstrak yang aman */
+            background-image: 
+                linear-gradient(45deg, #ccfbf1 25%, transparent 25%), 
+                linear-gradient(-45deg, #ccfbf1 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ccfbf1 75%), 
+                linear-gradient(-45deg, transparent 75%, #ccfbf1 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        /* Font Arab Khusus - Lebih Besar dan Jelas */
+        .ar { font-family: 'Amiri', serif; direction: rtl; line-height: 2.0; font-size: 1.5rem; color: #0f766e; font-weight: bold; }
+        .ar-text { font-family: 'Amiri', serif; direction: rtl; line-height: 2.2; font-size: 1.3rem; color: #333; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #5eead4; box-shadow: 8px 8px 0px #14b8a6; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, border-bottom 0.1s; border-bottom: 4px solid; }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; }
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #0d9488; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #0f766e; font-weight: bold;">Memuat Soal Bahasa Arab...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (40 SOAL - SEDANG & SULIT) ---
+        const paketA = [
+            // Kosakata & Analisis Gambar (Konseptual)
+            { id: 1, text: "Bahasa Arab yang tepat untuk benda 'Pohon' yang ada di kebun adalah...", options: { A: "بِرْكَةٌ", B: "سَاحَةٌ", C: "شَجَرَةٌ", D: "أَرِيْكَةٌ" }, answer: "C", discussion: "Syajaratun = Pohon." },
+            { id: 2, text: "Manakah pasangan kata dan arti yang SALAH?", options: { A: "مَطْبَخٌ = Dapur", B: "حَمَّامٌ = Kamar Tidur", C: "بَيْتٌ = Rumah", D: "بُسْتَانٌ = Kebun" }, answer: "B", discussion: "Hammamun artinya Kamar Mandi, bukan Kamar Tidur." },
+            { id: 3, text: "Tempat yang biasa digunakan untuk menerima tamu dan duduk-duduk disebut...", options: { A: "غُرْفَةُ النَّوْمِ", B: "غُرْفَةُ الْجُلُوْسِ", C: "الْمَطْبَخُ", D: "الْحَمَّامُ" }, answer: "B", discussion: "Ghurfatul Julus = Ruang Duduk/Tamu." },
+            { id: 4, text: "Benda yang TIDAK mungkin berada di dalam <span class='ar'>حُجْرَةُ النَّوْمِ</span> (Kamar Tidur) adalah...", options: { A: "سَرِيْرٌ (Ranjang)", B: "وِسَادَةٌ (Bantal)", C: "مَوْقِدٌ (Kompor)", D: "لِحَافٌ (Selimut)" }, answer: "C", discussion: "Kompor (Mauqidun) ada di dapur." },
+            { id: 5, text: "Kata <span class='ar'>بِرْكَةٌ</span> (Birkatun) biasanya berkaitan dengan hewan...", options: { A: "قِطٌّ (Kucing)", B: "سَمَكٌ (Ikan)", C: "طَائِرٌ (Burung)", D: "غَنَمٌ (Kambing)" }, answer: "B", discussion: "Birkatun (Kolam) tempat ikan." },
+
+            // Tata Bahasa (Isim Nakirah & Ma'rifat) - Analisis
+            { id: 6, text: "Ciri utama dari Isim Ma'rifat (Kata Khusus) pada kata <span class='ar'>الْمَدْرَسَةُ</span> adalah...", options: { A: "Adanya Tanwin di akhir", B: "Adanya Alif Lam (ال) di awal", C: "Artinya 'Sebuah Sekolah'", D: "Terdiri dari 3 huruf" }, answer: "B", discussion: "Ma'rifat ditandai dengan 'Al' dan tidak boleh tanwin." },
+            { id: 7, text: "Manakah penulisan kata yang SALAH secara tata bahasa?", options: { A: "بَيْتٌ", B: "الْبَيْتُ", C: "الْبَيْتٌ", D: "مَدْرَسَةٌ" }, answer: "C", discussion: "Salah karena 'Al' dan 'Tanwin' tidak boleh bertemu dalam satu kata." },
+            { id: 8, text: "Jika kata <span class='ar'>فَصْلٌ</span> diubah menjadi Ma'rifat, maka menjadi...", options: { A: "فَصْلُ", B: "الْفَصْلٌ", C: "الْفَصْلُ", D: "فَصْلٍ" }, answer: "C", discussion: "Menjadi Al-Fashlu (Tanpa tanwin)." },
+            { id: 9, text: "Kata <span class='ar'>جَمِيْلٌ</span> (Indah) adalah kata sifat. Jika disandingkan dengan <span class='ar'>الْبَيْتُ</span> (Rumah), maka kalimat yang benar adalah...", options: { A: "الْبَيْتُ جَمِيْلٌ", B: "الْبَيْتُ الْجَمِيْلٌ", C: "الْبَيْتِ جَمِيْلٍ", D: "بَيْتُ جَمِيْلٌ" }, answer: "A", discussion: "Mubtada (Al-Baitu) + Khabar (Jamilun/Nakirah)." },
+            { id: 10, text: "Manakah kelompok kata yang semuanya adalah Isim Nakirah (Umum)?", options: { A: "بَيْتٌ, الْمَدْرَسَةُ, فَصْلٌ", B: "مَسْجِدٌ, حُجْرَةٌ, سَاحَةٌ", C: "الْبُسْتَانُ, الشَّجَرَةُ, بِرْكَةٌ", D: "قَلَمٌ, الْكِتَابُ, مَكْتَبٌ" }, answer: "B", discussion: "Semuanya berakhiran tanwin dan tanpa Al." },
+
+            // Posisi (Zharaf Makan) - Logika
+            { id: 11, text: "Jika Sekolah berada di depan Rumah, maka Rumah berada di ... Sekolah.", options: { A: "أَمَامَ (Depan)", B: "وَرَاءَ (Belakang)", C: "جَانِبَ (Samping)", D: "فَوْقَ (Atas)" }, answer: "B", discussion: "Lawan kata Depan adalah Belakang (Wara'a)." },
+            { id: 12, text: "Posisi lampu yang menggantung di langit-langit terhadap meja adalah...", options: { A: "عَلَى (Di atas menempel)", B: "فَوْقَ (Di atas tidak menempel)", C: "تَحْتَ (Di bawah)", D: "بَيْنَ (Di antara)" }, answer: "B", discussion: "Fauqa digunakan untuk posisi di atas yang tidak menempel benda." },
+            { id: 13, text: "Kalimat yang TIDAK LOGIS (salah makna) adalah...", options: { A: "الْقِطُّ تَحْتَ الْمَكْتَبِ (Kucing di bawah meja)", B: "الْأُسْتَاذُ أَمَامَ الْفَصْلِ (Guru di depan kelas)", C: "السَّمَكُ فَوْقَ الشَّجَرَةِ (Ikan di atas pohon)", D: "الْكِتَابُ عَلَى الْمَكْتَبِ (Buku di atas meja)" }, answer: "C", discussion: "Ikan tidak mungkin hidup di atas pohon." },
+            { id: 14, text: "<span class='ar'>السَّبُّوْرَةُ ... الْجِدَارِ</span> (Papan tulis ... dinding). Kata depan yang tepat adalah...", options: { A: "فِي (Di dalam)", B: "عَلَى (Di atas/menempel)", C: "تَحْتَ (Di bawah)", D: "أَمَامَ (Di depan - lepas)" }, answer: "B", discussion: "'Ala digunakan untuk benda yang menempel pada permukaan (dinding)." },
+            { id: 15, text: "Posisi 'Halaman' (Sahatun) biasanya berada di ... Sekolah.", options: { A: "فِي (Di dalam ruangan)", B: "أَمَامَ (Di depan)", C: "فَوْقَ (Di atas atap)", D: "تَحْتَ (Di bawah tanah)" }, answer: "B", discussion: "Halaman sekolah umumnya di depan (Amama)." },
+
+            // Pemahaman Teks & Kalimat (HOTS)
+            { id: 16, text: "Susunan kalimat yang benar adalah: <span class='ar'>وَاسِعَةٌ - الْمَدْرَسَةُ - أَمَامَ - سَاحَةٌ</span>", options: { A: "أَمَامَ الْمَدْرَسَةُ سَاحَةٌ وَاسِعَةٌ", B: "أَمَامَ الْمَدْرَسَةِ سَاحَةٌ وَاسِعَةٌ", C: "سَاحَةٌ وَاسِعَةٌ الْمَدْرَسَةِ أَمَامَ", D: "وَاسِعَةٌ سَاحَةٌ أَمَامَ الْمَدْرَسَةُ" }, answer: "B", discussion: "Amama Al-Madrasati (Majrur/Kasrah) Sahatun Wasi'atun." },
+            { id: 17, text: "Terjemahan yang tepat: 'Di belakang rumah ada kebun yang luas'.", options: { A: "وَرَاءَ الْبَيْتِ بُسْتَانٌ وَاسِعٌ", B: "أَمَامَ الْبَيْتِ بُسْتَانٌ وَاسِعٌ", C: "وَرَاءَ الْبَيْتِ سَاحَةٌ وَاسِعَةٌ", D: "فِي الْبَيْتِ بُسْتَانٌ كَبِيرٌ" }, answer: "A", discussion: "Wara'a (belakang), Bustan (kebun)." },
+            { id: 18, text: "<span class='ar'>هَذَا بَيْتِي. فِي الْبَيْتِ غُرْفَةُ جُلُوْسٍ وَ مَطْبَخٌ.</span> Apa saja yang ada di rumah tersebut?", options: { A: "Kamar tidur dan Kamar mandi", B: "Ruang tamu dan Dapur", C: "Dapur dan Kebun", D: "Halaman dan Ruang tamu" }, answer: "B", discussion: "Ghurfatul julus (R. Tamu) dan Matbakh (Dapur)." },
+            { id: 19, text: "Jawaban yang tepat untuk pertanyaan: <span class='ar'>مَاذَا عَلَى الْمَكْتَبِ؟</span> (Ada buku di atas meja).", options: { A: "عَلَى الْمَكْتَبِ قَلَمٌ", B: "عَلَى الْمَكْتَبِ كِتَابٌ", C: "تَحْتَ الْمَكْتَبِ كِتَابٌ", D: "فِي الْمَكْتَبِ كِتَابٌ" }, answer: "B", discussion: "Sesuai pertanyaan 'Apa di atas meja?' -> 'Di atas meja ada buku'." },
+            { id: 20, text: "Kata tanya untuk menanyakan 'Dimana' adalah...", options: { A: "مَنْ (Man)", B: "مَا (Ma)", C: "هَلْ (Hal)", D: "أَيْنَ (Aina)" }, answer: "D", discussion: "Aina = Dimana." },
+
+            // Analisis Lanjutan
+            { id: 21, text: "Lawan kata sifat <span class='ar'>وَاسِعٌ</span> (Luas) adalah...", options: { A: "كَبِيْرٌ (Besar)", B: "ضَيِّقٌ (Sempit)", C: "نَظِيْفٌ (Bersih)", D: "طَوِيْلٌ (Panjang)" }, answer: "B", discussion: "Dhayyiqun = Sempit." },
+            { id: 22, text: "Jika 'Madrasatun' (Pr) maka kata sifatnya harus 'Wasi'atun' (Pr). Jika 'Bustanun' (Lk), maka sifatnya...", options: { A: "وَاسِعَةٌ", B: "وَاسِعٌ", C: "وَاسِعَاتٌ", D: "وَاسِعِيْنَ" }, answer: "B", discussion: "Bustanun (Lk) -> Wasi'un (Lk)." },
+            { id: 23, text: "Manakah kalimat yang menggunakan Zharaf Makan (Keterangan Tempat)?", options: { A: "الْبَيْتُ كَبِيْرٌ", B: "الْوَلَدُ مَاهِرٌ", C: "الْقِطُّ تَحْتَ الْكُرْسِيِّ", D: "هَذَا كِتَابٌ" }, answer: "C", discussion: "Ada kata 'Tahta' (Di bawah)." },
+            { id: 24, text: "<span class='ar'>الْمَدْرَسَةُ جَانِبَ الْمَسْجِدِ</span>. Kata 'Al-Masjidi' berharakat kasrah karena...", options: { A: "Diawali Isim Isyarah", B: "Diawali Zharaf Makan (Janiba)", C: "Adalah Isim Nakirah", D: "Adalah kata kerja" }, answer: "B", discussion: "Kata setelah zharaf makan (keterangan tempat) hukumnya Majrur (Kasrah)." },
+            { id: 25, text: "Arti kalimat: <span class='ar'>هَلْ فِي الْبَيْتِ حَمَّامٌ؟ نَعَمْ, فِي الْبَيْتِ حَمَّامٌ.</span>", options: { A: "Apakah di sekolah ada kantin? Ya.", B: "Apakah di rumah ada dapur? Tidak.", C: "Apakah di rumah ada kamar mandi? Ya, di rumah ada kamar mandi.", D: "Apakah ini kamar mandi? Ya." }, answer: "C", discussion: "Terjemahan lengkap yang benar." },
+            { id: 26, text: "Benda yang biasa ditemukan <span class='ar'>فِي الْحَقِيْبَةِ</span> (di dalam tas) adalah...", options: { A: "وِسَادَةٌ", B: "كُرَّاسَةٌ وَ قَلَمٌ", C: "صَحْنٌ وَ مِلْعَقَةٌ", D: "أَرِيْكَةٌ" }, answer: "B", discussion: "Buku tulis dan Pena." },
+            { id: 27, text: "Susun menjadi kalimat sempurna: <span class='ar'>جَمِيْلٌ - ذَلِكَ - بُسْتَانٌ</span>", options: { A: "ذَلِكَ جَمِيْلٌ بُسْتَانٌ", B: "بُسْتَانٌ ذَلِكَ جَمِيْلٌ", C: "ذَلِكَ بُسْتَانٌ جَمِيْلٌ", D: "جَمِيْلٌ بُسْتَانٌ ذَلِكَ" }, answer: "C", discussion: "Itu kebun yang indah (Isim Isyarah + Mushar Ilaih + Sifat)." },
+            { id: 28, text: "Apa fungsi ruangan <span class='ar'>غُرْفَةُ الْمُذَاكَرَةِ</span>?", options: { A: "Untuk Tidur", B: "Untuk Makan", C: "Untuk Belajar/Mengulang pelajaran", D: "Untuk Mandi" }, answer: "C", discussion: "Ghurfatul Mudzakarah = Ruang Belajar." },
+            { id: 29, text: "Kata yang tepat untuk melengkapi: <span class='ar'>... السَّبُّوْرَةُ؟ السَّبُّوْرَةُ أَمَامَ الْفَصْلِ.</span>", options: { A: "مَا (Apa)", B: "مَنْ (Siapa)", C: "أَيْنَ (Dimana)", D: "هَلْ (Apakah)" }, answer: "C", discussion: "Menanyakan letak menggunakan 'Aina'." },
+            { id: 30, text: "Manakah yang merupakan 'Isim'? (Kata Benda)", options: { A: "فِي (Di)", B: "عَلَى (Di atas)", C: "يَجْلِسُ (Duduk)", D: "بَابٌ (Pintu)" }, answer: "D", discussion: "Babun adalah kata benda." },
+            
+            // Soal Cerita Pendek
+            { id: 31, text: "Bacaan: 'Ini rumahku. Rumahku besar dan bersih. Di depan rumah ada pohon.' Bahasa Arab 'Rumahku besar' adalah...", options: { A: "بَيْتِيْ صَغِيْرٌ", B: "بَيْتِيْ كَبِيْرٌ", C: "بَيْتِيْ بَعِيْدٌ", D: "بَيْتِيْ وَاسِعٌ" }, answer: "B", discussion: "Baiti Kabirun." },
+            { id: 32, text: "Lanjutan terjemahan: 'Di depan rumah ada pohon'.", options: { A: "وَرَاءَ الْبَيْتِ شَجَرَةٌ", B: "أَمَامَ الْبَيْتِ شَجَرَةٌ", C: "فِي الْبَيْتِ شَجَرَةٌ", D: "جَانِبَ الْبَيْتِ شَجَرَةٌ" }, answer: "B", discussion: "Amama = Depan, Syajaratun = Pohon." },
+            { id: 33, text: "Jika 'Kitabun' (Buku) itu 'Jadidun' (Baru), maka 'Madrasatun' (Sekolah) itu...", options: { A: "Jadidun", B: "Jadidatun (جَدِيْدَةٌ)", C: "Jamilun", D: "Kabirun" }, answer: "B", discussion: "Menyesuaikan jenis kelamin kata (Muannats pakai Tun)." },
+            { id: 34, text: "Pilih kalimat tanya yang benar untuk jawaban: 'Na'am, hadza fashlun'.", options: { A: "Maa hadza?", B: "Man hadza?", C: "Hal hadza fashlun?", D: "Aina al-fashlu?" }, answer: "C", discussion: "Jawaban Na'am (Ya) memerlukan pertanyaan Hal (Apakah)." },
+            { id: 35, text: "Sinonim (persamaan makna) dari <span class='ar'>بَيْتٌ</span> adalah...", options: { A: "مَنْزِلٌ (Manzilun)", B: "مَسْجِدٌ", C: "مَدْرَسَةٌ", D: "شَارِعٌ" }, answer: "A", discussion: "Baitun dan Manzilun artinya Rumah." },
+            { id: 36, text: "<span class='ar'>الْوَلَدُ ... الْكُرْسِيِّ</span> (Anak itu duduk di atas kursi).", options: { A: "فِي", B: "تَحْتَ", C: "عَلَى", D: "وَرَاءَ" }, answer: "C", discussion: "Duduk menempel di atas ('Ala)." },
+            { id: 37, text: "Bahasa Arab 'Di antara dua rumah' adalah...", options: { A: "بَيْنَ الْبَيْتَيْنِ", B: "فَوْقَ الْبَيْتِ", C: "تَحْتَ الْبَيْتِ", D: "أَمَامَ الْبَيْتِ" }, answer: "A", discussion: "Baina = Di antara." },
+            { id: 38, text: "Manakah yang BUKAN termasuk ruangan di rumah?", options: { A: "الْفَصْلُ (Kelas)", B: "الْمَطْبَخُ (Dapur)", C: "الْحَمَّامُ (Kamar mandi)", D: "غُرْفَةُ النَّوْمِ (Kamar tidur)" }, answer: "A", discussion: "Kelas ada di sekolah." },
+            { id: 39, text: "Kata jamak (banyak) dari 'Baitun' adalah...", options: { A: "Buyutun (بُيُوْتٌ)", B: "Baitani", C: "Abwatun", D: "Baituna" }, answer: "A", discussion: "Buyut = Rumah-rumah." },
+            { id: 40, text: "Terjemahkan: <span class='ar'>تِلْكَ سَاحَةٌ وَاسِعَةٌ وَ نَظِيْفَةٌ</span>", options: { A: "Ini halaman yang sempit dan kotor", B: "Itu halaman yang luas dan bersih", C: "Itu kebun yang besar dan indah", D: "Ini sekolah yang luas dan bersih" }, answer: "B", discussion: "Tilka (Itu), Sahah (Halaman), Wasi'ah (Luas), Nazhifah (Bersih)." }
+        ];
+
+        // --- DATA SOAL PAKET B (40 SOAL - VARIASI SULIT) ---
+        const paketB = [
+            // Analisis Grammar & Struktur Kalimat
+            { id: 1, text: "Manakah susunan 'Mubtada' dan 'Khabar' yang benar?", options: { A: "الْبَيْتُ وَاسِعٌ", B: "الْبَيْتُ الْوَاسِعُ", C: "بَيْتٌ وَاسِعٌ", D: "الْبَيْتَ وَاسِعٌ" }, answer: "A", discussion: "Mubtada (Ma'rifat/Al) + Khabar (Nakirah/Tanwin)." },
+            { id: 2, text: "Perbaiki kesalahan kalimat ini: <span class='ar'>الْحَقِيْبَةُ جَمِيْلٌ</span>", options: { A: "الْحَقِيْبَةُ جَمِيْلَةٌ", B: "حَقِيْبَةٌ جَمِيْلٌ", C: "الْحَقِيْبَةِ جَمِيْلٌ", D: "الْحَقِيْبَةٌ جَمِيْلَةٌ" }, answer: "A", discussion: "Haqibah (Pr) harus diikuti sifat Jamilah (Pr/Tun)." },
+            { id: 3, text: "Kata yang bergaris bawah: <span class='ar'><u>الْقَلَمُ</u> عَلَى الْمَكْتَبِ</span>. Kedudukannya adalah...", options: { A: "Mubtada (Subjek)", B: "Khabar (Predikat)", C: "Fa'il", D: "Maf'ul Bih" }, answer: "A", discussion: "Kata di awal kalimat isim adalah Mubtada." },
+            { id: 4, text: "Jika <span class='ar'>عَلَى</span> dimasukkan sebelum kata <span class='ar'>الْكُرْسِيُّ</span>, maka harakat akhirnya menjadi...", options: { A: "الْكُرْسِيُّ (u)", B: "الْكُرْسِيَّ (a)", C: "الْكُرْسِيِّ (i)", D: "الْكُرْسِيْ (sukun)" }, answer: "C", discussion: "Huruf Jar ('Ala) membuat kata setelahnya Kasrah." },
+            { id: 5, text: "Manakah kalimat yang memiliki arti 'Pena itu milik guru'?", options: { A: "الْقَلَمُ لِلْأُسْتَاذِ", B: "الْقَلَمُ عَلَى الْأُسْتَاذِ", C: "الْقَلَمُ مِنَ الْأُسْتَاذِ", D: "الْقَلَمُ إِلَى الْأُسْتَاذِ" }, answer: "A", discussion: "Li/Lil = Milik/Untuk." },
+            { id: 6, text: "<span class='ar'>أَيْنَ الْكِتَابُ؟ هُوَ ...</span> (Kata ganti untuk Al-Kitabu)", options: { A: "فِي الْحَقِيْبَةِ", B: "هِيَ فِي الْحَقِيْبَةِ", C: "أَنَا فِي الْحَقِيْبَةِ", D: "نَحْنُ فِي الْحَقِيْبَةِ" }, answer: "A", discussion: "Hua (Dia lk) merujuk pada Kitab (Lk)." },
+            { id: 7, text: "Kata <span class='ar'>هَذِهِ</span> digunakan untuk menunjuk kata...", options: { A: "بَيْتٌ", B: "مَسْجِدٌ", C: "مَدْرَسَةٌ", D: "بُسْتَانٌ" }, answer: "C", discussion: "Hadzihi untuk Muannats (ada Ta' Marbutoh)." },
+            { id: 8, text: "Kalimat tanya untuk menanyakan keadaan/sifat rumah...", options: { A: "مَا هَذَا؟", B: "أَيْنَ الْبَيْتُ؟", C: "كَيْفَ الْبَيْتُ؟", D: "مَنْ فِي الْبَيْتِ؟" }, answer: "C", discussion: "Kaifa = Bagaimana (keadaannya)." },
+            { id: 9, text: "Susunan Idhafah (Kata Majemuk) yang benar untuk 'Pintu Rumah' adalah...", options: { A: "بَابُ الْبَيْتِ", B: "الْبَابُ الْبَيْتِ", C: "بَابٌ بَيْتٌ", D: "بَابُ الْبَيْتُ" }, answer: "A", discussion: "Mudhaf (Tanpa Al/Tanwin) + Mudhaf Ilaih (Kasrah)." },
+            { id: 10, text: "Lawan kata <span class='ar'>فَوْقَ</span> adalah <span class='ar'>تَحْتَ</span>. Lawan kata <span class='ar'>دَاخِلَ</span> (Di dalam) adalah...", options: { A: "خَارِجَ (Kharija/Di luar)", B: "جَانِبَ", C: "بَيْنَ", D: "حَوْلَ" }, answer: "A", discussion: "Kharija = Di luar." },
+
+            // Pemahaman Bacaan & Logika (HOTS)
+            { id: 11, text: "Teks: 'Rumahku bersih. Di depan rumah ada taman yang indah.' Bahasa Arab yang sesuai...", options: { A: "بَيْتِيْ وَسِخٌ. أَمَامَ الْبَيْتِ شَارِعٌ.", B: "بَيْتِيْ نَظِيْفٌ. أَمَامَ الْبَيْتِ حَدِيْقَةٌ جَمِيْلَةٌ.", C: "بَيْتِيْ كَبِيْرٌ. وَرَاءَ الْبَيْتِ نَهْرٌ.", D: "بَيْتِيْ بَعِيْدٌ. جَانِبَ الْبَيْتِ مَسْجِدٌ." }, answer: "B", discussion: "Nazhifun (Bersih), Hadiqatun/Bustanun (Taman/Kebun)." },
+            { id: 12, text: "Jika kamu ingin mengatakan 'Saya duduk di atas kursi', kalimatnya adalah...", options: { A: "أَنَا أَجْلِسُ تَحْتَ الْكُرْسِيِّ", B: "أَنَا أَجْلِسُ عَلَى الْكُرْسِيِّ", C: "أَنَا أَقُوْمُ عَلَى الْكُرْسِيِّ", D: "أَنَا أَنَامُ عَلَى الْكُرْسِيِّ" }, answer: "B", discussion: "Ajlisu = Saya duduk, 'Ala = Di atas." },
+            { id: 13, text: "Manakah pernyataan yang BENAR tentang <span class='ar'>غُرْفَةُ النَّوْمِ</span>?", options: { A: "فِيْهَا مَوْقِدٌ (Ada kompor)", B: "فِيْهَا سَرِيْرٌ وَ وِسَادَةٌ (Ada kasur & bantal)", C: "فِيْهَا سَبُّوْرَةٌ (Ada papan tulis)", D: "فِيْهَا شَجَرَةٌ (Ada pohon)" }, answer: "B", discussion: "Isi kamar tidur." },
+            { id: 14, text: "Analogi: Dapur : Memasak = Kamar Mandi : ...", options: { A: "Tidur (النَّوْمُ)", B: "Belajar (الدِّرَاسَةُ)", C: "Mandi (الْاِسْتِحْمَامُ)", D: "Bermain (اللَّعِبُ)" }, answer: "C", discussion: "Fungsi ruangan." },
+            { id: 15, text: "Urutan posisi dari paling bawah ke paling atas: Lantai -> Meja -> Buku -> Lampu. Bahasa Arab 'Lampu' di posisi tertinggi adalah...", options: { A: "الْمِصْبَاحُ فَوْقَ الْكِتَابِ", B: "الْمِصْبَاحُ تَحْتَ الْكِتَابِ", C: "الْمِصْبَاحُ عَلَى الْبِلاَطِ", D: "الْمِصْبَاحُ جَانِبَ الْمَكْتَبِ" }, answer: "A", discussion: "Lampu di atas (Fauqa) buku." },
+            { id: 16, text: "Kalimat: <span class='ar'>الْمَدْرَسَةُ كَبِيْرَةٌ وَ جَمِيْلَةٌ</span>. Kata sifat dalam kalimat tersebut adalah...", options: { A: "الْمَدْرَسَةُ", B: "كَبِيْرَةٌ وَ جَمِيْلَةٌ", C: "وَ", D: "Tidak ada" }, answer: "B", discussion: "Besar dan Indah adalah kata sifat." },
+            { id: 17, text: "Kata <span class='ar'>تِلْمِيْذٌ</span> (Murid). Jika digabung dengan 'Di dalam kelas' menjadi...", options: { A: "تِلْمِيْذٌ فِي الْفَصْلِ", B: "التِّلْمِيْذُ فِي الْفَصْلِ", C: "تِلْمِيْذُ فِي الْفَصْلِ", D: "التِّلْمِيْذِ فِي الْفَصْلِ" }, answer: "B", discussion: "Mubtada harus Ma'rifat (At-Tilmidzu)." },
+            { id: 18, text: "Manakah yang merupakan kalimat sempurna (Jumlah Mufidah)?", options: { A: "فِي الْبَيْتِ", B: "الْبَيْتُ الْجَمِيْلُ", C: "الْبَيْتُ جَمِيْلٌ", D: "عَلَى الْمَكْتَبِ" }, answer: "C", discussion: "Rumah itu indah (Subjek + Predikat lengkap). B salah karena artinya 'Rumah yang indah itu...' (belum selesai)." },
+            { id: 19, text: "Perbedaan <span class='ar'>عَلَى</span> dan <span class='ar'>فَوْقَ</span> adalah...", options: { A: "Sama saja", B: "'Ala menempel, Fauqa tidak menempel (ada jarak)", C: "'Ala di bawah, Fauqa di atas", D: "'Ala untuk orang, Fauqa untuk benda" }, answer: "B", discussion: "Nuansa makna preposisi." },
+            { id: 20, text: "Apa bahasa Arab dari 'Ruang Belajar'?", options: { A: "غُرْفَةُ النَّوْمِ", B: "غُرْفَةُ الْمُذَاكَرَةِ", C: "غُرْفَةُ الْأَكْلِ", D: "غُرْفَةُ الْجُلُوْسِ" }, answer: "B", discussion: "Mudzakarah = Belajar/Mengulang." },
+
+            // Terjemah & Vocabulary Sulit
+            { id: 21, text: "<span class='ar'>هَذَا بُسْتَانٌ. فِي الْبُسْتَانِ أَزْهَارٌ مُتَنَوِّعَةٌ.</span> Arti 'Azhar mutanawwi'ah' adalah...", options: { A: "Pohon besar", B: "Bunga bermacam-macam", C: "Buah yang banyak", D: "Rumput hijau" }, answer: "B", discussion: "Azhar (jamak Zahrah) = Bunga, Mutanawwi'ah = Bermacam-macam." },
+            { id: 22, text: "<span class='ar'>بَيْتِيْ قَرِيْبٌ مِنَ الْمَدْرَسَةِ.</span> Artinya...", options: { A: "Rumahku jauh dari sekolah", B: "Rumahku dekat dari sekolah", C: "Sekolahku besar", D: "Rumahku di depan sekolah" }, answer: "B", discussion: "Qarib min = Dekat dari." },
+            { id: 23, text: "<span class='ar'>أُحِبُّ بَيْتِيْ.</span> Artinya...", options: { A: "Saya membersihkan rumahku", B: "Saya masuk rumahku", C: "Saya mencintai/suka rumahku", D: "Saya keluar rumah" }, answer: "C", discussion: "Uhibbu = Saya suka/cinta." },
+            { id: 24, text: "Bahasa Arab 'Bersih itu indah'...", options: { A: "النَّظَافَةُ جَمِيْلَةٌ", B: "النَّظَافَةُ مِنَ الْإِيْمَانِ", C: "الْبَيْتُ وَاسِعٌ", D: "الْفَصْلُ نَظِيْفٌ" }, answer: "A", discussion: "Nazhafah = Kebersihan, Jamilah = Indah." },
+            { id: 25, text: "Kata jamak dari 'Babun' (Pintu) adalah...", options: { A: "Abwabun (أَبْوَابٌ)", B: "Baban", C: "Babaini", D: "Babuna" }, answer: "A", discussion: "Jamak Taksir." },
+            { id: 26, text: "<span class='ar'>الْمَاءُ فِي الْبِرْكَةِ.</span> Air itu di dalam kolam. Kata 'Al-Ma'u' artinya...", options: { A: "Udara", B: "Api", C: "Tanah", D: "Air" }, answer: "D", discussion: "Ma'un = Air." },
+            { id: 27, text: "<span class='ar'>السَّقْفُ</span> (As-Saqfu) posisinya selalu...", options: { A: "Di bawah", B: "Di atas (Atap/Langit-langit)", C: "Di samping", D: "Di luar" }, answer: "B", discussion: "Saqfun = Atap." },
+            { id: 28, text: "<span class='ar'>الْبِلاَطُ</span> (Al-Bilathu) posisinya selalu...", options: { A: "Di atas", B: "Di bawah (Lantai)", C: "Di dinding", D: "Di meja" }, answer: "B", discussion: "Bilathun = Lantai." },
+            { id: 29, text: "Lengkapi: <span class='ar'>... الْقَلَمُ؟ الْقَلَمُ فِي الْجَيْبِ (Saku).</span>", options: { A: "مَنْ", B: "أَيْنَ (Aina)", C: "مَا", D: "كَيْفَ" }, answer: "B", discussion: "Menanyakan letak." },
+            { id: 30, text: "Kalimat yang menunjukkan kepemilikan: 'Ini bukuku'.", options: { A: "هَذَا كِتَابٌ", B: "هَذَا كِتَابِيْ", C: "هَذَا كِتَابُكَ", D: "هَذَا الْكِتَابُ" }, answer: "B", discussion: "Kitabi = Bukuku." },
+
+            // Evaluasi Akhir
+            { id: 31, text: "Mana yang benar? 'Zaid (Lk) di dalam kamar'.", options: { A: "زَيْدٌ فِي الْحُجْرَةِ", B: "زَيْدَةٌ فِي الْحُجْرَةِ", C: "الزَّيْدُ فِي الْحُجْرَةِ", D: "زَيْدٌ عَلَى الْحُجْرَةِ" }, answer: "A", discussion: "Nama orang (Zaid) sudah Ma'rifat tanpa Al." },
+            { id: 32, text: "Mana yang benar? 'Fatimah (Pr) di dapur'.", options: { A: "فَاطِمَةٌ فِي الْمَطْبَخِ", B: "فَاطِمَةٌ عَلَى الْمَطْبَخِ", C: "فَاطِمَةٌ تَحْتَ الْمَطْبَخِ", D: "فَاطِمَةٌ أَمَامَ الْمَطْبَخِ" }, answer: "A", discussion: "Di dalam dapur (Fi)." },
+            { id: 33, text: "Kata <span class='ar'>غُرْفَةٌ</span> (Kamar) bentuknya Muannats karena...", options: { A: "Diawali Ghain", B: "Diakhiri Ta' Marbutoh (ة)", C: "Artinya benda mati", D: "Terdiri dari 4 huruf" }, answer: "B", discussion: "Ciri Muannats." },
+            { id: 34, text: "<span class='ar'>تِلْكَ شَجَرَةٌ ...</span> (Pilih kata sifat yang cocok)", options: { A: "كَبِيْرٌ", B: "كَبِيْرَةٌ (Kabiratun)", C: "جَمِيْلٌ", D: "وَاسِعٌ" }, answer: "B", discussion: "Syajarah (Pr) butuh sifat Pr (Kabirah)." },
+            { id: 35, text: "<span class='ar'>هَذَا مَسْجِدٌ ...</span> (Pilih kata sifat yang cocok)", options: { A: "نَظِيْفٌ (Nazhifun)", B: "نَظِيْفَةٌ", C: "كَبِيْرَةٌ", D: "وَاسِعَةٌ" }, answer: "A", discussion: "Masjid (Lk) butuh sifat Lk (Nazhif)." },
+            { id: 36, text: "Alat untuk membersihkan lantai adalah...", options: { A: "مِكْنَسَةٌ (Sapu)", B: "قَلَمٌ", C: "مِرْآةٌ", D: "سَرِيْرٌ" }, answer: "A", discussion: "Miknasah = Sapu." },
+            { id: 37, text: "Tempat menyimpan baju...", options: { A: "سَرِيْرٌ", B: "خِزَانَةٌ (Lemari)", C: "مَكْتَبٌ", D: "بَابٌ" }, answer: "B", discussion: "Khizanah = Lemari." },
+            { id: 38, text: "Warna papan tulis biasanya...", options: { A: "أَحْمَرُ", B: "أَبْيَضُ / أَسْوَدُ", C: "أَخْضَرُ", D: "أَزْرَقُ" }, answer: "B", discussion: "Putih (Whiteboard) atau Hitam." },
+            { id: 39, text: "Bahasa Arab 'Tetangga' yang rumahnya di samping kita...", options: { A: "Jiran/Jarun (جَارٌ)", B: "Ustadz", C: "Tilmiz", D: "Abun" }, answer: "A", discussion: "Jarun = Tetangga." },
+            { id: 40, text: "Susunan kata yang benar: <span class='ar'>الْفَصْلِ - فِي - وَ - كُرْسِيٌّ - مَكْتَبٌ</span>", options: { A: "Fi al-fashli maktabun wa kursiyyun", B: "Maktabun fi kursiyyun wa al-fashli", C: "Wa fi al-fashli maktabun kursiyyun", D: "Al-Fashli fi maktabun wa kursiyyun" }, answer: "A", discussion: "Di dalam kelas ada meja dan kursi." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 Menit
+            const [activeQuestions, setActiveQuestions] = useState([]);
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { alert("Silakan tulis nama antum!"); return; }
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(60 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-teal-800">Ahlan wa Sahlan di</h2>
+                            <h1 className="text-3xl font-black text-teal-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan Bahasa Arab Kelas 4 (Bab 5)</p>
+                            
+                            <div className="mb-6 flex justify-center">
+                                {/* Ikon Buku/Islami Sederhana */}
+                                <div className="text-6xl">📖</div>
+                            </div>
+
+                            <input type="text" value={nama} onChange={e => setNama(e.target.value)} placeholder="Tulis Nama Antum..." className="w-full p-4 border-2 border-teal-300 rounded-xl mb-4 text-center font-bold text-lg focus:outline-none focus:border-teal-500" />
+                            
+                            <div className="flex gap-2 mb-6">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-teal-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-green-500 text-white scale-105 shadow-md' : 'bg-white text-gray-500'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-emerald-600 py-4 rounded-xl font-black text-xl border-b-4 border-emerald-800 btn-fun shadow-lg text-white">MULAI (إِبْدَأْ) 🚀</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-teal-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-teal-800">SISWA</div><div className="font-bold text-teal-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-teal-100 text-teal-700 px-3 py-1 rounded-lg border border-teal-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-teal-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-teal-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed" dangerouslySetInnerHTML={{__html: q.text}}></p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-teal-100 border-teal-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-teal-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-xl font-medium text-gray-700 font-sans" dangerouslySetInnerHTML={{__html: v}}></span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-teal-50 rounded-2xl border-2 border-teal-200 text-center">
+                            <h3 className="text-sm font-bold text-teal-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-teal-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-teal-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-green-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-green-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-teal-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-green-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-teal-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-teal-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-teal-400 via-green-400 to-emerald-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-teal-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-teal-100 text-teal-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Mumtaz! (Luar Biasa) 🌟" : score >= 60 ? "Jayyid! (Bagus) 👍" : "Ayo Belajar Lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-green-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-green-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Perbaikan Jawaban ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug" dangerouslySetInnerHTML={{__html: q.text}}></p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ <span dangerouslySetInnerHTML={{__html: q.options[q.answer]}}></span></div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 MUMTAZ! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
