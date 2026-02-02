@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bimbel Musafir One - Pendidikan Pancasila</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        
+        /* Gaya Pilihan Ganda */
+        .choice-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .choice-btn:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        /* Jika Dipilih */
+        .choice-btn.selected {
+            border-color: #2563eb;
+            background-color: #dbeafe;
+            color: #1e40af;
+            font-weight: 600;
+        }
+        .circle-label {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            border: 1px solid #d1d5db;
+        }
+        .choice-btn.selected .circle-label {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .hidden-section { display: none; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-700 text-white p-2 rounded-lg">
+                    <i class="fas fa-book-reader text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-blue-900">Bimbel Musafir One</h1>
+                    <p class="text-xs text-blue-600 font-semibold tracking-wider">GUIDING YOUR FUTURE</p>
+                </div>
+            </div>
+            <button onclick="app.showMateri()" class="text-gray-500 hover:text-blue-700 font-medium text-sm">
+                <i class="fas fa-home mr-1"></i> Beranda
+            </button>
+        </div>
+    </nav>
+
+    <!-- Container Utama -->
+    <main class="max-w-3xl mx-auto px-4 py-8 min-h-screen">
+
+        <!-- 1. BAGIAN MATERI -->
+        <div id="screen-materi" class="fade-in">
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-6 text-center">
+                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full uppercase">Materi Kelas</span>
+                <h2 class="text-3xl font-extrabold text-gray-900 mt-4 mb-2">Aku Patuh Aturan</h2>
+                <p class="text-gray-500">Pendidikan Pancasila</p>
+            </div>
+
+            <div class="bg-blue-600 text-white rounded-2xl p-6 shadow-lg mb-6">
+                <h3 class="font-bold text-xl mb-2"><i class="fas fa-lightbulb text-yellow-300 mr-2"></i>Apa itu Aturan?</h3>
+                <p class="leading-relaxed opacity-90">Aturan adalah ketentuan yang dibuat untuk mengatur kehidupan bersama agar lebih tertib, aman, dan harmonis.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-green-500">
+                    <h4 class="font-bold text-lg mb-2"><i class="fas fa-home text-green-500 mr-2"></i>Di Rumah</h4>
+                    <ul class="text-sm space-y-1 list-disc pl-5 text-gray-600">
+                        <li>Bangun pagi & rapikan tempat tidur</li>
+                        <li>Hormat pada orang tua</li>
+                        <li>Sopan santun</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-orange-500">
+                    <h4 class="font-bold text-lg mb-2"><i class="fas fa-school text-orange-500 mr-2"></i>Di Sekolah</h4>
+                    <ul class="text-sm space-y-1 list-disc pl-5 text-gray-600">
+                        <li>Datang tepat waktu</li>
+                        <li>Pakai seragam sesuai jadwal</li>
+                        <li>Tertib di dalam kelas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="app.showPaket()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl shadow-lg transition transform hover:-translate-y-1 text-lg">
+                Lanjut ke Latihan Soal <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <!-- 2. PILIH PAKET -->
+        <div id="screen-paket" class="hidden-section fade-in">
+            <h2 class="text-2xl font-bold text-center mb-8">Pilih Paket Soal</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Paket A -->
+                <div onclick="app.startQuiz('A')" class="bg-white p-6 rounded-2xl border-2 border-transparent hover:border-blue-500 shadow-md cursor-pointer transition text-center group">
+                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl group-hover:scale-110 transition">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="font-bold text-xl">Paket A (Sedang)</h3>
+                    <p class="text-gray-500 text-sm mt-2">40 Soal Dasar</p>
+                </div>
+                <!-- Paket B -->
+                <div onclick="app.startQuiz('B')" class="bg-white p-6 rounded-2xl border-2 border-transparent hover:border-red-500 shadow-md cursor-pointer transition text-center group">
+                    <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl group-hover:scale-110 transition">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3 class="font-bold text-xl">Paket B (Sulit)</h3>
+                    <p class="text-gray-500 text-sm mt-2">40 Soal Analisis</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <button onclick="app.showMateri()" class="text-gray-500 underline">Kembali</button>
+            </div>
+        </div>
+
+        <!-- 3. KERJAKAN SOAL -->
+        <div id="screen-quiz" class="hidden-section fade-in">
+            <!-- Header Quiz -->
+            <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm mb-6 sticky top-20 z-40 border border-gray-200">
+                <div>
+                    <h3 id="quiz-title" class="font-bold text-blue-700 text-lg">Paket A</h3>
+                    <span class="text-xs text-gray-400 font-bold uppercase">Mode Ujian</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-2xl font-bold text-gray-800" id="page-display">1</span>
+                    <span class="text-sm text-gray-400">/ 4 Halaman</span>
+                </div>
+            </div>
+
+            <!-- Tempat Soal -->
+            <div id="quiz-container" class="space-y-6"></div>
+
+            <!-- Navigasi Bawah -->
+            <div class="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+                <button id="btn-prev" onclick="app.prevPage()" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
+                    <i class="fas fa-arrow-left"></i> Sebelumnya
+                </button>
+                <button id="btn-next" onclick="app.nextPage()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                    Selanjutnya <i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="btn-finish" onclick="app.finishQuiz()" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition hidden-section">
+                    Selesai & Lihat Nilai <i class="fas fa-check-circle ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. HASIL NILAI -->
+        <div id="screen-result" class="hidden-section fade-in pb-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="bg-gray-900 p-8 text-center text-white">
+                    <h2 class="text-2xl font-bold mb-1">Hasil Akhir</h2>
+                    <p class="text-gray-400 text-sm mb-6">Bimbel Musafir One</p>
+                    
+                    <div class="w-32 h-32 mx-auto rounded-full border-4 border-blue-500 flex items-center justify-center bg-gray-800">
+                        <span id="score-final" class="text-5xl font-extrabold">0</span>
+                    </div>
+                    <p id="score-msg" class="mt-4 text-lg font-bold text-blue-300">Hebat!</p>
+                </div>
+
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4 pb-4 border-b">
+                        <h3 class="font-bold text-lg text-gray-800">Pembahasan (Jawaban Salah)</h3>
+                        <button onclick="app.showPaket()" class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg text-sm font-bold text-gray-600">
+                            Ulangi
+                        </button>
+                    </div>
+
+                    <div id="result-details" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-6 text-gray-400 text-sm bg-white border-t mt-8">
+        &copy; 2024 Bimbel Musafir One
+    </footer>
+
+    <!-- LOGIC SYSTEM -->
+    <script>
+        // DATA SOAL (Disimpan dalam Variabel Konstan)
+        const DB_SOAL = {
+            A: [
+                {q:"Aturan dibuat agar kehidupan kita menjadi...", o:["Kacau","Tertib","Berantakan","Sulit"], a:"B", e:"Tujuan aturan adalah ketertiban."},
+                {q:"Di mana kita harus mematuhi aturan?", o:["Hanya rumah","Hanya sekolah","Di mana saja","Di jalan"], a:"C", e:"Aturan berlaku di semua tempat."},
+                {q:"Contoh aturan di rumah adalah...", o:["Telat sekolah","Pakai seragam","Rapikan kasur","Coret dinding"], a:"C", e:"Kewajiban anak di rumah."},
+                {q:"Siapa pembuat aturan sekolah?", o:["Orang tua","Pihak Sekolah","Tetangga","Polisi"], a:"B", e:"Guru dan kepala sekolah."},
+                {q:"Manfaat patuh aturan?", o:["Dihukum","Hidup tenang","Dibenci","Masalah"], a:"B", e:"Kepatuhan membawa ketenangan."},
+                {q:"Datang ke sekolah harus...", o:["Terlambat","Tepat waktu","Semau gue","Sore"], a:"B", e:"Disiplin waktu."},
+                {q:"Melanggar aturan mendapat...", o:["Hadiah","Pujian","Sanksi","Uang"], a:"C", e:"Konsekuensi pelanggaran."},
+                {q:"Pakai helm aturan di...", o:["Rumah","Sekolah","Jalan Raya","Kamar"], a:"C", e:"Keselamatan lalu lintas."},
+                {q:"Contoh aturan masyarakat...", o:["Tidur","Seragam","Kerja bakti","PR"], a:"C", e:"Gotong royong."},
+                {q:"Sikap pada orang tua?", o:["Kasar","Hormat","Acuh","Marah"], a:"B", e:"Berbakti pada orang tua."},
+                // 11-20
+                {q:"Sebelum masuk kelas...", o:["Lari","Teriak","Baris rapi","Tidur"], a:"C", e:"Tertib baris berbaris."},
+                {q:"Buang sampah di...", o:["Sungai","Jalan","Laci","Tempat sampah"], a:"D", e:"Kebersihan lingkungan."},
+                {q:"Saat guru menjelaskan...", o:["Tidur","Ngobrol","Dengar","Main"], a:"C", e:"Menghargai guru."},
+                {q:"Aturan tertulis dan...", o:["Tak tertulis","Tak ada","Bebas","Salah"], a:"A", e:"Jenis aturan."},
+                {q:"Bangun pagi tanda...", o:["Malas","Disiplin","Sombong","Curang"], a:"B", e:"Disiplin diri."},
+                {q:"Yang jaga kebersihan kelas?", o:["Guru","Penjaga","Semua siswa","Ketua"], a:"C", e:"Tanggung jawab bersama."},
+                {q:"Jika salah harus...", o:["Lari","Tuduh","Minta maaf","Diam"], a:"C", e:"Jiwa besar."},
+                {q:"Main tak boleh...", o:["Rukun","Senang","Curang","Adil"], a:"C", e:"Sportivitas."},
+                {q:"Aturan makan...", o:["Lari","Berdoa","Berantakan","Teriak"], a:"B", e:"Adab makan."},
+                {q:"Nyeberang di...", o:["Tikungan","Zebra cross","Tengah","Mana saja"], a:"B", e:"Safety riding."},
+                // 21-30
+                {q:"Jangan gaduh malam hari...", o:["Dimarahi","Ganggu","Hormati warga","Viral"], a:"C", e:"Tenggang rasa."},
+                {q:"Seragam sesuai...", o:["Ingin","Jadwal","Warna","Harga"], a:"B", e:"Tata tertib."},
+                {q:"Tugas pelajar...", o:["Main","Kerja","Belajar","Tidur"], a:"C", e:"Kewajiban utama."},
+                {q:"Anak patuh akan...", o:["Dijauhi","Disayang","Dihukum","Sedih"], a:"B", e:"Manfaat patuh."},
+                {q:"Saat ulangan dilarang...", o:["Kerjakan","Doa","Nyontek","Duduk"], a:"C", e:"Kejujuran."},
+                {q:"Teman melanggar...", o:["Ikut","Ingatkan","Biarkan","Tawa"], a:"B", e:"Peduli teman."},
+                {q:"Aturan bikin hidup...", o:["Aman","Bahaya","Takut","Rugi"], a:"A", e:"Fungsi aturan."},
+                {q:"Wajib patuh lalin?", o:["Polisi","Pengguna jalan","Bayi","Pedagang"], a:"B", e:"Semua orang."},
+                {q:"Bantu kerja rumah tugas...", o:["Pembantu","Ibu","Semua keluarga","Ayah"], a:"C", e:"Kerjasama."},
+                {q:"Ada kerja bakti, ayah...", o:["Tidur","Liburan","Ikut","Nonton"], a:"C", e:"Partisipasi."},
+                // 31-40
+                {q:"Bicara pada guru...", o:["Kasar","Sopan","Gaul","Keras"], a:"B", e:"Etika."},
+                {q:"Tak bedakan teman...", o:["Musuh","Rukun","Kelahi","Lomba"], a:"B", e:"Persatuan."},
+                {q:"Pinjam barang...", o:["Ambil","Kembalikan","Jual","Buang"], a:"B", e:"Amanah."},
+                {q:"Piket kelas untuk...", o:["Uang","Hukum","Bersihkan","Main"], a:"C", e:"Kebersihan."},
+                {q:"Di perpustakaan...", o:["Makan","Teriak","Tenang","Tidur"], a:"C", e:"Ketertiban."},
+                {q:"Pelanggar aturan disebut...", o:["Disiplin","Tidak tertib","Pahlawan","Taat"], a:"B", e:"Istilah."},
+                {q:"Lampu merah artinya...", o:["Jalan","Berhenti","Ngebut","Mundur"], a:"B", e:"Rambu."},
+                {q:"Pamit sekolah pada...", o:["Tetangga","Orang tua","Polisi","Teman"], a:"B", e:"Adab."},
+                {q:"Kita harus ... aturan.", o:["Langgar","Patuhi","Abaikan","Lupa"], a:"B", e:"Kewajiban."},
+                {q:"Hidup rukun jika...", o:["Ejek","Taat aturan","Pukul","Egois"], a:"B", e:"Harmoni."}
+            ],
+            B: [
+                {q:"Sampah di taman, Dini...", o:["Biarkan","Pungut","Marah","Ikut buang"], a:"B", e:"Peduli lingkungan."},
+                {q:"Kenapa aturan 'tak tertulis' dipatuhi?", o:["Denda","Takut","Sopan santun","Masuk TV"], a:"C", e:"Norma kesopanan."},
+                {q:"Terobos lampu merah...", o:["Cepat","Dipuji","Bahaya","Aman"], a:"C", e:"Risiko kecelakaan."},
+                {q:"Andi tak buat PR...", o:["Juara","Tak disiplin","Senang","Dipuji"], a:"B", e:"Dampak buruk."},
+                {q:"BUKAN manfaat tertib?", o:["Damai","Lancar","Bertengkar","Tenang"], a:"C", e:"Dampak negatif."},
+                {q:"Kakak belajar, Rina...", o:["Kerasin TV","Marah","Kecilin suara","Ganggu"], a:"C", e:"Toleransi."},
+                {q:"Aturan bukan mengekang tapi...", o:["Jajah","Jamin hak","Sulit","Takut"], a:"B", e:"Perlindungan hak."},
+                {q:"Absen kerja bakti...", o:["Penjara","Denda","Sanksi sosial","Diusir"], a:"C", e:"Dikucilkan."},
+                {q:"Pendapat ditolak...", o:["Marah","Paksa","Lapang dada","Musuh"], a:"C", e:"Demokrasi."},
+                {q:"Main hakim sendiri dilarang karena...", o:["Teman","Negara hukum","Kasihan","Sepi"], a:"B", e:"Hukum."},
+                // 11-20
+                {q:"KECUALI akibat tanpa aturan lalin...", o:["Macet","Celaka","Lancar","Bahaya"], a:"C", e:"Logika."},
+                {q:"Nemu dompet...", o:["Ambil","Sembunyi","Lapor guru","Jajan"], a:"C", e:"Jujur."},
+                {q:"Agar hak dihargai...", o:["Hargai orang","Minta","Cuek","Suruh"], a:"A", e:"Timbal balik."},
+                {q:"Beda tertulis & tak tertulis?", o:["Sanksi tegas vs moral","Presiden","Tak wajib","Sama"], a:"A", e:"Jenis sanksi."},
+                {q:"Ribut saat guru tak ada...", o:["Bersih","Tertib","Rapi","Jujur"], a:"B", e:"Kondusif."},
+                {q:"Bertamu...", o:["Masuk","Makan","Ketuk & salam","Tidur"], a:"C", e:"Sopan santun."},
+                {q:"Sikap mandiri...", o:["Suruh ibu","Siap sendiri","Suapin","Males"], a:"B", e:"Kemandirian."},
+                {q:"Pentingnya antre?", o:["Rapi","Hargai hak","Cepat","Pujian"], a:"B", e:"Keadilan."},
+                {q:"Konflik teman karena...", o:["Hormat","Taat","Egois","Berbagi"], a:"C", e:"Egoisme."},
+                {q:"Tanggung jawab siswa lain?", o:["Cari uang","Jaga nama baik","Atur guru","Bangun"], a:"B", e:"Moral."},
+                // 21-30
+                {q:"Lingkungan kotor rugikan...", o:["Pemerintah","Semua warga","Kaya","Hewan"], a:"B", e:"Kolektif."},
+                {q:"Patuh lalin wujud...", o:["Cinta tanah air","Takut","Pamer","Terpaksa"], a:"A", e:"Nasionalisme."},
+                {q:"Tindakan sila ke-5?", o:["Patuh ada polisi","Jaga fasilitas","Serobot","Nyampah"], a:"B", e:"Keadilan sosial."},
+                {q:"Tujuan hukuman?", o:["Dendam","Efek jera","Siksa","Malu"], a:"B", e:"Pembinaan."},
+                {q:"Dilarang bicara saat upacara...", o:["Senang","Khidmat","Suara jelek","Cepat"], a:"B", e:"Penghormatan."},
+                {q:"Sobek buku perpus...", o:["Diam","Lapor ganti","Buang","Tuduh"], a:"B", e:"Tanggung jawab."},
+                {q:"Disiplin mulai dari...", o:["Diri sendiri","Teman","Ortu","RT"], a:"A", e:"Kesadaran."},
+                {q:"Musik keras...", o:["Seni","Polusi suara","Wajib","Baik"], a:"B", e:"Gangguan."},
+                {q:"Dasar aturan sekolah?", o:["Siswa","Kepsek","Kepentingan bersama","Ortu"], a:"C", e:"Musyawarah."},
+                {q:"Diberi tugas guru...", o:["Tunda","Asal","Sungguh-sungguh","Suruh"], a:"C", e:"Amanah."},
+                // 31-40
+                {q:"Tanpa jam belajar...", o:["Pintar","Waktu kacau","Senang","Rapi"], a:"B", e:"Manajemen waktu."},
+                {q:"Bebas pendapat harus...", o:["Teriak","Tanggung jawab","Senjata","Hina"], a:"B", e:"Etika."},
+                {q:"Teman beda agama ibadah...", o:["Hormati","Ganggu","Cuek","Larang"], a:"A", e:"Toleransi."},
+                {q:"Sportif artinya...", o:["Harus menang","Terima kalah","Marah","Curang"], a:"B", e:"Jiwa besar."},
+                {q:"Dilarang HP saat ujian...", o:["Hilang","Cegah curang","Pinjam","Tidur"], a:"B", e:"Integritas."},
+                {q:"Ortu mau nyeberang...", o:["Lihat","Rekam","Bantu","Tawa"], a:"C", e:"Empati."},
+                {q:"Bayar pajak aturan...", o:["Keluarga","Sekolah","Negara","Adat"], a:"C", e:"Negara."},
+                {q:"Bangun siang bikin...", o:["Sehat","Segar","Terburu-buru","Kaya"], a:"C", e:"Rugi."},
+                {q:"Adat daerah lain...", o:["Hina","Hormati","Abaikan","Ubah"], a:"B", e:"Adaptasi."},
+                {q:"Tujuan materi ini...", o:["Pelanggar","Penakut","Pelajar Pancasila","Lawan"], a:"C", e:"Visi."}
+            ]
+        };
+
+        // OBJECT APLIKASI UTAMA
+        const app = {
+            currentData: [],
+            answers: {},
+            page: 0,
+            perPage: 10,
+
+            // Navigasi
+            hideAll: () => {
+                document.getElementById('screen-materi').style.display = 'none';
+                document.getElementById('screen-paket').style.display = 'none';
+                document.getElementById('screen-quiz').style.display = 'none';
+                document.getElementById('screen-result').style.display = 'none';
+            },
+
+            showMateri: () => {
+                app.hideAll();
+                document.getElementById('screen-materi').style.display = 'block';
+                window.scrollTo(0,0);
+            },
+
+            showPaket: () => {
+                app.hideAll();
+                document.getElementById('screen-paket').style.display = 'block';
+                window.scrollTo(0,0);
+            },
+
+            // Logika Kuis
+            startQuiz: (type) => {
+                app.currentData = DB_SOAL[type];
+                app.answers = {};
+                app.page = 0;
+                
+                document.getElementById('quiz-title').textContent = type === 'A' ? 'Paket A (Sedang)' : 'Paket B (Sulit)';
+                app.renderPage();
+                
+                app.hideAll();
+                document.getElementById('screen-quiz').style.display = 'block';
+                window.scrollTo(0,0);
+            },
+
+            renderPage: () => {
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = '';
+                
+                const start = app.page * app.perPage;
+                const end = Math.min(start + app.perPage, app.currentData.length);
+                
+                // Update nomor halaman
+                document.getElementById('page-display').innerText = (app.page + 1);
+
+                // Tombol Navigasi
+                const totalPages = Math.ceil(app.currentData.length / app.perPage);
+                document.getElementById('btn-prev').style.display = app.page === 0 ? 'none' : 'block';
+                
+                if (app.page === totalPages - 1) {
+                    document.getElementById('btn-next').style.display = 'none';
+                    document.getElementById('btn-finish').style.display = 'block';
+                } else {
+                    document.getElementById('btn-next').style.display = 'block';
+                    document.getElementById('btn-finish').style.display = 'none';
+                }
+
+                // Render Soal
+                for (let i = start; i < end; i++) {
+                    const item = app.currentData[i];
+                    const qIndex = i;
+                    
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-6 rounded-2xl shadow-sm border border-gray-100";
+                    
+                    const title = document.createElement('h4');
+                    title.className = "font-bold text-gray-800 text-lg mb-4 flex gap-3";
+                    title.innerHTML = `<span class="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0">${qIndex+1}</span> <span>${item.q}</span>`;
+                    card.appendChild(title);
+
+                    const optsContainer = document.createElement('div');
+                    ['A','B','C','D'].forEach((char, idx) => {
+                        const btn = document.createElement('button');
+                        const isSelected = app.answers[qIndex] === char;
+                        
+                        btn.className = `choice-btn ${isSelected ? 'selected' : ''}`;
+                        btn.innerHTML = `<div class="circle-label">${char}</div> <span class="text-sm font-medium">${item.o[idx]}</span>`;
+                        
+                        btn.onclick = () => {
+                            app.answers[qIndex] = char;
+                            app.renderPage(); // Re-render untuk update tampilan
+                        };
+                        optsContainer.appendChild(btn);
+                    });
+                    
+                    card.appendChild(optsContainer);
+                    container.appendChild(card);
+                }
+                window.scrollTo(0,0);
+            },
+
+            nextPage: () => {
+                app.page++;
+                app.renderPage();
+            },
+
+            prevPage: () => {
+                app.page--;
+                app.renderPage();
+            },
+
+            // FUNGSI SELESAI (TANPA LOGIKA RUMIT)
+            finishQuiz: () => {
+                // Langsung hitung nilai tanpa validasi berbelit
+                let correct = 0;
+                let wrongList = [];
+                const total = app.currentData.length;
+
+                app.currentData.forEach((item, index) => {
+                    const myAns = app.answers[index];
+                    if (myAns === item.a) {
+                        correct++;
+                    } else {
+                        wrongList.push({
+                            no: index + 1,
+                            q: item.q,
+                            ans: myAns || "Kosong",
+                            key: item.a,
+                            expl: item.e
+                        });
+                    }
+                });
+
+                const score = Math.round((correct / total) * 100);
+
+                // Tampilkan Hasil
+                document.getElementById('score-final').innerText = score;
+                
+                let msg = "";
+                if(score === 100) msg = "Sempurna! Kamu Luar Biasa!";
+                else if(score >= 80) msg = "Kerja Bagus!";
+                else if(score >= 60) msg = "Cukup Baik!";
+                else msg = "Jangan Menyerah!";
+                
+                document.getElementById('score-msg').innerText = msg;
+
+                // Render Detail Salah
+                const detailContainer = document.getElementById('result-details');
+                detailContainer.innerHTML = '';
+
+                if (wrongList.length === 0) {
+                    detailContainer.innerHTML = `<div class="p-6 bg-green-50 text-green-700 rounded-xl text-center font-bold">Semua jawabanmu benar! 🎉</div>`;
+                } else {
+                    wrongList.forEach(w => {
+                        const div = document.createElement('div');
+                        div.className = "bg-red-50 p-4 rounded-xl border border-red-100";
+                        div.innerHTML = `
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-red-200 text-red-800 text-xs font-bold px-2 py-1 rounded">No. ${w.no}</span>
+                                <span class="text-red-600 font-bold text-sm">Salah</span>
+                            </div>
+                            <p class="font-bold text-gray-800 text-sm mb-3">${w.q}</p>
+                            <div class="flex flex-col sm:flex-row gap-3 text-xs mb-3">
+                                <div class="w-full bg-white p-2 border border-red-200 rounded text-red-600 font-semibold">
+                                    <i class="fas fa-times mr-1"></i> Kamu: ${w.ans}
+                                </div>
+                                <div class="w-full bg-white p-2 border border-green-200 rounded text-green-600 font-semibold">
+                                    <i class="fas fa-check mr-1"></i> Kunci: ${w.key}
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 text-gray-600 text-xs p-3 rounded-lg">
+                                <strong>Pembahasan:</strong> ${w.expl}
+                            </div>
+                        `;
+                        detailContainer.appendChild(div);
+                    });
+                }
+
+                app.hideAll();
+                document.getElementById('screen-result').style.display = 'block';
+                window.scrollTo(0,0);
+            }
+        };
+
+        // Inisialisasi Awal
+        app.showMateri();
+    </script>
+</body>
+</html>
+
