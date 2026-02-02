@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal IPAS Bab 3 - Bimbel Musafir One</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+        .tab-inactive { color: #6b7280; }
+        .correct-answer { background-color: #d1fae5; border: 1px solid #10b981; color: #065f46; }
+        .wrong-answer { background-color: #fee2e2; border: 1px solid #ef4444; color: #991b1b; }
+        .explanation-box { display: none; margin-top: 10px; padding: 10px; background-color: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 4px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Logo Area -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white p-3 rounded-lg shadow-lg">
+                    <i class="fas fa-rocket text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800 tracking-tight">BIMBEL MUSAFIR ONE</h1>
+                    <p class="text-xs md:text-sm text-blue-600 font-semibold">Sahabat Belajar Menuju Puncak Ilmu</p>
+                </div>
+            </div>
+            <div class="text-right hidden md:block">
+                <p class="text-sm text-gray-500">Materi: IPAS Kelas 4 SD</p>
+                <p class="text-xs text-gray-400">Bab 3: Gaya di Sekitar Kita</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-gray-300 mb-6 bg-white rounded-t-lg overflow-hidden">
+            <button onclick="switchTab('paketA')" id="btn-paketA" class="w-1/2 py-4 text-center transition-all duration-300 hover:bg-gray-50 tab-active">
+                <i class="fas fa-book-reader mr-2"></i>PAKET A (Sedang)
+            </button>
+            <button onclick="switchTab('paketB')" id="btn-paketB" class="w-1/2 py-4 text-center transition-all duration-300 hover:bg-gray-50 tab-inactive">
+                <i class="fas fa-brain mr-2"></i>PAKET B (Sulit)
+            </button>
+        </div>
+
+        <!-- Container Paket A -->
+        <div id="paketA" class="bg-white p-6 rounded-b-lg shadow-lg min-h-screen">
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h2 class="text-lg font-bold text-blue-800 mb-2">Petunjuk Pengerjaan Paket A</h2>
+                <ul class="list-disc list-inside text-sm text-blue-700">
+                    <li>Terdiri dari 40 soal pilihan ganda tingkat kesulitan <strong>Sedang</strong>.</li>
+                    <li>Materi mencakup definisi dasar dan contoh sehari-hari.</li>
+                    <li>Klik tombol "Cek Nilai" di bawah untuk melihat skor dan pembahasan.</li>
+                </ul>
+            </div>
+            <form id="form-paketA">
+                <!-- Soal Paket A akan di-render di sini oleh Javascript -->
+                <div id="soal-container-A" class="space-y-8"></div>
+            </form>
+            <div class="mt-8 text-center">
+                <button type="button" onclick="checkScore('A')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
+                    <i class="fas fa-check-circle mr-2"></i>Cek Nilai Paket A
+                </button>
+            </div>
+            <div id="result-A" class="mt-6 hidden text-center p-6 bg-gray-100 rounded-lg border-2 border-gray-300">
+                <p class="text-2xl font-bold">Skor Kamu: <span id="score-val-A" class="text-blue-600">0</span> / 100</p>
+                <p class="text-gray-600 mt-2">Silakan scroll ke atas untuk melihat kunci jawaban dan pembahasan.</p>
+            </div>
+        </div>
+
+        <!-- Container Paket B -->
+        <div id="paketB" class="bg-white p-6 rounded-b-lg shadow-lg min-h-screen hidden">
+            <div class="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                <h2 class="text-lg font-bold text-purple-800 mb-2">Petunjuk Pengerjaan Paket B</h2>
+                <ul class="list-disc list-inside text-sm text-purple-700">
+                    <li>Terdiri dari 40 soal pilihan ganda tingkat kesulitan <strong>Sulit / HOTS</strong>.</li>
+                    <li>Materi mencakup analisis kasus, hubungan sebab-akibat, dan penerapan konsep.</li>
+                    <li>Klik tombol "Cek Nilai" di bawah untuk melihat skor dan pembahasan.</li>
+                </ul>
+            </div>
+            <form id="form-paketB">
+                <!-- Soal Paket B akan di-render di sini oleh Javascript -->
+                <div id="soal-container-B" class="space-y-8"></div>
+            </form>
+            <div class="mt-8 text-center">
+                <button type="button" onclick="checkScore('B')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
+                    <i class="fas fa-check-circle mr-2"></i>Cek Nilai Paket B
+                </button>
+            </div>
+            <div id="result-B" class="mt-6 hidden text-center p-6 bg-gray-100 rounded-lg border-2 border-gray-300">
+                <p class="text-2xl font-bold">Skor Kamu: <span id="score-val-B" class="text-purple-600">0</span> / 100</p>
+                <p class="text-gray-600 mt-2">Silakan scroll ke atas untuk melihat kunci jawaban dan pembahasan.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-6 mt-12">
+        <p>&copy; 2024 Bimbel Musafir One. Materi bersumber dari Buku Siswa IPAS Kelas IV (Kemendikbud Ristek 2021).</p>
+        <p class="text-gray-400 text-sm mt-2">Dibuat untuk tujuan pendidikan.</p>
+    </footer>
+
+    <!-- Script Data Soal dan Logika -->
+    <script>
+        // --- DATA SOAL PAKET A (SEDANG) ---
+        const soalPaketA = [
+            // Gaya Otot & Dasar (1-10)
+            { q: "Apa yang dimaksud dengan gaya?", o: ["Energi listrik", "Tarikan atau dorongan", "Cahaya matahari", "Benda padat"], a: 1, e: "Gaya adalah interaksi pada benda dalam bentuk tarikan atau dorongan." },
+            { q: "Saat kita mendorong meja, gaya yang kita gunakan berasal dari...", o: ["Gaya listrik", "Gaya magnet", "Gaya otot", "Gaya gravitasi"], a: 2, e: "Mendorong benda menggunakan kekuatan tubuh disebut gaya otot." },
+            { q: "Apa pengaruh gaya terhadap benda diam?", o: ["Benda menjadi panas", "Benda menjadi bergerak", "Benda menjadi hilang", "Benda menjadi berat"], a: 1, e: "Gaya dapat membuat benda yang diam menjadi bergerak." },
+            { q: "Aktivitas manakah yang menggunakan gaya tarikan?", o: ["Menendang bola", "Membuka pintu kulkas", "Menekan tombol bel", "Menginjak rem"], a: 1, e: "Membuka pintu kulkas dilakukan dengan cara menarik gagang pintunya." },
+            { q: "Saat bermain plastisin (lilin mainan), gaya dapat mengubah...", o: ["Bentuk benda", "Warna benda", "Bau benda", "Rasa benda"], a: 0, e: "Salah satu sifat gaya adalah dapat mengubah bentuk benda, contohnya pada plastisin." },
+            { q: "Gaya yang dikeluarkan oleh manusia atau hewan menggunakan tubuh disebut...", o: ["Gaya mesin", "Gaya otot", "Gaya pegas", "Gaya gesek"], a: 1, e: "Definisi gaya otot adalah gaya yang dikeluarkan manusia/hewan menggunakan otot tubuh." },
+            { q: "Contoh kegiatan yang memberikan gaya dorong adalah...", o: ["Mengerek bendera", "Menutup pintu", "Mencabut rumput", "Mengambil air di sumur"], a: 1, e: "Menutup pintu dilakukan dengan mendorong daun pintu." },
+            { q: "Sapi menarik gerobak merupakan contoh pemanfaatan gaya...", o: ["Otot hewan", "Otot mesin", "Gesek udara", "Magnet bumi"], a: 0, e: "Sapi adalah hewan yang menggunakan ototnya untuk menarik beban." },
+            { q: "Apa yang terjadi jika dua orang mendorong meja dari arah yang sama?", o: ["Meja diam", "Meja bergerak lebih cepat/mudah", "Meja bergerak berlawanan", "Meja patah"], a: 1, e: "Gaya yang searah akan saling menguatkan sehingga benda lebih mudah bergerak." },
+            { q: "Selain mengubah gerak dan bentuk, gaya juga bisa mengubah...", o: ["Arah gerak benda", "Wujud zat", "Suhu udara", "Warna langit"], a: 0, e: "Gaya dapat membelokkan atau mengubah arah gerak benda (misal: menepis bola)." },
+
+            // Gaya Gesek (11-20)
+            { q: "Gaya yang muncul ketika dua permukaan benda saling bersentuhan disebut gaya...", o: ["Otot", "Magnet", "Pegas", "Gesek"], a: 3, e: "Gaya gesek terjadi akibat sentuhan dua permukaan benda." },
+            { q: "Arah gaya gesek selalu ... dengan arah gerak benda.", o: ["Searah", "Berlawanan", "Tegak lurus", "Ke atas"], a: 1, e: "Gaya gesek bersifat menghambat, jadi arahnya berlawanan dengan gerak benda." },
+            { q: "Permukaan benda yang kasar akan menghasilkan gaya gesek yang...", o: ["Lebih kecil", "Lebih besar", "Sama saja", "Hilang"], a: 1, e: "Semakin kasar permukaan, semakin besar gaya gesek yang dihasilkan." },
+            { q: "Permukaan yang licin menyebabkan benda...", o: ["Sulit bergerak", "Mudah tergelincir/bergerak", "Tidak bisa bergerak", "Terbang"], a: 1, e: "Permukaan licin memperkecil gaya gesek sehingga benda mudah bergerak." },
+            { q: "Pemberian roda pada lemari bertujuan untuk...", o: ["Memperbesar gaya gesek", "Memperkecil gaya gesek", "Menambah berat", "Memperindah lemari"], a: 1, e: "Roda memperkecil luas permukaan yang bersentuhan sehingga gaya gesek mengecil." },
+            { q: "Sepatu bola memiliki paku-paku (pul) di bagian alasnya bertujuan untuk...", o: ["Memperbesar gaya gesek agar tidak licin", "Memperkecil gaya gesek agar cepat", "Membuat kaki sakit", "Menambah beban"], a: 0, e: "Pul pada sepatu bola memperbesar gesekan dengan tanah agar pemain tidak terpeleset." },
+            { q: "Untuk memperlancar gerak rantai sepeda, kita memberikan...", o: ["Air", "Pasir", "Oli/Pelumas", "Lem"], a: 2, e: "Pelumas atau oli berfungsi memperkecil gaya gesek agar mesin/rantai tidak aus." },
+            { q: "Gaya gesek yang terlalu besar pada mesin kendaraan dapat menyebabkan...", o: ["Mesin awet", "Mesin cepat panas dan aus", "Kendaraan makin cepat", "Bensin irit"], a: 1, e: "Gesekan menimbulkan panas dan pengikisan (aus) pada komponen mesin." },
+            { q: "Rem pada sepeda bekerja dengan memanfaatkan gaya...", o: ["Pegas", "Gravitasi", "Gesek", "Magnet"], a: 2, e: "Rem bekerja dengan menggesekkan karet rem ke velg roda untuk memperlambat laju." },
+            { q: "Salah satu kerugian gaya gesek adalah...", o: ["Benda tidak tergelincir", "Ban kendaraan menjadi gundul/tipis", "Bisa berjalan kaki", "Menghasilkan panas untuk api"], a: 1, e: "Gaya gesek menyebabkan permukaan benda (seperti ban) terkikis habis." },
+
+            // Gaya Magnet (21-30)
+            { q: "Benda yang dapat menarik benda-benda dari besi disebut...", o: ["Kaca", "Plastik", "Magnet", "Kayu"], a: 2, e: "Magnet adalah benda yang memiliki kemampuan menarik benda logam tertentu (feromagnetik)." },
+            { q: "Bagian magnet yang memiliki kekuatan tarik terbesar adalah...", o: ["Tengah", "Pinggir", "Kutub", "Samping"], a: 2, e: "Kekuatan magnet terbesar terpusat di kedua kutubnya." },
+            { q: "Magnet memiliki dua kutub, yaitu...", o: ["Timur dan Barat", "Utara dan Selatan", "Atas dan Bawah", "Kiri dan Kanan"], a: 1, e: "Kutub magnet dinamai Kutub Utara (North) dan Kutub Selatan (South)." },
+            { q: "Jika dua kutub magnet yang SENAMA (sama) didekatkan, maka akan...", o: ["Tarik menarik", "Tolak menolak", "Diam saja", "Menyatu"], a: 1, e: "Kutub sejenis (Utara-Utara atau Selatan-Selatan) akan saling tolak-menolak." },
+            { q: "Jika Kutub Utara magnet didekatkan dengan Kutub Selatan magnet lain, maka akan...", o: ["Tolak menolak", "Tarik menarik", "Berputar", "Menjauh"], a: 1, e: "Kutub tak sejenis (Utara-Selatan) akan saling tarik-menarik." },
+            { q: "Benda berikut yang BISA ditarik oleh magnet adalah...", o: ["Pensil kayu", "Penghapus karet", "Paku besi", "Gelas kaca"], a: 2, e: "Paku besi adalah bahan feromagnetik yang dapat ditarik magnet." },
+            { q: "Benda berikut yang TIDAK bisa ditarik magnet adalah...", o: ["Jarum jahit", "Klip kertas besi", "Kertas", "Gunting besi"], a: 2, e: "Kertas adalah benda non-magnetis." },
+            { q: "Kompas menggunakan magnet berbentuk jarum untuk menunjuk arah...", o: ["Kiri dan Kanan", "Atas dan Bawah", "Utara dan Selatan", "Timur dan Barat"], a: 2, e: "Jarum kompas selalu menunjuk arah Utara dan Selatan bumi." },
+            { q: "Pintu kulkas dapat tertutup rapat karena menggunakan...", o: ["Lem perekat", "Gaya magnet", "Gaya pegas", "Kunci gembok"], a: 1, e: "Karet pintu kulkas berisi magnet agar bisa menutup rapat." },
+            { q: "Bumi dianggap sebagai magnet raksasa karena memiliki kutub magnet di...", o: ["Khatulistiwa", "Inti bumi", "Kutub Utara dan Selatan Bumi", "Atmosfer"], a: 2, e: "Bumi memiliki medan magnet dengan kutub di dekat kutub geografi utara dan selatan." },
+
+            // Gaya Pegas & Gravitasi (31-40)
+            { q: "Benda elastis adalah benda yang...", o: ["Keras dan kaku", "Mudah pecah", "Lentur dan bisa kembali ke bentuk semula", "Cair"], a: 2, e: "Elastis artinya lentur dan dapat kembali ke bentuk awal setelah gaya dihilangkan." },
+            { q: "Contoh benda yang memiliki sifat elastis adalah...", o: ["Batu", "Karet gelang", "Kayu", "Kaca"], a: 1, e: "Karet gelang adalah contoh paling umum benda elastis." },
+            { q: "Gaya yang dihasilkan oleh benda elastis disebut gaya...", o: ["Otot", "Gesek", "Pegas", "Gravitasi"], a: 2, e: "Benda elastis menghasilkan gaya pegas (gaya pemulih)." },
+            { q: "Busur panah memanfaatkan gaya...", o: ["Gesek", "Magnet", "Pegas", "Listrik"], a: 2, e: "Tali busur yang ditarik menyimpan energi pegas untuk melontarkan anak panah." },
+            { q: "Shockbreaker (suspensi) kendaraan menggunakan prinsip gaya pegas untuk...", o: ["Meredam guncangan", "Menambah kecepatan", "Mengerem", "Membunyikan klakson"], a: 0, e: "Pegas pada kendaraan meredam getaran saat melewati jalan rusak." },
+            { q: "Buah kelapa jatuh dari pohon ke tanah disebabkan oleh gaya...", o: ["Otot", "Magnet", "Gesek", "Gravitasi Bumi"], a: 3, e: "Gaya gravitasi menarik semua benda ke pusat bumi." },
+            { q: "Gaya gravitasi bumi arahnya selalu menuju ke...", o: ["Langit", "Pusat/Inti Bumi", "Laut", "Gunung"], a: 1, e: "Pusat gravitasi bumi berada di inti bumi." },
+            { q: "Jika tidak ada gaya gravitasi, maka benda-benda di bumi akan...", o: ["Menempel kuat di tanah", "Melayang-layang di udara", "Menjadi sangat berat", "Masuk ke dalam tanah"], a: 1, e: "Tanpa gravitasi, tidak ada gaya tarik ke bawah, sehingga benda akan melayang." },
+            { q: "Para penerjun payung menggunakan parasut untuk memperlambat jatuhnya dengan memanfaatkan...", o: ["Gaya magnet", "Hambatan udara", "Gaya otot", "Gaya pegas"], a: 1, e: "Parasut yang lebar menangkap udara (hambatan udara) untuk menahan laju jatuh." },
+            { q: "Manakah yang jatuh lebih lambat di udara terbuka: Batu atau Bulu ayam?", o: ["Batu", "Bulu ayam", "Sama saja", "Tidak ada yang jatuh"], a: 1, e: "Bulu ayam jatuh lebih lambat karena hambatan udara padanya lebih besar dibanding beratnya." }
+        ];
+
+        // --- DATA SOAL PAKET B (SULIT/HOTS) ---
+        const soalPaketB = [
+            // Analisis Gaya & Gesek (1-10)
+            { q: "Mengapa Aga dan Dara lebih mudah memindahkan kontainer yang penuh jika diberi roda di bawahnya?", o: ["Karena roda menghilangkan berat benda", "Karena roda mengubah gaya gesek geser menjadi gesek gelinding yang lebih kecil", "Karena roda membuat benda melayang", "Karena roda menambah gaya dorong"], a: 1, e: "Roda mengubah gesekan statis/kinetis menjadi gesekan gelinding yang jauh lebih kecil nilainya." },
+            { q: "Jika lantai sangat licin (misalnya keramik basah), kita sulit berjalan karena...", o: ["Gaya gesek terlalu besar sehingga kaki tertahan", "Gaya gesek terlalu kecil sehingga kaki tidak punya pijakan", "Gaya gravitasi hilang", "Gaya otot melemah"], a: 1, e: "Berjalan membutuhkan gaya gesek agar kaki bisa menolak ke belakang. Jika licin, gesekan kurang." },
+            { q: "Mengapa saat mengerem sepeda mendadak, ban bisa mengeluarkan asap atau panas?", o: ["Karena perubahan energi gerak menjadi energi panas akibat gesekan", "Karena ban terbuat dari api", "Karena gaya gravitasi meningkat", "Karena gaya magnet bekerja"], a: 0, e: "Gesekan antara ban dan aspal mengubah energi kinetik menjadi energi panas." },
+            { q: "Apa yang terjadi pada gaya gesek udara jika sebuah mobil didesain aerodinamis (runcing)?", o: ["Gaya gesek udara makin besar", "Gaya gesek udara makin kecil", "Mobil makin lambat", "Mobil makin berat"], a: 1, e: "Desain aerodinamis membelah angin lebih baik, mengurangi hambatan (gesekan) udara." },
+            { q: "Sebuah balok kayu ditarik di atas karpet dan di atas lantai keramik. Manakah pernyataan yang benar?", o: ["Lebih berat ditarik di keramik karena licin", "Lebih berat ditarik di karpet karena permukaannya kasar", "Sama saja beratnya", "Di karpet balok akan melayang"], a: 1, e: "Karpet memiliki permukaan kasar yang memperbesar koefisien gesek, sehingga gaya tarik yang dibutuhkan lebih besar." },
+            { q: "Jika tidak ada gaya gesek sama sekali di dunia ini, apa yang akan terjadi pada mobil yang sedang melaju?", o: ["Mobil akan berhenti sendiri", "Mobil tidak akan pernah bisa berhenti kecuali menabrak", "Mobil akan terbang", "Mobil berjalan mundur"], a: 1, e: "Tanpa gaya gesek, rem tidak akan berfungsi dan tidak ada gaya yang menahan laju roda secara alami." },
+            { q: "Apa hubungan antara berat benda dengan gaya gesek?", o: ["Semakin berat benda, gaya gesek cenderung semakin besar", "Semakin berat benda, gaya gesek semakin kecil", "Berat benda tidak mempengaruhi gaya gesek", "Benda berat tidak memiliki gaya gesek"], a: 0, e: "Gaya normal (akibat berat) mempengaruhi besarnya gaya gesek. Benda berat menekan lantai lebih kuat." },
+            { q: "Mengapa alur ban kendaraan dibuat bermotif (tidak polos)?", o: ["Agar terlihat bagus", "Untuk membuang air saat hujan dan memperbesar cengkeraman (gesekan)", "Agar ban lebih ringan", "Agar ban tidak panas"], a: 1, e: "Alur ban berfungsi memecah genangan air (mencegah aquaplaning) dan menambah gesekan." },
+            { q: "Gaya yang bekerja saat kiper menangkap bola yang melaju kencang adalah...", o: ["Gaya mengubah bentuk benda", "Gaya mengubah benda diam menjadi bergerak", "Gaya menghentikan gerak benda", "Gaya menambah kecepatan benda"], a: 2, e: "Kiper memberikan gaya berlawanan untuk menghentikan laju bola." },
+            { q: "Pada permainan tarik tambang, jika Tim A menarik dengan gaya 500 N dan Tim B menarik dengan gaya 500 N berlawanan arah, apa yang terjadi?", o: ["Tim A menang", "Tim B menang", "Tali putus", "Diam (Seimbang)"], a: 3, e: "Resultan gaya adalah nol (500 - 500 = 0), sehingga terjadi keseimbangan (benda diam)." },
+
+            // Analisis Magnet (11-20)
+            { q: "Mengapa magnet bisa digunakan untuk memilah sampah logam?", o: ["Karena magnet menarik plastik", "Karena magnet hanya menarik benda feromagnetik (seperti besi) dari tumpukan sampah", "Karena magnet membakar sampah", "Karena magnet membuat sampah melayang"], a: 1, e: "Alat pemilah sampah menggunakan elektromagnet besar untuk mengambil besi/baja dari sampah campuran." },
+            { q: "Kereta Maglev (Magnetic Levitation) bisa melaju sangat cepat karena...", o: ["Menggunakan roda yang besar", "Terapung di atas rel menggunakan gaya tolak magnet sehingga tidak ada gesekan dengan rel", "Menggunakan bensin roket", "Ditarik oleh magnet raksasa di depan"], a: 1, e: "Maglev mengambang (levitasi) akibat gaya tolak magnet, menghilangkan gesekan roda dengan rel." },
+            { q: "Jika sebuah magnet batang dipotong menjadi dua bagian, maka...", o: ["Kutub magnet hilang", "Satu bagian menjadi kutub Utara saja, satu bagian Selatan saja", "Setiap potongan tetap memiliki dua kutub (Utara dan Selatan)", "Magnet menjadi plastik"], a: 2, e: "Setiap partikel magnet memiliki dipol. Memotong magnet akan menghasilkan magnet-magnet baru yang lebih kecil namun lengkap kutubnya." },
+            { q: "Cara membuat magnet dengan menggosokkan magnet tetap ke besi harus dilakukan dengan...", o: ["Arah bolak-balik", "Arah satu arah (searah)", "Dipukul-pukul", "Dipanaskan"], a: 1, e: "Menggosok harus searah untuk menyearahkan magnet elementer di dalam besi." },
+            { q: "Mengapa kompas tidak berfungsi dengan baik jika didekatkan dengan speaker besar?", o: ["Karena speaker berisik", "Karena speaker mengandung magnet kuat yang mengganggu jarum kompas", "Karena kompas takut suara", "Karena speaker terbuat dari kayu"], a: 1, e: "Speaker mengandung magnet permanen yang medan magnetnya bisa membelokkan jarum kompas." },
+            { q: "Sifat kemagnetan sebuah benda bisa hilang jika...", o: ["Disimpan dalam kotak", "Dipukul-pukul keras atau dibakar", "Didekatkan dengan besi", "Didinginkan"], a: 1, e: "Pemanasan atau guncangan keras (dipukul) mengacak susunan magnet elementer sehingga sifat magnet hilang." },
+            { q: "Elektromagnet adalah magnet yang...", o: ["Terbuat dari listrik alami", "Sifat kemagnetannya muncul hanya saat dialiri arus listrik", "Magnet yang ditemukan di dalam tanah", "Magnet yang paling lemah"], a: 1, e: "Elektromagnet dibuat dengan melilitkan kawat berarus listrik pada inti besi." },
+            { q: "Mengapa ujung gunting seringkali dibuat memiliki sifat magnet?", o: ["Agar tajam", "Agar bisa mengambil jarum yang jatuh dengan mudah", "Agar tidak berkarat", "Agar warnanya mengkilap"], a: 1, e: "Memudahkan penjahit mengambil jarum pentul yang kecil dan sulit diambil jari." },
+            { q: "Pernyataan yang salah mengenai garis gaya magnet adalah...", o: ["Keluar dari kutub Utara masuk ke Selatan", "Garis gaya magnet tidak pernah berpotongan", "Semakin rapat garis gaya, medan magnet semakin kuat", "Garis gaya magnet hanya ada di dalam magnet"], a: 3, e: "Garis gaya magnet membentuk pola lengkungan di luar magnet dari Utara ke Selatan." },
+            { q: "Benda non-magnetis seperti aluminium tidak ditarik magnet karena...", o: ["Terlalu ringan", "Susunan atomnya tidak bisa dibuat menjadi magnet elementer", "Warnanya perak", "Menghantarkan listrik"], a: 1, e: "Aluminium adalah paramagnetik (sangat lemah/dianggap tidak ditarik) karena struktur atomnya." },
+
+            // Analisis Pegas & Elastisitas (21-30)
+            { q: "Energi yang tersimpan pada ketapel yang ditarik disebut...", o: ["Energi kinetik", "Energi potensial pegas", "Energi panas", "Energi kimia"], a: 1, e: "Saat benda elastis diregangkan, ia menyimpan energi potensial pegas." },
+            { q: "Mengapa kasur springbed terasa empuk dan bisa memantul?", o: ["Karena isinya kapas", "Karena ada susunan pegas di dalamnya yang menahan beban tubuh", "Karena ada magnet tolak menolak", "Karena diisi angin"], a: 1, e: "Springbed menggunakan pegas besi yang tertekan saat ditiduri dan memberikan gaya dorong ke atas." },
+            { q: "Pada alat trampolin, semakin tinggi kita melompat, maka...", o: ["Semakin kecil gaya pegasnya", "Semakin dalam pegas tertekan dan pantulan berikutnya makin tinggi", "Trampolin akan patah", "Kita akan melayang selamanya"], a: 1, e: "Lompatan tinggi memberikan gaya tekan besar, menyimpan energi potensial besar, menghasilkan pantulan besar." },
+            { q: "Batas elastisitas artinya...", o: ["Benda elastis tidak bisa putus", "Benda akan kembali ke bentuk semula sekuat apapun ditarik", "Batas di mana benda tidak bisa kembali ke bentuk semula jika ditarik lebih jauh", "Benda menjadi cair"], a: 2, e: "Jika ditarik melewati batas elastisitas, benda (seperti per) akan melar permanen atau patah." },
+            { q: "Prinsip kerja dinamometer (neraca pegas) untuk mengukur gaya adalah...", o: ["Semakin besar gaya, pegas semakin pendek", "Semakin besar gaya, pegas semakin memanjang secara teratur", "Pegas berputar", "Pegas menjadi panas"], a: 1, e: "Hukum Hooke: Pertambahan panjang pegas sebanding dengan gaya yang diberikan." },
+            { q: "Alat olahraga panahan membutuhkan pemanah yang kuat untuk...", o: ["Mengangkat busur", "Menarik tali busur agar energi pegas maksimal", "Berlari mengejar panah", "Menahan napas"], a: 1, e: "Semakin kuat tarikan (gaya otot), semakin besar gaya pegas yang melontarkan anak panah." },
+            { q: "Apa perbedaan plastisin dan karet gelang saat ditekan/ditarik?", o: ["Keduanya kembali ke bentuk semula", "Keduanya berubah bentuk permanen", "Karet kembali ke bentuk semula (elastis), plastisin tidak (plastis)", "Plastisin elastis, karet tidak"], a: 2, e: "Plastisin adalah benda plastis (berubah tetap), karet adalah benda elastis." },
+            { q: "Shockbreaker motor yang rusak akan menyebabkan...", o: ["Motor makin ngebut", "Pengendara merasa nyaman", "Guncangan terasa sangat keras saat lewat lubang", "Motor tidak bisa jalan"], a: 2, e: "Tanpa gaya pegas dari shockbreaker, energi benturan langsung diterima rangka motor." },
+            { q: "Ketapel tidak akan berfungsi jika talinya diganti dengan...", o: ["Karet pentil", "Tali rafia/plastik", "Karet ban dalam", "Pegas"], a: 1, e: "Tali rafia tidak elastis, sehingga tidak bisa menyimpan energi untuk melontarkan batu." },
+            { q: "Gaya pegas pada tombol pulpen mekanik berfungsi untuk...", o: ["Membuat pulpen berat", "Mengembalikan posisi ujung pulpen keluar/masuk saat ditekan", "Menghasilkan tinta", "Membuat tulisan bagus"], a: 1, e: "Per kecil di dalam pulpen mendorong mekanisme isi pulpen kembali ke posisi awal." },
+
+            // Analisis Gravitasi (31-40)
+            { q: "Mengapa astronot di luar angkasa bisa melayang-layang?", o: ["Karena baju astronot ada sayapnya", "Karena tidak ada udara", "Karena pengaruh gaya gravitasi bumi sangat kecil/mikrogravitasi", "Karena mereka membawa magnet"], a: 2, e: "Jarak yang jauh dari bumi membuat tarikan gravitasi sangat lemah." },
+            { q: "Jika kita menjatuhkan selembar kertas utuh dan selembar kertas yang diremas padat bersamaan, kertas remasan jatuh lebih dulu. Mengapa?", o: ["Kertas remasan lebih berat", "Kertas remasan lebih kecil gesekannya dengan udara", "Kertas utuh ditarik ke atas", "Gravitasi pilih kasih"], a: 1, e: "Luas permukaan kertas remasan lebih kecil, sehingga hambatan udara lebih kecil dibanding kertas lebar." },
+            { q: "Apa peran gravitasi dalam siklus air (hujan)?", o: ["Membuat air menguap", "Menarik titik-titik air dari awan jatuh ke tanah sebagai hujan", "Membekukan air", "Membuat pelangi"], a: 1, e: "Gravitasi menarik air hujan turun ke bumi dan mengalirkan air sungai dari tinggi ke rendah." },
+            { q: "Berat benda di Bulan lebih ringan daripada di Bumi karena...", o: ["Bulan tidak punya udara", "Gaya gravitasi Bulan lebih kecil (1/6 Bumi)", "Bulan terbuat dari keju", "Benda menyusut di Bulan"], a: 1, e: "Massa benda sama, tapi berat bergantung pada gravitasi. Gravitasi bulan lebih lemah." },
+            { q: "Mengapa parasut harus dibuat lebar?", o: ["Agar terlihat indah di langit", "Untuk menangkap lebih banyak udara (memperbesar gaya gesek udara)", "Agar tidak kena matahari", "Agar berat"], a: 1, e: "Semakin luas permukaan, semakin besar hambatan udara, semakin lambat kecepatan turun." },
+            { q: "Pasang surut air laut terutama dipengaruhi oleh...", o: ["Gaya gravitasi Matahari saja", "Gaya gravitasi Bulan", "Gaya gesek dasar laut", "Gaya otot ikan"], a: 1, e: "Gravitasi Bulan menarik air laut di bumi menyebabkan pasang." },
+            { q: "Jika bumi kehilangan gravitasinya seketika, apa yang terjadi pada atmosfer (udara) kita?", o: ["Tetap ada di tempatnya", "Hilang melayang ke angkasa luar", "Menjadi cair", "Menjadi beracun"], a: 1, e: "Atmosfer tertahan menyelimuti bumi karena adanya gaya tarik gravitasi." },
+            { q: "Konsep 'pusat gravitasi' (titik berat) benda mempengaruhi...", o: ["Warna benda", "Keseimbangan benda", "Harga benda", "Bau benda"], a: 1, e: "Benda akan stabil jika titik beratnya ditopang. Gravitasi menarik pada titik pusat massa ini." },
+            { q: "Mengapa satelit buatan tidak jatuh ke bumi meski ada gravitasi?", o: ["Karena satelit punya roket terus menerus", "Karena satelit bergerak melingkar dengan kecepatan tinggi (gaya sentrifugal mengimbangi gravitasi)", "Karena di sana tidak ada gravitasi", "Karena diikat tali"], a: 1, e: "Kecepatan orbit satelit menciptakan gaya yang menyeimbangkan tarikan gravitasi (seperti memutar batu dengan tali)." },
+            { q: "Dalam ruang hampa udara (vakum), palu dan bulu ayam dijatuhkan bersamaan. Hasilnya...", o: ["Palu jatuh duluan", "Bulu jatuh duluan", "Keduanya jatuh bersamaan", "Keduanya melayang"], a: 2, e: "Tanpa hambatan udara, percepatan gravitasi bekerja sama pada semua benda berapapun massanya (Hukum Galileo)." }
+        ];
+
+        // --- FUNGSI JAVASCRIPT ---
+
+        // Fungsi Render Soal
+        function renderSoal(paket, containerId) {
+            const container = document.getElementById(containerId);
+            const soalData = paket === 'A' ? soalPaketA : soalPaketB;
+            
+            let htmlContent = '';
+            soalData.forEach((item, index) => {
+                htmlContent += `
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200" id="soal-${paket}-${index}">
+                        <div class="flex gap-3">
+                            <span class="font-bold text-blue-600">${index + 1}.</span>
+                            <div class="w-full">
+                                <p class="font-semibold text-gray-800 mb-3">${item.q}</p>
+                                <div class="space-y-2">
+                                    ${item.o.map((option, optIndex) => `
+                                        <label class="flex items-center space-x-3 p-2 rounded cursor-pointer hover:bg-gray-100 transition">
+                                            <input type="radio" name="p${paket}-q${index}" value="${optIndex}" class="form-radio text-blue-600 h-5 w-5">
+                                            <span class="text-gray-700">${['A', 'B', 'C', 'D'][optIndex]}. ${option}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                                <div id="explanation-${paket}-${index}" class="explanation-box">
+                                    <strong><i class="fas fa-key mr-1"></i> Jawaban: ${['A', 'B', 'C', 'D'][item.a]}</strong><br>
+                                    <span class="text-gray-700 mt-1 block"><strong>Pembahasan:</strong> ${item.e}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = htmlContent;
+        }
+
+        // Render saat halaman dimuat
+        renderSoal('A', 'soal-container-A');
+        renderSoal('B', 'soal-container-B');
+
+        // Fungsi Tab Switching
+        function switchTab(tabName) {
+            document.getElementById('paketA').classList.add('hidden');
+            document.getElementById('paketB').classList.add('hidden');
+            document.getElementById(tabName).classList.remove('hidden');
+
+            document.getElementById('btn-paketA').className = "w-1/2 py-4 text-center transition-all duration-300 hover:bg-gray-50 " + (tabName === 'paketA' ? 'tab-active' : 'tab-inactive');
+            document.getElementById('btn-paketB').className = "w-1/2 py-4 text-center transition-all duration-300 hover:bg-gray-50 " + (tabName === 'paketB' ? 'tab-active' : 'tab-inactive');
+            
+            // Scroll to top of container
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Fungsi Cek Nilai
+        function checkScore(paket) {
+            const soalData = paket === 'A' ? soalPaketA : soalPaketB;
+            let score = 0;
+            let unanswered = 0;
+
+            soalData.forEach((item, index) => {
+                const radios = document.getElementsByName(`p${paket}-q${index}`);
+                let selectedValue = null;
+                const soalDiv = document.getElementById(`soal-${paket}-${index}`);
+                const explanationDiv = document.getElementById(`explanation-${paket}-${index}`);
+
+                // Mencari jawaban yang dipilih
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        selectedValue = parseInt(radio.value);
+                        break;
+                    }
+                }
+
+                // Reset style
+                soalDiv.classList.remove('correct-answer', 'wrong-answer');
+
+                if (selectedValue === null) {
+                    unanswered++;
+                } else if (selectedValue === item.a) {
+                    score++;
+                    soalDiv.classList.add('correct-answer');
+                } else {
+                    soalDiv.classList.add('wrong-answer');
+                }
+
+                // Tampilkan pembahasan
+                explanationDiv.style.display = 'block';
+                
+                // Disable radio buttons after checking
+                for (const radio of radios) {
+                    radio.disabled = true;
+                }
+            });
+
+            const finalScore = (score / 40) * 100;
+            const resultDiv = document.getElementById(`result-${paket}`);
+            const scoreSpan = document.getElementById(`score-val-${paket}`);
+
+            scoreSpan.innerText = finalScore.toFixed(1); // 1 desimal
+            resultDiv.classList.remove('hidden');
+
+            // Scroll ke hasil nilai
+            resultDiv.scrollIntoView({behavior: "smooth"});
+
+            if (unanswered > 0) {
+                alert(`Anda melewatkan ${unanswered} soal. Pembahasan tetap ditampilkan.`);
+            }
+        }
+
+    </script>
+</body>
+</html>
+
