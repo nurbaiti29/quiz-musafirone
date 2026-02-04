@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Exercise Unit 8: Be On Time - Bimbel Musafir One</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #fff7ed; } /* Orange-ish bg */
+        h1, h2, h3 { font-family: 'Fredoka', sans-serif; }
+        .tab-active { border-bottom: 4px solid #ea580c; color: #ea580c; font-weight: 700; background-color: #fff; }
+        .tab-inactive { color: #9ca3af; background-color: #f3f4f6; }
+        .correct-answer { background-color: #d1fae5; border: 2px solid #10b981; color: #065f46; }
+        .wrong-answer { background-color: #fee2e2; border: 2px solid #ef4444; color: #991b1b; }
+        .explanation-box { display: none; margin-top: 10px; padding: 12px; background-color: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 6px; font-size: 0.95em; color: #1e3a8a; }
+        .clock-icon { color: #ea580c; }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Logo Area -->
+    <header class="bg-white shadow-lg sticky top-0 z-50 border-b-4 border-orange-500">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-orange-500 text-white p-3 rounded-xl shadow-lg transform -rotate-3">
+                    <i class="fas fa-clock text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-3xl font-bold text-gray-800 tracking-wide">BIMBEL MUSAFIR ONE</h1>
+                    <p class="text-xs md:text-sm text-orange-600 font-bold">English Exercise: Be On Time!</p>
+                </div>
+            </div>
+            <div class="text-right hidden md:block">
+                <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
+                    <i class="fas fa-book-open mr-2"></i>Unit 8: Time
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Tab Navigation -->
+        <div class="flex shadow-sm mb-8 rounded-t-xl overflow-hidden">
+            <button onclick="switchTab('paketA')" id="btn-paketA" class="w-1/2 py-4 text-center transition-all duration-300 tab-active text-lg">
+                <i class="fas fa-star mr-2 text-yellow-400"></i>PACKAGE A (Medium)
+            </button>
+            <button onclick="switchTab('paketB')" id="btn-paketB" class="w-1/2 py-4 text-center transition-all duration-300 tab-inactive text-lg">
+                <i class="fas fa-fire mr-2 text-red-500"></i>PACKAGE B (Hard)
+            </button>
+        </div>
+
+        <!-- Container Paket A -->
+        <div id="paketA" class="bg-white p-6 rounded-b-xl shadow-xl min-h-screen border-t-4 border-orange-400">
+            <div class="mb-8 p-6 bg-orange-50 border-2 border-orange-100 rounded-xl flex items-start gap-4">
+                <i class="fas fa-info-circle text-orange-500 text-2xl mt-1"></i>
+                <div>
+                    <h2 class="text-xl font-bold text-orange-800 mb-2">Instructions for Package A</h2>
+                    <ul class="list-disc list-inside text-sm text-orange-700 space-y-1">
+                        <li>Focus: <strong>O'clock</strong> (Tepat) and <strong>Half past</strong> (Lewat setengah).</li>
+                        <li>Basic Vocabulary: Numbers 1-12, Breakfast, Lunch, Dinner.</li>
+                        <li>Answer 40 multiple choice questions.</li>
+                    </ul>
+                </div>
+            </div>
+            <form id="form-paketA">
+                <div id="soal-container-A" class="space-y-6"></div>
+            </form>
+            <div class="mt-10 text-center">
+                <button type="button" onclick="checkScore('A')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-full shadow-lg transform transition hover:scale-105 hover:shadow-xl text-lg">
+                    <i class="fas fa-check-double mr-2"></i>Check Score Package A
+                </button>
+            </div>
+            <div id="result-A" class="mt-8 hidden text-center p-8 bg-gray-50 rounded-2xl border-2 border-gray-200">
+                <p class="text-gray-500 text-lg">Your Score:</p>
+                <p class="text-5xl font-extrabold text-orange-600 my-2" id="score-text-A">0</p>
+                <p class="text-sm text-gray-400">Scroll up to see the explanations.</p>
+            </div>
+        </div>
+
+        <!-- Container Paket B -->
+        <div id="paketB" class="bg-white p-6 rounded-b-xl shadow-xl min-h-screen border-t-4 border-blue-500 hidden">
+            <div class="mb-8 p-6 bg-blue-50 border-2 border-blue-100 rounded-xl flex items-start gap-4">
+                <i class="fas fa-info-circle text-blue-500 text-2xl mt-1"></i>
+                <div>
+                    <h2 class="text-xl font-bold text-blue-800 mb-2">Instructions for Package B</h2>
+                    <ul class="list-disc list-inside text-sm text-blue-700 space-y-1">
+                        <li>Focus: <strong>Quarter past</strong> (Lewat seperempat) and <strong>Quarter to</strong> (Kurang seperempat).</li>
+                        <li>Complex sentences and Logic (Word order, Story problems).</li>
+                        <li>Answer 40 multiple choice questions.</li>
+                    </ul>
+                </div>
+            </div>
+            <form id="form-paketB">
+                <div id="soal-container-B" class="space-y-6"></div>
+            </form>
+            <div class="mt-10 text-center">
+                <button type="button" onclick="checkScore('B')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-full shadow-lg transform transition hover:scale-105 hover:shadow-xl text-lg">
+                    <i class="fas fa-check-double mr-2"></i>Check Score Package B
+                </button>
+            </div>
+            <div id="result-B" class="mt-8 hidden text-center p-8 bg-gray-50 rounded-2xl border-2 border-gray-200">
+                <p class="text-gray-500 text-lg">Your Score:</p>
+                <p class="text-5xl font-extrabold text-blue-600 my-2" id="score-text-B">0</p>
+                <p class="text-sm text-gray-400">Scroll up to see the explanations.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-8 mt-12">
+        <div class="container mx-auto">
+            <p class="font-bold text-lg">Bimbel Musafir One</p>
+            <p class="text-gray-400 text-sm mt-2">Source: My Next Words Grade 4 - Unit 8 (Kemendikbud Ristek 2021)</p>
+        </div>
+    </footer>
+
+    <!-- Script Data Soal -->
+    <script>
+        // --- DATA SOAL PAKET A (SEDANG - O'clock & Half Past) ---
+        const soalPaketA = [
+            // O'clock (1-10)
+            { q: "What time is it? (07:00)", o: ["It is six o'clock", "It is seven o'clock", "It is eight o'clock", "It is nine o'clock"], a: 1, e: "07:00 dibaca 'Seven o'clock'." },
+            { q: "What time is it? (10:00)", o: ["It is ten o'clock", "It is two o'clock", "It is twelve o'clock", "It is one o'clock"], a: 0, e: "10:00 dibaca 'Ten o'clock'." },
+            { q: "It is three o'clock. The digital time is...", o: ["03:00", "02:00", "04:00", "05:00"], a: 0, e: "Three o'clock artinya jam 3 tepat (03:00)." },
+            { q: "Look at the clock! The long hand is on 12. The short hand is on 5. It is...", o: ["Four o'clock", "Five o'clock", "Six o'clock", "Seven o'clock"], a: 1, e: "Jarum panjang di 12 dan pendek di 5 artinya jam 5 tepat (Five o'clock)." },
+            { q: "It is twelve o'clock.", o: ["11:00", "12:00", "01:00", "02:00"], a: 1, e: "Twelve o'clock = 12:00." },
+            { q: "Joshua goes to school at 06:00.", o: ["Six o'clock", "Seven o'clock", "Eight o'clock", "Nine o'clock"], a: 0, e: "06:00 dibaca 'Six o'clock'." },
+            { q: "Look at the picture! (Clock shows 09:00). It is...", o: ["Eight o'clock", "Nine o'clock", "Ten o'clock", "Eleven o'clock"], a: 1, e: "Jam 9 tepat dibaca 'Nine o'clock'." },
+            { q: "What time is it? (01:00)", o: ["It is one o'clock", "It is two o'clock", "It is three o'clock", "It is four o'clock"], a: 0, e: "01:00 dibaca 'One o'clock'." },
+            { q: "08:00 in English is...", o: ["Six o'clock", "Seven o'clock", "Eight o'clock", "Nine o'clock"], a: 2, e: "08:00 = Eight o'clock." },
+            { q: "It is eleven o'clock.", o: ["10:00", "11:00", "12:00", "01:00"], a: 1, e: "Eleven o'clock = 11:00." },
+
+            // Half Past (11-20)
+            { q: "What time is it? (08:30)", o: ["It is half past eight", "It is eight o'clock", "It is half past nine", "It is nine o'clock"], a: 0, e: "08:30 dibaca 'Half past eight' (Lewat setengah dari jam 8)." },
+            { q: "02:30 in English is...", o: ["Half past one", "Half past two", "Half past three", "Two o'clock"], a: 1, e: "02:30 dibaca 'Half past two'." },
+            { q: "Look at the clock! The long hand is on 6. The short hand is between 4 and 5. It is...", o: ["Half past four", "Half past five", "Four o'clock", "Five o'clock"], a: 0, e: "Jarum panjang di 6 artinya 'Half past'. Jarum pendek lewat angka 4 artinya 'Half past four'." },
+            { q: "It is half past seven.", o: ["06:30", "07:30", "08:30", "07:00"], a: 1, e: "Half past seven = 07:30." },
+            { q: "What time is it? (10:30)", o: ["Half past ten", "Half past eleven", "Ten o'clock", "Eleven o'clock"], a: 0, e: "10:30 = Half past ten." },
+            { q: "It is half past one.", o: ["01:00", "01:30", "02:30", "12:30"], a: 1, e: "Half past one = 01:30." },
+            { q: "05:30 in English is...", o: ["Half past four", "Half past five", "Half past six", "Five o'clock"], a: 1, e: "05:30 = Half past five." },
+            { q: "Look at the clock! (Clock shows 12:30). It is...", o: ["Half past eleven", "Half past twelve", "Half past one", "Twelve o'clock"], a: 1, e: "12:30 = Half past twelve." },
+            { q: "What time is it? (06:30)", o: ["Half past five", "Half past six", "Half past seven", "Six o'clock"], a: 1, e: "06:30 = Half past six." },
+            { q: "It is half past nine.", o: ["08:30", "09:30", "10:30", "09:00"], a: 1, e: "Half past nine = 09:30." },
+
+            // Daily Routine & Mixed (21-40)
+            { q: "I have breakfast at 06:00.", o: ["Six o'clock", "Half past six", "Seven o'clock", "Half past seven"], a: 0, e: "06:00 = Six o'clock." },
+            { q: "Joshua ... at 05:00.", o: ["Goes to school", "Gets up", "Has lunch", "Goes to bed"], a: 1, e: "Kegiatan jam 5 pagi biasanya 'Gets up' (Bangun tidur)." },
+            { q: "Made ... football at 04:00.", o: ["Plays", "Eats", "Sleeps", "Reads"], a: 0, e: "Bermain sepak bola = Plays football." },
+            { q: "Aisyah has lunch at 12:30.", o: ["Twelve o'clock", "Half past twelve", "One o'clock", "Half past one"], a: 1, e: "12:30 = Half past twelve." },
+            { q: "We study at school at 07:00.", o: ["Seven o'clock", "Eight o'clock", "Nine o'clock", "Ten o'clock"], a: 0, e: "07:00 = Seven o'clock." },
+            { q: "What time do you go to bed? (09:00)", o: ["Eight o'clock", "Nine o'clock", "Ten o'clock", "Eleven o'clock"], a: 1, e: "09:00 = Nine o'clock." },
+            { q: "It is ... (03:30)", o: ["Three o'clock", "Half past three", "Four o'clock", "Half past four"], a: 1, e: "03:30 = Half past three." },
+            { q: "Cici takes a bath at 04:30 in the afternoon.", o: ["Half past four", "Four o'clock", "Half past five", "Five o'clock"], a: 0, e: "04:30 = Half past four." },
+            { q: "Is it nine o'clock? (Clock shows 08:00).", o: ["Yes, it is", "No, it is eight o'clock", "No, it is nine o'clock", "Yes, it does"], a: 1, e: "Jika jam menunjukkan 08:00, maka 'No, it is eight o'clock'." },
+            { q: "Is it half past two? (Clock shows 02:30).", o: ["Yes, it is", "No, it is not", "No, it is three o'clock", "Yes, he is"], a: 0, e: "Gambar menunjukkan 02:30, jadi jawabannya 'Yes, it is'." },
+            { q: "Jarum panjang di angka 6 menunjukkan...", o: ["O'clock", "Half past", "Quarter past", "Quarter to"], a: 1, e: "Jarum panjang di angka 6 artinya lewat 30 menit atau 'Half past'." },
+            { q: "Jarum panjang di angka 12 menunjukkan...", o: ["O'clock", "Half past", "Quarter past", "Quarter to"], a: 0, e: "Jarum panjang di angka 12 artinya tepat atau 'O'clock'." },
+            { q: "04:00 is...", o: ["Four o'clock", "Five o'clock", "Six o'clock", "Three o'clock"], a: 0, e: "04:00 = Four o'clock." },
+            { q: "11:30 is...", o: ["Half past ten", "Half past eleven", "Eleven o'clock", "Twelve o'clock"], a: 1, e: "11:30 = Half past eleven." },
+            { q: "I go home at 01:00.", o: ["One o'clock", "Two o'clock", "Three o'clock", "Four o'clock"], a: 0, e: "01:00 = One o'clock." },
+            { q: "Do you get up at 05:00? No, I get up at 04:30.", o: ["Five o'clock / Half past four", "Four o'clock / Half past five", "Six o'clock / Half past four", "Five o'clock / Four o'clock"], a: 0, e: "05:00 = Five o'clock, 04:30 = Half past four." },
+            { q: "What time is it? (06:00)", o: ["Six o'clock", "Seven o'clock", "Eight o'clock", "Five o'clock"], a: 0, e: "06:00 = Six o'clock." },
+            { q: "What time is it? (09:30)", o: ["Half past eight", "Half past nine", "Nine o'clock", "Ten o'clock"], a: 1, e: "09:30 = Half past nine." },
+            { q: "It is eight o'clock.", o: ["07:00", "08:00", "09:00", "10:00"], a: 1, e: "Eight o'clock = 08:00." },
+            { q: "It is half past ten.", o: ["09:30", "10:00", "10:30", "11:30"], a: 2, e: "Half past ten = 10:30." }
+        ];
+
+        // --- DATA SOAL PAKET B (SULIT - Quarter Past/To & Logic) ---
+        const soalPaketB = [
+            // Quarter Past (1-10)
+            { q: "What time is it? (08:15)", o: ["It is quarter past eight", "It is quarter to eight", "It is half past eight", "It is eight o'clock"], a: 0, e: "08:15 (Lewat 15 menit) dibaca 'Quarter past eight'." },
+            { q: "03:15 in English is...", o: ["Quarter to three", "Quarter past three", "Half past three", "Three o'clock"], a: 1, e: "03:15 = Quarter past three." },
+            { q: "The long hand is on 3. The short hand is on 10. It is...", o: ["Quarter to ten", "Quarter past ten", "Ten o'clock", "Half past ten"], a: 1, e: "Jarum panjang di 3 artinya 'Quarter past'. Jadi, 'Quarter past ten'." },
+            { q: "It is quarter past twelve.", o: ["12:15", "12:45", "12:30", "11:45"], a: 0, e: "Quarter past twelve = 12:15." },
+            { q: "What time is it? (06:15)", o: ["Quarter to six", "Quarter past six", "Half past six", "Six o'clock"], a: 1, e: "06:15 = Quarter past six." },
+            { q: "01:15 in English is...", o: ["Quarter past one", "Quarter to one", "Half past one", "One o'clock"], a: 0, e: "01:15 = Quarter past one." },
+            { q: "Look at the clock! (05:15). It is...", o: ["Quarter past four", "Quarter past five", "Quarter to five", "Half past five"], a: 1, e: "05:15 = Quarter past five." },
+            { q: "It is quarter past nine.", o: ["09:30", "09:45", "09:15", "08:45"], a: 2, e: "Quarter past nine = 09:15." },
+            { q: "11:15 in English is...", o: ["Quarter to eleven", "Quarter past eleven", "Half past eleven", "Eleven o'clock"], a: 1, e: "11:15 = Quarter past eleven." },
+            { q: "It is quarter past two.", o: ["02:15", "02:45", "01:45", "02:30"], a: 0, e: "Quarter past two = 02:15." },
+
+            // Quarter To (11-20)
+            { q: "What time is it? (06:45)", o: ["It is quarter past six", "It is quarter to six", "It is quarter to seven", "It is quarter past seven"], a: 2, e: "06:45 artinya jam 7 kurang 15 menit. Bahasa Inggrisnya 'Quarter to seven'." },
+            { q: "09:45 in English is...", o: ["Quarter past nine", "Quarter to nine", "Quarter to ten", "Quarter past ten"], a: 2, e: "09:45 artinya jam 10 kurang 15. Jadi 'Quarter to ten'." },
+            { q: "The long hand is on 9. The short hand is near 5. It is...", o: ["Quarter to five", "Quarter past five", "Quarter to four", "Half past five"], a: 0, e: "Jarum panjang di 9 artinya 'Quarter to'. Jarum pendek dekat 5 artinya menuju jam 5. 'Quarter to five' (04:45)." },
+            { q: "It is quarter to twelve.", o: ["12:15", "11:45", "12:45", "11:15"], a: 1, e: "Quarter to twelve artinya jam 12 kurang 15 menit, yaitu 11:45." },
+            { q: "What time is it? (02:45)", o: ["Quarter to two", "Quarter to three", "Quarter past two", "Quarter past three"], a: 1, e: "02:45 = Jam 3 kurang 15 = Quarter to three." },
+            { q: "08:45 in English is...", o: ["Quarter to eight", "Quarter past eight", "Quarter to nine", "Quarter past nine"], a: 2, e: "08:45 = Quarter to nine." },
+            { q: "Look at the clock! (10:45). It is...", o: ["Quarter to ten", "Quarter to eleven", "Quarter past ten", "Quarter past eleven"], a: 1, e: "10:45 = Quarter to eleven." },
+            { q: "It is quarter to one.", o: ["01:45", "12:45", "12:15", "01:15"], a: 1, e: "Quarter to one = Jam 1 kurang 15 = 12:45." },
+            { q: "05:45 in English is...", o: ["Quarter to five", "Quarter to six", "Quarter past five", "Quarter past six"], a: 1, e: "05:45 = Quarter to six." },
+            { q: "It is quarter to eight.", o: ["07:45", "08:45", "08:15", "07:15"], a: 0, e: "Quarter to eight = 07:45." },
+
+            // Logic, Word Order & Story (21-40)
+            { q: "time - is - What - it - ?", o: ["What time is it?", "What is it time?", "Time is it what?", "Is it what time?"], a: 0, e: "Susunan yang benar: What time is it?" },
+            { q: "have - I - breakfast - 06:00 - at", o: ["I have breakfast at 06:00", "I at 06:00 have breakfast", "At 06:00 breakfast I have", "Have I breakfast at 06:00"], a: 0, e: "Susunan yang benar: I have breakfast at 06:00." },
+            { q: "Joshua goes to school at 06:30. He arrives at school at 06:45. How long is the trip?", o: ["10 minutes", "15 minutes", "20 minutes", "30 minutes"], a: 1, e: "06:30 ke 06:45 selisihnya 15 menit." },
+            { q: "School starts at 07:00. Made arrives at 07:15. Is Made late?", o: ["Yes, he is", "No, he is not", "Yes, he does", "No, he does not"], a: 0, e: "Masuk jam 07:00, datang jam 07:15, berarti terlambat (Late). Yes, he is." },
+            { q: "Jarum panjang menunjuk angka 3, jarum pendek menunjuk angka 7. Jam berapakah itu?", o: ["03:35", "07:15", "07:03", "03:07"], a: 1, e: "Panjang di 3 = 15 menit. Pendek di 7 = Jam 7. Jadi 07:15." },
+            { q: "Jarum panjang menunjuk angka 9, jarum pendek mendekati angka 2. Jam berapakah itu?", o: ["02:45", "01:45", "09:10", "02:09"], a: 1, e: "Panjang di 9 = 45 menit. Pendek mendekati 2 artinya jam 2 kurang 15 (01:45)." },
+            { q: "It is ... (04:15)", o: ["Quarter to five", "Quarter past four", "Half past four", "Four o'clock"], a: 1, e: "04:15 = Quarter past four." },
+            { q: "It is ... (12:45)", o: ["Quarter to one", "Quarter past twelve", "Quarter to twelve", "Quarter past one"], a: 0, e: "12:45 = Quarter to one." },
+            { q: "does - What - get - time - up - Joshua - ?", o: ["What time Joshua does get up?", "What time does Joshua get up?", "Does Joshua get up what time?", "Time what does Joshua get up?"], a: 1, e: "Susunan: What time does Joshua get up?" },
+            { q: "plays - football - He - 03:30 - at", o: ["He plays football at 03:30", "He at 03:30 plays football", "Football plays he at 03:30", "At 03:30 he football plays"], a: 0, e: "Susunan: He plays football at 03:30." },
+            { q: "07:00 (Seven o'clock) + 30 minutes = ...", o: ["07:30 (Half past seven)", "08:00 (Eight o'clock)", "07:15 (Quarter past seven)", "06:30 (Half past six)"], a: 0, e: "07:00 ditambah 30 menit menjadi 07:30 (Half past seven)." },
+            { q: "09:00 (Nine o'clock) - 15 minutes = ...", o: ["09:15 (Quarter past nine)", "08:45 (Quarter to nine)", "08:30 (Half past eight)", "09:30 (Half past nine)"], a: 1, e: "Jam 9 dikurang 15 menit mundur menjadi 08:45 (Quarter to nine)." },
+            { q: "Is it quarter past ten? (Picture shows 10:15)", o: ["No, it is quarter to ten", "Yes, it is", "No, it is half past ten", "Yes, he is"], a: 1, e: "Gambar 10:15 sesuai dengan 'Quarter past ten'. Yes, it is." },
+            { q: "Is it quarter to five? (Picture shows 05:15)", o: ["Yes, it is", "No, it is quarter past five", "No, it is quarter to six", "Yes, she is"], a: 1, e: "Gambar 05:15 adalah 'Quarter past five', bukan 'Quarter to five'." },
+            { q: "study - We - English - quarter - past - at - eight", o: ["We English study at quarter past eight", "We study English at quarter past eight", "We study English at eight past quarter", "English we study at quarter past eight"], a: 1, e: "Susunan: We study English at quarter past eight." },
+            { q: "The long hand is on 9. It means...", o: ["15 minutes / Quarter past", "30 minutes / Half past", "45 minutes / Quarter to", "00 minutes / O'clock"], a: 2, e: "Jarum panjang di 9 artinya menit ke-45 atau 'Quarter to'." },
+            { q: "The long hand is on 3. It means...", o: ["15 minutes / Quarter past", "30 minutes / Half past", "45 minutes / Quarter to", "00 minutes / O'clock"], a: 0, e: "Jarum panjang di 3 artinya menit ke-15 atau 'Quarter past'." },
+            { q: "takes - a bath - Cici - 06:00 - at", o: ["Cici takes a bath at 06:00", "Takes Cici a bath at 06:00", "Cici a bath takes at 06:00", "At 06:00 Cici a bath takes"], a: 0, e: "Susunan: Cici takes a bath at 06:00." },
+            { q: "dinner - have - They - 07:00 - at", o: ["They have dinner at 07:00", "Have they dinner at 07:00", "They dinner have at 07:00", "Dinner have they at 07:00"], a: 0, e: "Susunan: They have dinner at 07:00." },
+            { q: "Which one is correct?", o: ["02:45 is Quarter past two", "02:45 is Quarter to three", "02:45 is Half past two", "02:45 is Two o'clock"], a: 1, e: "02:45 yang benar adalah 'Quarter to three'." }
+        ];
+
+        // --- FUNGSI JAVASCRIPT ---
+
+        function renderSoal(paket, containerId) {
+            const container = document.getElementById(containerId);
+            const soalData = paket === 'A' ? soalPaketA : soalPaketB;
+            const accentColor = paket === 'A' ? 'orange' : 'blue';
+            
+            let htmlContent = '';
+            soalData.forEach((item, index) => {
+                htmlContent += `
+                    <div class="bg-gray-50 p-5 rounded-xl border border-gray-200 shadow-sm transition hover:shadow-md" id="soal-${paket}-${index}">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0">
+                                <span class="flex items-center justify-center w-10 h-10 rounded-full bg-${accentColor}-100 text-${accentColor}-600 font-bold border border-${accentColor}-200 shadow-sm">
+                                    ${index + 1}
+                                </span>
+                            </div>
+                            <div class="w-full">
+                                <p class="font-semibold text-gray-800 mb-4 text-lg font-['Fredoka'] tracking-wide">${item.q}</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${item.o.map((option, optIndex) => `
+                                        <label class="flex items-center space-x-3 p-3 rounded-lg cursor-pointer hover:bg-${accentColor}-50 border border-transparent hover:border-${accentColor}-200 transition bg-white shadow-sm group">
+                                            <div class="relative flex items-center justify-center">
+                                                <input type="radio" name="p${paket}-q${index}" value="${optIndex}" class="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-full checked:border-${accentColor}-500 checked:bg-${accentColor}-500 transition-all">
+                                                <div class="absolute w-2 h-2 bg-white rounded-full opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+                                            </div>
+                                            <span class="text-gray-700 font-medium group-hover:text-${accentColor}-700">${['A', 'B', 'C', 'D'][optIndex]}. ${option}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                                <div id="explanation-${paket}-${index}" class="explanation-box">
+                                    <div class="flex items-start gap-2">
+                                        <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                                        <div>
+                                            <strong class="block text-gray-900 mb-1">Answer: ${['A', 'B', 'C', 'D'][item.a]}</strong>
+                                            <span class="text-gray-700 leading-relaxed">${item.e}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = htmlContent;
+        }
+
+        renderSoal('A', 'soal-container-A');
+        renderSoal('B', 'soal-container-B');
+
+        function switchTab(tabName) {
+            document.getElementById('paketA').classList.add('hidden');
+            document.getElementById('paketB').classList.add('hidden');
+            document.getElementById(tabName).classList.remove('hidden');
+
+            const btnA = document.getElementById('btn-paketA');
+            const btnB = document.getElementById('btn-paketB');
+
+            if (tabName === 'paketA') {
+                btnA.className = "w-1/2 py-4 text-center transition-all duration-300 tab-active text-lg";
+                btnB.className = "w-1/2 py-4 text-center transition-all duration-300 tab-inactive text-lg";
+            } else {
+                btnA.className = "w-1/2 py-4 text-center transition-all duration-300 tab-inactive text-lg";
+                btnB.className = "w-1/2 py-4 text-center transition-all duration-300 tab-active text-lg";
+            }
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function checkScore(paket) {
+            const soalData = paket === 'A' ? soalPaketA : soalPaketB;
+            let score = 0;
+            let unanswered = 0;
+
+            soalData.forEach((item, index) => {
+                const radios = document.getElementsByName(`p${paket}-q${index}`);
+                let selectedValue = null;
+                const soalDiv = document.getElementById(`soal-${paket}-${index}`);
+                const explanationDiv = document.getElementById(`explanation-${paket}-${index}`);
+
+                for (const radio of radios) {
+                    if (radio.checked) {
+                        selectedValue = parseInt(radio.value);
+                        break;
+                    }
+                }
+
+                soalDiv.classList.remove('correct-answer', 'wrong-answer', 'border-gray-200');
+
+                if (selectedValue === null) {
+                    unanswered++;
+                    soalDiv.classList.add('border-gray-200'); 
+                } else if (selectedValue === item.a) {
+                    score++;
+                    soalDiv.classList.add('correct-answer');
+                } else {
+                    soalDiv.classList.add('wrong-answer');
+                }
+
+                explanationDiv.style.display = 'block';
+                
+                for (const radio of radios) {
+                    radio.disabled = true;
+                }
+            });
+
+            const finalScore = (score / 40) * 100;
+            const resultDiv = document.getElementById(`result-${paket}`);
+            const scoreText = document.getElementById(`score-text-${paket}`);
+
+            scoreText.innerText = finalScore.toFixed(0);
+            resultDiv.classList.remove('hidden');
+            
+            // Animasi scroll ke hasil
+            resultDiv.scrollIntoView({behavior: "smooth", block: "center"});
+
+            if (unanswered > 0) {
+                alert(`Warning: You skipped ${unanswered} questions!`);
+            }
+        }
+    </script>
+</body>
+</html>
+
