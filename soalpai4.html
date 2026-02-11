@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal PAI Kelas 4 - Bimbel Musafir One</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel untuk compile JSX di browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- ICONS COMPONENTS (SVG Inline untuk performa tanpa library tambahan) ---
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        );
+        const CheckCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        );
+        const XCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        );
+        const Award = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+        );
+        const Brain = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+        );
+        const ArrowRight = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        );
+        const RefreshCw = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        );
+
+        // --- DATA SOAL ---
+        const questionsPaketA = [
+          {
+            id: 1,
+            question: "Apa arti dari kata 'At-Tin'?",
+            options: ["Buah Zaitun", "Buah Tin", "Gunung Sinai", "Kota Mekah"],
+            correct: 1,
+            explanation: "At-Tin artinya Buah Tin. Nama surat ini diambil dari ayat pertama."
+          },
+          {
+            id: 2,
+            question: "Surah At-Tin terdiri dari berapa ayat?",
+            options: ["6 ayat", "7 ayat", "8 ayat", "9 ayat"],
+            correct: 2,
+            explanation: "Surah At-Tin terdiri atas 8 ayat."
+          },
+          {
+            id: 3,
+            question: "Kota yang dimaksud sebagai 'negeri yang aman' dalam Surah At-Tin adalah...",
+            options: ["Madinah", "Palestina", "Mesir", "Makkah"],
+            correct: 3,
+            explanation: "Al-Balad Al-Amin (negeri yang aman) merujuk pada kota Makkah Al-Mukarramah."
+          },
+          {
+            id: 4,
+            question: "Hukum bacaan Nun Sukun bertemu dengan huruf 'Ba' disebut...",
+            options: ["Izhar", "Ikhfa", "Iqlab", "Idgham"],
+            correct: 2,
+            explanation: "Iqlab terjadi apabila Nun Sukun atau Tanwin bertemu dengan huruf Ba (ب)."
+          },
+          {
+            id: 5,
+            question: "Manusia diciptakan Allah dalam bentuk yang...",
+            options: ["Paling kuat", "Sebaik-baiknya", "Paling besar", "Sederhana"],
+            correct: 1,
+            explanation: "Sesuai ayat 4: 'Laqad khalaqnal insana fi ahsani taqwim' (sebaik-baik bentuk)."
+          },
+          {
+            id: 6,
+            question: "Gunung Sinai adalah tempat Nabi Musa a.s. menerima...",
+            options: ["Wahyu Taurat", "Wahyu Injil", "Wahyu Al-Qur'an", "Wahyu Zabur"],
+            correct: 0,
+            explanation: "Bukit Sinai (Thur Sina) adalah tempat Nabi Musa a.s. bermunajat dan menerima kitab Taurat."
+          },
+          {
+            id: 7,
+            question: "Lanjutan ayat: 'Watteeni wazzaytun, wathuri...'",
+            options: ["Siniin", "Sinun", "Sinaan", "Siinin"],
+            correct: 0,
+            explanation: "Ayat ke-2 berbunyi: 'Wa thuri siinin' (Demi Gunung Sinai)."
+          },
+          {
+            id: 8,
+            question: "Orang yang tidak beriman dan tidak beramal saleh akan dikembalikan ke...",
+            options: ["Surga", "Tempat yang serendah-rendahnya", "Dunia", "Padang Mahsyar"],
+            correct: 1,
+            explanation: "Sesuai ayat 5: 'Asfala safilin' (tempat yang serendah-rendahnya/neraka)."
+          },
+          {
+            id: 9,
+            question: "Silaturahmi artinya menyambung tali...",
+            options: ["Perniagaan", "Persaudaraan", "Permusuhan", "Perjanjian"],
+            correct: 1,
+            explanation: "Silaturahmi berasal dari kata shilah (menyambung) dan rahim (kasih sayang/persaudaraan)."
+          },
+          {
+            id: 10,
+            question: "Salah satu manfaat silaturahmi adalah...",
+            options: ["Memanjangkan umur", "Menambah musuh", "Mengurangi harta", "Membuat lelah"],
+            correct: 0,
+            explanation: "Hadis Nabi menyebutkan silaturahmi dapat melapangkan rezeki dan memanjangkan umur."
+          },
+          {
+            id: 11,
+            question: "Hukum bacaan pada kata 'Khalaqna' adalah...",
+            options: ["Qalqalah Sugra", "Qalqalah Kubra", "Ghunnah", "Idgham"],
+            correct: 0,
+            explanation: "Huruf Qaf berharakat sukun di tengah kalimat dibaca memantul (Qalqalah Sugra)."
+          },
+          {
+            id: 12,
+            question: "Ayat ke-8 Surah At-Tin berbunyi...",
+            options: ["Fama yukazzibuka ba'du biddin", "Alaisallahu bi ahkamil hakimin", "Illalladzina amanu", "Wahazal baladil amin"],
+            correct: 1,
+            explanation: "Ayat terakhir (ke-8) adalah 'Alaisallahu bi ahkamil hakimin'."
+          },
+          {
+            id: 13,
+            question: "Jumlah huruf Ikhfa ada...",
+            options: ["6", "12", "14", "15"],
+            correct: 3,
+            explanation: "Huruf Ikhfa berjumlah 15 (Ta, Tsa, Jim, Dal, Dzal, Zai, Sin, Syin, Shad, Dhad, Tha, Zha, Fa, Qaf, Kaf)."
+          },
+          {
+            id: 14,
+            question: "Huruf-huruf Idgham Bigunnah adalah...",
+            options: ["Ya, Nun, Mim, Wau", "Lam, Ra", "Hamzah, Ha, Ain, Ghain", "Ba"],
+            correct: 0,
+            explanation: "Huruf Idgham Bigunnah ada 4: Ya, Nun, Mim, Wau (YANMU)."
+          },
+          {
+            id: 15,
+            question: "Surah At-Tin termasuk golongan surah...",
+            options: ["Madaniyah", "Makkiyah", "Mesiriyah", "Ajamiyah"],
+            correct: 1,
+            explanation: "Surah At-Tin diturunkan di kota Makkah sebelum Nabi hijrah, sehingga disebut Makkiyah."
+          },
+          {
+            id: 16,
+            question: "Arti dari 'Ghairu Mamnun' adalah...",
+            options: ["Pahala yang putus", "Pahala yang tiada putus-putusnya", "Dosa yang besar", "Ampunan Allah"],
+            correct: 1,
+            explanation: "Ajrun ghairu mamnun artinya pahala yang tidak ada putus-putusnya."
+          },
+          {
+            id: 17,
+            question: "Siapakah 'Hakim yang paling adil'?",
+            options: ["Malaikat", "Nabi Muhammad", "Allah Swt.", "Presiden"],
+            correct: 2,
+            explanation: "Allah Swt. adalah Ahkamul Hakimin (Hakim yang paling adil)."
+          },
+          {
+            id: 18,
+            question: "Contoh bacaan Izhar Halqi adalah ketika Nun Sukun bertemu huruf...",
+            options: ["Ba", "Jim", "Alif/Hamzah", "Lam"],
+            correct: 2,
+            explanation: "Izhar Halqi terjadi jika bertemu huruf tenggorokan: Alif, Ha, Kha, Ain, Ghain, Ha."
+          },
+          {
+            id: 19,
+            question: "Memutuskan tali silaturahmi adalah perbuatan yang...",
+            options: ["Terpuji", "Dibenci Allah", "Disukai teman", "Biasa saja"],
+            correct: 1,
+            explanation: "Memutuskan silaturahmi adalah dosa besar dan dibenci Allah."
+          },
+          {
+            id: 20,
+            question: "Membaca Al-Qur'an dengan tartil artinya...",
+            options: ["Cepat dan terburu-buru", "Perlahan dan sesuai tajwid", "Dengan suara sangat keras", "Tanpa melihat mushaf"],
+            correct: 1,
+            explanation: "Tartil berarti membaca dengan perlahan, jelas, dan mematuhi hukum tajwid."
+          },
+          {
+            id: 21,
+            question: "Kata 'Al-Insan' artinya...",
+            options: ["Hewan", "Tumbuhan", "Manusia", "Malaikat"],
+            correct: 2,
+            explanation: "Al-Insan dalam bahasa Arab berarti Manusia."
+          },
+          {
+            id: 22,
+            question: "Buah Tin dan Zaitun banyak tumbuh di wilayah...",
+            options: ["Indonesia", "Syam/Palestina", "Eropa", "Amerika"],
+            correct: 1,
+            explanation: "Secara geografis dan tafsir, buah ini banyak tumbuh di wilayah Syam (Palestina, Suriah)."
+          },
+          {
+            id: 23,
+            question: "Huruf Idgham Bilagunnah ada dua, yaitu...",
+            options: ["Lam dan Ra", "Mim dan Nun", "Wau dan Ya", "Ba dan Ta"],
+            correct: 0,
+            explanation: "Idgham Bilagunnah (tanpa dengung) hurufnya adalah Lam (ل) dan Ra (ر)."
+          },
+          {
+            id: 24,
+            question: "Agar tidak dikembalikan ke tempat serendah-rendahnya, kita harus...",
+            options: ["Kaya raya", "Beriman dan beramal saleh", "Punya jabatan", "Tidur sepanjang hari"],
+            correct: 1,
+            explanation: "Sesuai ayat 6: 'Illalladzina amanu wa amilus shalihat' (kecuali orang beriman dan beramal saleh)."
+          },
+          {
+            id: 25,
+            question: "Sikap Rasulullah terhadap orang yang memusuhinya adalah...",
+            options: ["Membalas dendam", "Memaafkan dan tetap bersilaturahmi", "Memarahi", "Menjauhinya selamanya"],
+            correct: 1,
+            explanation: "Rasulullah mengajarkan akhlak mulia dengan memaafkan dan tetap menjalin hubungan baik."
+          },
+          {
+            id: 26,
+            question: "Bunyi ayat pertama Surah At-Tin adalah...",
+            options: ["Watteeni wazzaytun", "Wathuri siinin", "Wahazal baladil amin", "Laqad khalaqna"],
+            correct: 0,
+            explanation: "Ayat 1: 'Wat-tini waz-zaitun'."
+          },
+          {
+            id: 27,
+            question: "Arti 'Amilus Shalihat' adalah...",
+            options: ["Beriman", "Mengerjakan kebajikan", "Berbuat jahat", "Berbicara sopan"],
+            correct: 1,
+            explanation: "Amilus shalihat artinya mengerjakan amal-amal saleh (kebajikan)."
+          },
+          {
+            id: 28,
+            question: "Jika Nun Sukun bertemu huruf 'Kaf', maka dibaca...",
+            options: ["Jelas", "Memantul", "Samar-samar (Dengung)", "Melebur"],
+            correct: 2,
+            explanation: "Kaf adalah huruf Ikhfa, jadi dibaca samar-samar dengan dengung."
+          },
+          {
+            id: 29,
+            question: "Makhluk Allah yang paling sempurna bentuknya adalah...",
+            options: ["Malaikat", "Jin", "Manusia", "Hewan"],
+            correct: 2,
+            explanation: "Manusia dibekali akal dan fisik yang sempurna (Ahsani Taqwim)."
+          },
+          {
+            id: 30,
+            question: "Kita dianjurkan bersilaturahmi kepada...",
+            options: ["Teman saja", "Keluarga saja", "Orang kaya saja", "Sesama muslim dan sesama manusia"],
+            correct: 3,
+            explanation: "Silaturahmi dianjurkan kepada kerabat, tetangga, dan sesama manusia."
+          },
+          {
+            id: 31,
+            question: "Huruf Qalqalah ada 5, yang disingkat menjadi...",
+            options: ["Baju Di Toko", "Yanmu", "Lara", "Haya"],
+            correct: 0,
+            explanation: "Ba, Jim, Dal, Tha, Qaf (biasa disingkat Baju Di Toko / Qutbu Jaddin)."
+          },
+          {
+            id: 32,
+            question: "Arti 'Ahkamul Hakimin' adalah...",
+            options: ["Penguasa raja", "Hakim yang paling adil", "Pencipta alam", "Pemberi rezeki"],
+            correct: 1,
+            explanation: "Ahkamul Hakimin = Hakim yang paling bijaksana/adil."
+          },
+          {
+            id: 33,
+            question: "Negeri yang aman adalah sumpah Allah pada ayat ke...",
+            options: ["1", "2", "3", "4"],
+            correct: 2,
+            explanation: "Ayat 3: 'Wa hazal baladil amin' (Dan demi negeri yang aman ini)."
+          },
+          {
+            id: 34,
+            question: "Pahala orang yang belajar Al-Qur'an walau terbata-bata adalah...",
+            options: ["Satu pahala", "Dua pahala", "Tidak dapat pahala", "Dosa"],
+            correct: 1,
+            explanation: "Hadis Nabi: Orang yang terbata-bata membaca Al-Qur'an mendapat dua pahala (pahala membaca dan pahala usaha)."
+          },
+          {
+            id: 35,
+            question: "Tanda waqaf 'La' (لا) artinya...",
+            options: ["Harus berhenti", "Boleh berhenti", "Tidak boleh berhenti", "Berhenti sejenak"],
+            correct: 2,
+            explanation: "La Washal artinya tidak boleh berhenti, harus lanjut."
+          },
+          {
+            id: 36,
+            question: "Surah At-Tin diturunkan sesudah surah...",
+            options: ["Al-Fatihah", "Al-Buruj", "An-Nas", "Al-Alaq"],
+            correct: 1,
+            explanation: "Dalam urutan turunnya wahyu, At-Tin turun setelah Al-Buruj (pendapat umum tafsir)."
+          },
+          {
+            id: 37,
+            question: "Allah bersumpah dengan buah Tin dan Zaitun karena...",
+            options: ["Harganya mahal", "Banyak manfaatnya", "Warnanya bagus", "Rasanya manis"],
+            correct: 1,
+            explanation: "Buah Tin dan Zaitun memiliki banyak manfaat kesehatan dan tumbuh di tanah para nabi."
+          },
+          {
+            id: 38,
+            question: "Lawan kata dari 'Ahsani' (Terbaik) adalah...",
+            options: ["Asfala (Terendah)", "Amin (Aman)", "Ajar (Pahala)", "Hakim (Adil)"],
+            correct: 0,
+            explanation: "Ahsani Taqwim (sebaik-baik bentuk) dilawankan dengan Asfala Safilin (tempat serendah-rendahnya)."
+          },
+          {
+            id: 39,
+            question: "Jika sesama teman bertengkar, sikap kita sebaiknya...",
+            options: ["Mendamaikan", "Mendukung salah satu", "Menonton", "Meninggalkan"],
+            correct: 0,
+            explanation: "Sesuai ajaran Islam untuk menjaga persaudaraan (Ukhuwah)."
+          },
+          {
+            id: 40,
+            question: "Pesan pokok Surah At-Tin adalah tentang...",
+            options: ["Jual beli", "Kemuliaan manusia dan hari pembalasan", "Perang", "Warisan"],
+            correct: 1,
+            explanation: "Inti surah ini adalah penciptaan manusia yang mulia namun bisa hina jika tidak beriman, serta kepastian hari pembalasan."
+          }
+        ];
+
+        // Data Soal Paket B (Sulit/HOTS) - 40 Soal
+        const questionsPaketB = [
+          {
+            id: 1,
+            question: "Analisis hukum bacaan pada kata 'Al-Insan' (الْإِنْسَانَ). Terdapat hukum...",
+            options: ["Alif Lam Syamsiyah & Ikhfa", "Alif Lam Qamariyah & Ikhfa", "Alif Lam Qamariyah & Izhar", "Alif Lam Syamsiyah & Idgham"],
+            correct: 1,
+            explanation: "Al-Insan: Alif Lam Qamariyah (Al dibaca jelas) dan Ikhfa (Nun sukun bertemu Sin)."
+          },
+          {
+            id: 2,
+            question: "Pada kalimat 'Ajrun Ghairu' (أَجْرٌ غَيْرُ), hukum bacaannya adalah...",
+            options: ["Ikhfa Haqiqi", "Izhar Halqi", "Idgham Bigunnah", "Iqlab"],
+            correct: 1,
+            explanation: "Tanwin (Dhommatain) bertemu dengan Ghain (huruf tenggorokan) dibaca jelas (Izhar Halqi)."
+          },
+          {
+            id: 3,
+            question: "Mengapa Allah bersumpah dengan nama-nama tempat (Sinai, Makkah) di Surah At-Tin?",
+            options: ["Karena tempat wisata", "Menunjukkan kemuliaan tempat diutusnya para Nabi ulul azmi", "Agar manusia bepergian", "Hanya sebagai hiasan kata"],
+            correct: 1,
+            explanation: "Sumpah Allah menunjukkan kemuliaan tempat tersebut: Zaitun (Isa a.s.), Sinai (Musa a.s.), Makkah (Muhammad saw.)."
+          },
+          {
+            id: 4,
+            question: "Potongan ayat 'Fama Yukazzibuka Ba'du Biddin' ditujukan kepada...",
+            options: ["Orang beriman", "Manusia yang ingkar akan hari pembalasan", "Para Malaikat", "Kaum Jin"],
+            correct: 1,
+            explanation: "Pertanyaan retoris (sindiran) bagi manusia yang masih mendustakan hari kiamat padahal bukti kekuasaan Allah sudah jelas."
+          },
+          {
+            id: 5,
+            question: "Apa hubungan antara 'Ahsani Taqwim' (Ayat 4) dan 'Asfala Safilin' (Ayat 5)?",
+            options: ["Sebab-Akibat", "Persamaan makna", "Kontradiksi/Perlawanan nasib manusia", "Tidak ada hubungan"],
+            correct: 2,
+            explanation: "Menunjukkan kontradiksi: Manusia diciptakan sangat mulia, tapi nasib akhirnya bisa sangat hina jika tidak beriman."
+          },
+          {
+            id: 6,
+            question: "Manakah contoh bacaan Iqlab yang benar di bawah ini?",
+            options: ["Min syarri", "Ambihum", "Man ya'mal", "Kufuwan ahad"],
+            correct: 1,
+            explanation: "Ambihum (Nun sukun bertemu Ba) dibaca mim."
+          },
+          {
+            id: 7,
+            question: "Dalam Hadis Riwayat Muslim, menyambung silaturahmi dikaitkan dengan...",
+            options: ["Kecerdasan otak", "Keluasan rezeki dan umur panjang", "Kekuatan fisik", "Keindahan wajah"],
+            correct: 1,
+            explanation: "Barangsiapa ingin diluaskan rezekinya dan dipanjangkan umurnya, hendaklah menyambung silaturahmi."
+          },
+          {
+            id: 8,
+            question: "Kata 'Taqwim' dalam 'Ahsani Taqwim' menyiratkan bahwa manusia memiliki...",
+            options: ["Kekayaan alam", "Bentuk fisik dan akal rohani yang seimbang", "Umur yang abadi", "Kekuatan seperti malaikat"],
+            correct: 1,
+            explanation: "Taqwim berarti susunan/bentuk yang tegak dan lurus, mencakup fisik sempurna dan akal budi."
+          },
+          {
+            id: 9,
+            question: "Hukum bacaan pada lafaz 'Mamnūun' (مَمْنُونٍ) ketika waqaf (berhenti) adalah...",
+            options: ["Mad Thabi'i", "Mad Arid Lissukun", "Mad Iwad", "Mad Wajib Muttasil"],
+            correct: 1,
+            explanation: "Mad Thabi'i (Wau sukun) bertemu huruf hidup (Nun) yang dibaca mati karena waqaf disebut Mad Arid Lissukun."
+          },
+          {
+            id: 10,
+            question: "Apa makna tersirat dari 'Hari Pembalasan' (Ad-Din) pada ayat 7?",
+            options: ["Hari pembayaran hutang", "Sistem hukum negara", "Pertanggungjawaban amal di akhirat", "Hari raya keagamaan"],
+            correct: 2,
+            explanation: "Ad-Din di sini bermakna Hari Kiamat/Pembalasan dimana segala amal dipertanggungjawabkan."
+          },
+          {
+            id: 11,
+            question: "Identifikasi bacaan Idgham Bilagunnah pada kalimat berikut...",
+            options: ["Ghafurur-Rahim", "Min-Waraihim", "Faman-Ya'mal", "Samium-Bashir"],
+            correct: 0,
+            explanation: "Ghafurur-Rahim (Tanwin bertemu Ra). Min Waraihim & Faman Yamal (Bigunnah). Samium Bashir (Iqlab)."
+          },
+          {
+            id: 12,
+            question: "Sikap 'Asfala Safilin' (Hina) di dunia tercermin dalam perilaku...",
+            options: ["Jujur dan amanah", "Korupsi dan menindas yang lemah", "Suka menolong", "Rajin beribadah"],
+            correct: 1,
+            explanation: "Perilaku dosa dan maksiat menjatuhkan martabat manusia ke derajat yang hina (seperti hewan atau lebih buruk)."
+          },
+          {
+            id: 13,
+            question: "Secara bahasa, kata 'Sinina' pada 'Thuri Sinina' berarti...",
+            options: ["Gersang", "Diberkahi/Indah pepohonannya", "Tinggi menjulang", "Panas membara"],
+            correct: 1,
+            explanation: "Sebagian ahli tafsir mengartikan Sinin sebagai tanah yang subur atau diberkahi dengan pepohonan."
+          },
+          {
+            id: 14,
+            question: "Mengapa lafaz 'Bismillahi' pada basmalah dibaca tipis (Tarqiq)?",
+            options: ["Karena didahului harakat kasrah", "Karena didahului harakat fathah", "Karena huruf Lam tebal", "Karena di awal kalimat"],
+            correct: 0,
+            explanation: "Lafzul Jalalah (Allah) dibaca Tarqiq jika didahului kasrah (Bis-mil-lahi)."
+          },
+          {
+            id: 15,
+            question: "Apa konsekuensi hukum jika seseorang memutuskan silaturahmi menurut ancaman Nabi?",
+            options: ["Denda uang", "Dikucilkan masyarakat", "Tidak masuk surga", "Sakit keras"],
+            correct: 2,
+            explanation: "Hadis: 'La yadkhulul jannata qatiu rahim' (Tidak masuk surga pemutus silaturahmi)."
+          },
+          {
+            id: 16,
+            question: "Pada ayat 'Alaisallahu bi ahkamil hakimin', jika kita mendengarnya sunnah membaca...",
+            options: ["Aamiin", "Subhanallah", "Balaa wa ana 'ala dzalika minasy-syahidin", "Alhamdulillah"],
+            correct: 2,
+            explanation: "Artinya: 'Benar, dan aku termasuk orang-orang yang bersaksi atas hal itu'."
+          },
+          {
+            id: 17,
+            question: "Manakah pasangan yang TEPAT antara potongan ayat dan hukum bacaannya?",
+            options: ["Khalaqna - Ikhfa", "Taqwim - Qalqalah Sugra (jika waqaf jadi Kubra)", "Anfusikum - Izhar", "Min 'Alaq - Idgham"],
+            correct: 1,
+            explanation: "Khalaqna (Qalqalah), Anfusikum (Ikhfa), Min Alaq (Izhar). Taqwim jika waqaf mim mati (bukan qalqalah) tapi sebelumnya Qaf sukun di 'Khalaq' adalah Qalqalah."
+          },
+          {
+            id: 18,
+            question: "Huruf 'Jim' (ج) pada kata 'Ajrun' (أَجْرٌ) dibaca memantul karena...",
+            options: ["Berharakat Fathah", "Berharakat Sukun asli", "Berharakat Tasydid", "Di akhir kalimat"],
+            correct: 1,
+            explanation: "Qalqalah Sugra karena sukun asli berada di tengah kata."
+          },
+          {
+            id: 19,
+            question: "Apa yang membedakan manusia dengan makhluk lain sehingga disebut 'Ahsani Taqwim'?",
+            options: ["Memiliki nafsu makan", "Memiliki akal pikiran dan hati nurani", "Bisa berjalan", "Memiliki keturunan"],
+            correct: 1,
+            explanation: "Hewan juga makan/berjalan, tapi Akal dan Hati adalah pembeda utama kemuliaan manusia."
+          },
+          {
+            id: 20,
+            question: "Penerapan Surah At-Tin dalam kehidupan berbangsa adalah...",
+            options: ["Menjaga keamanan negeri (Al-Balad Al-Amin)", "Menguasai wilayah lain", "Menebang pohon zaitun", "Hidup sendiri-sendiri"],
+            correct: 0,
+            explanation: "Inspirasi dari 'Negeri yang aman' adalah kewajiban warga negara menjaga keamanan dan kedamaian negerinya."
+          },
+          {
+            id: 21,
+            question: "Dalam ilmu tajwid, huruf-huruf Ikhfa sering disebut huruf...",
+            options: ["Tenggorokan", "Lidah", "Sisa (selain Izhar, Idgham, Iqlab)", "Bibir"],
+            correct: 2,
+            explanation: "Cara termudah mengingat Ikhfa adalah huruf selain huruf Halqi (Izhar), Yanmu/Lara (Idgham), dan Ba (Iqlab)."
+          },
+          {
+            id: 22,
+            question: "Apa maksud 'Illalladzina' pada ayat ke-6 disebut 'Istisna'?",
+            options: ["Pujian", "Pengecualian", "Penambahan", "Pengurangan"],
+            correct: 1,
+            explanation: "Istisna artinya pengecualian. Semua manusia rugi/hina KECUALI yang beriman."
+          },
+          {
+            id: 23,
+            question: "Secara medis, buah Tin dan Zaitun yang disumpahkan Allah terbukti...",
+            options: ["Beracun", "Kaya antioksidan dan nutrisi", "Menyebabkan kantuk", "Tidak bisa dimakan"],
+            correct: 1,
+            explanation: "Fakta ilmiah modern mendukung manfaat luar biasa kedua buah ini, membuktikan kebenaran Al-Qur'an."
+          },
+          {
+            id: 24,
+            question: "Jika ada Tanwin bertemu huruf Wau, dan di kata lain ada Nun Sukun bertemu Wau (Dunya), bedanya...",
+            options: ["Sama-sama Idgham Bigunnah", "Tanwin (Idgham Bigunnah), Dunya (Izhar Wajib)", "Tanwin (Izhar), Dunya (Idgham)", "Keduanya Ikhfa"],
+            correct: 1,
+            explanation: "Idgham Bigunnah syaratnya harus di dua kata terpisah. Jika satu kata (seperti Dunya), dibaca Izhar Wajib."
+          },
+          {
+            id: 25,
+            question: "Bentuk pengamalan 'Amilus Shalihat' bagi seorang siswa adalah...",
+            options: ["Belajar tekun dan piket kelas", "Mencontek saat ujian", "Membolos sekolah", "Tidur di kelas"],
+            correct: 0,
+            explanation: "Amal saleh dalam konteks siswa adalah tanggung jawab akademik dan sosial."
+          },
+          {
+            id: 26,
+            question: "Ayat 'Summa radadnahu asfala safilin' menggunakan fi'il (kata kerja) bentuk...",
+            options: ["Masa depan", "Masa lampau (Past Tense)", "Perintah", "Larangan"],
+            correct: 1,
+            explanation: "'Radadna' adalah fi'il madhi (telah kami kembalikan), menunjukkan kepastian hukum Allah."
+          },
+          {
+            id: 27,
+            question: "Kata 'Ba'du' pada ayat 7 bermakna...",
+            options: ["Sebelum", "Sesudah/Setelah", "Sekarang", "Kemarin"],
+            correct: 1,
+            explanation: "Ba'du artinya setelah. (Apa yang membuatmu dusta SETELAH ada keterangan ini?)."
+          },
+          {
+            id: 28,
+            question: "Mengapa Idgham Bilagunnah tidak mendengung?",
+            options: ["Karena hurufnya keluar dari hidung", "Karena makhraj Lam dan Ra tidak bersifat Ghunnah (nasal)", "Karena sulit diucapkan", "Aturan sembarangan"],
+            correct: 1,
+            explanation: "Sifat huruf Lam dan Ra adalah Inhiraf/Takrir, bukan Ghunnah (suara hidung), jadi suara masuk total tanpa dengung."
+          },
+          {
+            id: 29,
+            question: "Hubungan silaturahmi yang paling utama untuk disambung adalah kepada...",
+            options: ["Teman Facebook", "Orang tua dan kerabat dekat", "Tetangga jauh", "Rekan bisnis"],
+            correct: 1,
+            explanation: "Prioritas silaturahmi (Birrul Walidain dan Zawil Arham) adalah orang tua dan kerabat sedarah."
+          },
+          {
+            id: 30,
+            question: "Dari sisi Asbabun Nuzul (sebab turunnya), ayat tentang 'Asfala Safilin' juga menghibur Nabi terkait...",
+            options: ["Kekayaan", "Para sahabat yang menjadi pikun karena tua", "Peperangan", "Anak yatim"],
+            correct: 1,
+            explanation: "Salah satu tafsir: Orang beriman yang menjadi tua renta/pikun tidak akan berkurang pahalanya (tidak hina) seperti orang kafir."
+          },
+          {
+            id: 31,
+            question: "Kalimat 'Bi Ahkamil Hakimin' menggunakan huruf Ba yang berfungsi sebagai...",
+            options: ["Sumpah", "Penguat (Taukid/Zaidah)", "Pertanyaan", "Negasi"],
+            correct: 1,
+            explanation: "Ba di sini adalah huruf Jar Zaidah untuk menguatkan makna: 'Bukankah Allah BENAR-BENAR hakim seadil-adilnya'."
+          },
+          {
+            id: 32,
+            question: "Jika seseorang rajin shalat tapi memutus silaturahmi, maka amalnya...",
+            options: ["Sempurna", "Tertolak/Terhalang naik ke langit", "Tetap diterima", "Bertambah"],
+            correct: 1,
+            explanation: "Dalam riwayat lain disebutkan amal pemutus silaturahmi tidak akan diangkat kepada Allah."
+          },
+          {
+            id: 33,
+            question: "Dalam membaca 'Watteeni', huruf Ta bertasydid menunjukkan Alif Lam...",
+            options: ["Qamariyah", "Syamsiyah", "Jalalain", "Tarqiq"],
+            correct: 1,
+            explanation: "Alif Lam bertemu huruf Ta (huruf Syamsiyah), Al-nya lebur (tidak dibaca)."
+          },
+          {
+            id: 34,
+            question: "Makna 'Falahum ajrun' (Maka bagi mereka pahala). Huruf Fa di awal bermakna...",
+            options: ["Maka/Konsekuensi", "Dan", "Atau", "Tetapi"],
+            correct: 0,
+            explanation: "Fa sababiyah/jawab syarat: Karena beriman, MAKA mereka dapat pahala."
+          },
+          {
+            id: 35,
+            question: "Manakah yang BUKAN termasuk perilaku 'Negeri yang Aman'?",
+            options: ["Menjaga kebersihan lingkungan", "Tawuran antar pelajar", "Ronda malam", "Toleransi beragama"],
+            correct: 1,
+            explanation: "Tawuran merusak keamanan dan kedamaian, bertentangan dengan semangat Al-Balad Al-Amin."
+          },
+          {
+            id: 36,
+            question: "Hukum Nun mati pada kata 'Min' (مِنْ) jika bertemu kata 'Sjiin' adalah...",
+            options: ["Izhar", "Ikhfa", "Iqlab", "Idgham"],
+            correct: 1,
+            explanation: "Nun sukun bertemu Syin (huruf Ikhfa) dibaca samar."
+          },
+          {
+            id: 37,
+            question: "Teknologi bisa menjadi sarana silaturahmi (video call), namun bisa memutus silaturahmi jika...",
+            options: ["Digunakan untuk menyapa kakek di desa", "Sibuk main HP (Phubbing) saat kumpul keluarga", "Mengirim uang via transfer", "Membuat grup WA keluarga"],
+            correct: 1,
+            explanation: "Fenomena 'mendekatkan yang jauh, menjauhkan yang dekat' terjadi jika gadget mengganggu interaksi langsung."
+          },
+          {
+            id: 38,
+            question: "Apa kaitan antara Iman (Hati) dan Amal Saleh (Fisik) dalam ayat 6?",
+            options: ["Iman saja cukup", "Amal saja cukup", "Harus sejalan (Integritas)", "Tidak ada kaitan"],
+            correct: 2,
+            explanation: "Iman tanpa amal itu kosong, amal tanpa iman itu sia-sia. Keduanya syarat mutlak selamat dari 'Asfala Safilin'."
+          },
+          {
+            id: 39,
+            question: "Contoh Idgham Bigunnah dalam Surah lain tapi sering muncul di soal tajwid...",
+            options: ["Fid Jiidiha", "Lahabiw-Watab", "Abil-Lahab", "Kufuwan-Ahad"],
+            correct: 1,
+            explanation: "Lahabin Watab (Tanwin bertemu Wau) = Idgham Bigunnah."
+          },
+          {
+            id: 40,
+            question: "Kesimpulan akhir Surah At-Tin mengajarkan kita untuk...",
+            options: ["Putus asa", "Sombong dengan bentuk fisik", "Bersyukur dan mempersiapkan bekal akhirat", "Takut pada buah Tin"],
+            correct: 2,
+            explanation: "Kita harus bersyukur diciptakan sempurna dan menggunakan kesempurnaan itu untuk ibadah bekal akhirat."
+          }
+        ];
+
+        // --- APP COMPONENTS ---
+
+        const QuizApp = () => {
+          const [screen, setScreen] = useState('home'); // home, quiz, result
+          const [packetType, setPacketType] = useState(null); // 'A' or 'B'
+          const [questions, setQuestions] = useState([]);
+          const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+          const [answers, setAnswers] = useState({}); // { 0: 1, 1: 0 } -> questionIdx: optionIdx
+          const [score, setScore] = useState(0);
+
+          const startQuiz = (type) => {
+            setPacketType(type);
+            setQuestions(type === 'A' ? questionsPaketA : questionsPaketB);
+            setCurrentQuestionIdx(0);
+            setAnswers({});
+            setScore(0);
+            setScreen('quiz');
+          };
+
+          const handleAnswer = (optionIdx) => {
+            setAnswers({ ...answers, [currentQuestionIdx]: optionIdx });
+            setTimeout(() => {
+              if (currentQuestionIdx < questions.length - 1) {
+                setCurrentQuestionIdx(currentQuestionIdx + 1);
+              } else {
+                calculateScore();
+              }
+            }, 300);
+          };
+
+          const calculateScore = () => {
+            let correctCount = 0;
+            questions.forEach((q, idx) => {
+              if (answers[idx] === q.correct) {
+                correctCount++;
+              }
+            });
+            const finalScore = (correctCount / questions.length) * 100;
+            setScore(finalScore);
+            setScreen('result');
+          };
+
+          const restart = () => {
+            setScreen('home');
+            setPacketType(null);
+            setAnswers({});
+          };
+
+          const HomeScreen = () => (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50 p-6 font-sans">
+              <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-t-8 border-blue-600">
+                <div className="mb-6 flex justify-center">
+                  <div className="bg-blue-600 text-white p-4 rounded-full">
+                    <BookOpen size={48} />
+                  </div>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800 mb-1">Bimbel Musafir One</h1>
+                <p className="text-gray-500 mb-8 text-sm uppercase tracking-widest">Persiapan Ulangan PAI Kelas 4</p>
+                
+                <div className="space-y-4">
+                  <button 
+                    onClick={() => startQuiz('A')}
+                    className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-md transition-all flex items-center justify-between group"
+                  >
+                    <div className="text-left">
+                      <div className="text-lg">Paket A</div>
+                      <div className="text-xs opacity-90 font-normal">Level Sedang (Hafalan & Arti)</div>
+                    </div>
+                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+
+                  <button 
+                    onClick={() => startQuiz('B')}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl shadow-md transition-all flex items-center justify-between group"
+                  >
+                    <div className="text-left">
+                      <div className="text-lg">Paket B</div>
+                      <div className="text-xs opacity-90 font-normal">Level Sulit (Analisis & Tajwid)</div>
+                    </div>
+                    <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+
+                <div className="mt-8 text-xs text-gray-400">
+                  Materi: Q.S. At-Tin & Hadis Silaturahmi
+                </div>
+              </div>
+            </div>
+          );
+
+          const QuizScreen = () => {
+            const question = questions[currentQuestionIdx];
+            const progress = ((currentQuestionIdx + 1) / questions.length) * 100;
+
+            return (
+              <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
+                <div className="bg-white px-6 py-4 shadow-sm flex justify-between items-center sticky top-0 z-10">
+                  <div className="flex items-center space-x-2 text-blue-800 font-bold">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm">
+                      {packetType}
+                    </div>
+                    <span>Soal {currentQuestionIdx + 1}/{questions.length}</span>
+                  </div>
+                  <div className="text-sm font-semibold text-gray-500">Bimbel Musafir One</div>
+                </div>
+
+                <div className="w-full bg-gray-200 h-2">
+                  <div className="bg-blue-600 h-2 transition-all duration-300" style={{ width: `${progress}%` }}></div>
+                </div>
+
+                <div className="flex-1 p-6 max-w-2xl mx-auto w-full">
+                  <div className="bg-white rounded-2xl p-6 shadow-md mb-6">
+                    <h2 className="text-xl font-medium text-gray-800 leading-relaxed">
+                      {question.question}
+                    </h2>
+                  </div>
+
+                  <div className="space-y-3">
+                    {question.options.map((opt, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleAnswer(idx)}
+                        className="w-full text-left p-4 bg-white border-2 border-transparent hover:border-blue-400 hover:bg-blue-50 rounded-xl shadow-sm transition-all font-medium text-gray-700 flex items-center group"
+                      >
+                        <span className="w-8 h-8 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center mr-4 group-hover:bg-blue-200 group-hover:text-blue-700 text-sm font-bold">
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          };
+
+          const ResultScreen = () => {
+            const passed = score >= 75;
+
+            return (
+              <div className="min-h-screen bg-gray-100 font-sans p-6">
+                <div className="max-w-3xl mx-auto space-y-6">
+                  
+                  <div className="bg-white rounded-3xl p-8 shadow-lg text-center relative overflow-hidden">
+                    <div className={`absolute top-0 left-0 w-full h-2 ${passed ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    
+                    <div className="mb-4 flex justify-center">
+                      {passed ? (
+                        <div className="bg-green-100 p-4 rounded-full text-green-600 animate-bounce">
+                          <Award size={64} />
+                        </div>
+                      ) : (
+                        <div className="bg-red-100 p-4 rounded-full text-red-600">
+                          <Brain size={64} />
+                        </div>
+                      )}
+                    </div>
+
+                    <h2 className="text-gray-500 font-medium uppercase tracking-wider text-sm mb-2">Nilai Akhir Kamu</h2>
+                    <div className="text-6xl font-black text-gray-800 mb-2">{score.toFixed(1)}</div>
+                    <div className={`text-xl font-bold ${passed ? 'text-green-600' : 'text-red-500'} mb-6`}>
+                      {passed ? "LULUS - KERJA BAGUS!" : "BELUM LULUS - AYO BELAJAR LAGI!"}
+                    </div>
+
+                    <button 
+                      onClick={restart}
+                      className="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full shadow-lg flex items-center mx-auto transition-all"
+                    >
+                      <RefreshCw className="mr-2" size={20} /> Coba Paket Lain
+                    </button>
+                  </div>
+
+                  <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+                    <div className="bg-blue-600 p-4 text-white font-bold flex items-center">
+                      <CheckCircle className="mr-2" /> Pembahasan Soal
+                    </div>
+                    <div className="divide-y divide-gray-100">
+                      {questions.map((q, idx) => {
+                        const isCorrect = answers[idx] === q.correct;
+                        return (
+                          <div key={q.id} className="p-5 hover:bg-gray-50">
+                            <div className="flex items-start gap-3">
+                              <div className="mt-1">
+                                {isCorrect ? (
+                                  <CheckCircle className="text-green-500 w-6 h-6" />
+                                ) : (
+                                  <XCircle className="text-red-500 w-6 h-6" />
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <p className="font-semibold text-gray-800 mb-2">
+                                  {idx + 1}. {q.question}
+                                </p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-3">
+                                  <div className={`p-3 rounded-lg border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                    <span className="block text-xs text-gray-500 uppercase mb-1">Jawaban Kamu</span>
+                                    <span className="font-bold">{q.options[answers[idx]] || "Tidak Dijawab"}</span>
+                                  </div>
+                                  {!isCorrect && (
+                                    <div className="p-3 rounded-lg bg-blue-50 border border-blue-100">
+                                      <span className="block text-xs text-blue-500 uppercase mb-1">Jawaban Benar</span>
+                                      <span className="font-bold text-blue-800">{q.options[q.correct]}</span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="bg-gray-50 p-3 rounded-lg text-sm text-gray-600 border-l-4 border-gray-400">
+                                  <span className="font-bold text-gray-700 block mb-1">Penjelasan:</span>
+                                  {q.explanation}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            );
+          };
+
+          return (
+            <>
+              {screen === 'home' && <HomeScreen />}
+              {screen === 'quiz' && <QuizScreen />}
+              {screen === 'result' && <ResultScreen />}
+            </>
+          );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<QuizApp />);
+    </script>
+</body>
+</html>
+
