@@ -1,0 +1,343 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Mencocokkan Kosakata Arab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0fdf4; /* Light green background */
+            -webkit-tap-highlight-color: transparent;
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            line-height: 1.5;
+        }
+        
+        /* Card States */
+        .card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        .card:active {
+            transform: scale(0.95);
+        }
+        .card.selected {
+            background-color: #fef08a; /* Yellow */
+            border-color: #eab308;
+            box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.2);
+            transform: scale(1.02);
+        }
+        .card.matched {
+            background-color: #bbf7d0; /* Green */
+            border-color: #22c55e;
+            color: #166534;
+            opacity: 0.8;
+            cursor: default;
+            pointer-events: none;
+            transform: scale(0.98);
+        }
+        .card.wrong {
+            background-color: #fecdd3; /* Red */
+            border-color: #e11d48;
+            color: #9f1239;
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall 3s linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8 px-4 relative overflow-x-hidden">
+
+    <!-- Header -->
+    <div class="text-center mb-8 w-full max-w-2xl">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-green-700 mb-2 drop-shadow-sm">🌟 Cocokkan Kata 🌟</h1>
+        <p class="text-gray-600 font-medium">Ketuk gambar/kata di kiri, lalu cari bahasa Arabnya di kanan!</p>
+        
+        <div class="mt-4 flex justify-between items-center bg-white px-6 py-3 rounded-2xl shadow-sm border border-green-100">
+            <span class="text-lg font-bold text-gray-700">Skor: <span id="score" class="text-green-600 text-2xl">0</span></span>
+            <span class="text-sm font-semibold bg-green-100 text-green-700 px-3 py-1 rounded-full">Level <span id="level-indicator">1</span></span>
+        </div>
+    </div>
+
+    <!-- Game Board -->
+    <div class="flex flex-row justify-between w-full max-w-2xl gap-3 md:gap-6 relative z-10" id="game-board">
+        <!-- Kolom Kiri (Gambar & Indonesia) -->
+        <div class="flex flex-col gap-3 w-1/2" id="col-indo"></div>
+        
+        <!-- Kolom Kanan (Arab) -->
+        <div class="flex flex-col gap-3 w-1/2" id="col-arab"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="mt-10 flex gap-4">
+        <button id="btn-restart" class="hidden bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 active:scale-95 text-lg">
+            Main Lagi 🔄
+        </button>
+    </div>
+
+    <!-- Modal Kemenangan -->
+    <div id="win-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm transition-opacity opacity-0">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-[90%] text-center shadow-2xl transform scale-90 transition-transform duration-300" id="win-modal-content">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Masya Allah!</h2>
+            <p class="text-gray-600 mb-6">Kamu berhasil mencocokkan semua kata dengan benar.</p>
+            <button onclick="nextLevel()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition active:scale-95">
+                Lanjut Level Berikutnya ➡️
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Database Kosakata dari Gambar
+        const vocabulary = [
+            { id: 1, idn: 'Sawah', emoji: '🌾', ar: 'مَزْرَعَةٌ' },
+            { id: 2, idn: 'Rumah sakit', emoji: '🏥', ar: 'مُسْتَشْفَى' },
+            { id: 3, idn: 'Bandara', emoji: '✈️', ar: 'مَطَارٌ' },
+            { id: 4, idn: 'Perawat', emoji: '👩‍⚕️', ar: 'مُمَرِّضٌ' },
+            { id: 5, idn: 'Pegawai', emoji: '💼', ar: 'مُوَظَّفٌ' },
+            { id: 6, idn: 'Arsitek', emoji: '📐', ar: 'مُهَنْدِسٌ' },
+            { id: 7, idn: 'Tukang kayu', emoji: '🪚', ar: 'نَجَّارٌ' },
+            { id: 8, idn: 'Pedagang', emoji: '🏪', ar: 'تَاجِرٌ' },
+            { id: 9, idn: 'Tentara', emoji: '🪖', ar: 'جُنْدِيٌّ' },
+            { id: 10, idn: 'Sopir', emoji: '🚙', ar: 'سَائِقٌ' },
+            { id: 11, idn: 'Polisi', emoji: '👮', ar: 'شُرْطِيٌّ' },
+            { id: 12, idn: 'Nelayan', emoji: '🎣', ar: 'صَيَّادٌ' },
+            { id: 13, idn: 'Dokter', emoji: '🩺', ar: 'طَبِيْبٌ' },
+            { id: 14, idn: 'Pilot', emoji: '👨‍✈️', ar: 'طَيَّارٌ' },
+            { id: 15, idn: 'Petani', emoji: '🧑‍🌾', ar: 'فَلَّاحٌ' },
+            { id: 16, idn: 'Sekolah', emoji: '🏫', ar: 'مَدْرَسَةٌ' },
+            { id: 17, idn: 'Guru', emoji: '👨‍🏫', ar: 'مُدَرِّسٌ' },
+            { id: 18, idn: 'Paman', emoji: '👨', ar: 'عَمٌّ' },
+            { id: 19, idn: 'Bibi', emoji: '👩', ar: 'عَمَّةٌ' }
+        ];
+
+        let currentLevel = 1;
+        let pairsPerLevel = 5; // Munculkan 5 pasang per level agar pas di layar HP
+        let score = 0;
+        let matchedPairs = 0;
+        
+        let selectedIndo = null;
+        let selectedArab = null;
+        let isAnimating = false;
+
+        const colIndo = document.getElementById('col-indo');
+        const colArab = document.getElementById('col-arab');
+        const scoreEl = document.getElementById('score');
+        const levelEl = document.getElementById('level-indicator');
+        const modal = document.getElementById('win-modal');
+        const modalContent = document.getElementById('win-modal-content');
+
+        // Fungsi mengacak array (Fisher-Yates)
+        function shuffleArray(array) {
+            let curId = array.length;
+            while (0 !== curId) {
+                let randId = Math.floor(Math.random() * curId);
+                curId -= 1;
+                let tmp = array[curId];
+                array[curId] = array[randId];
+                array[randId] = tmp;
+            }
+            return array;
+        }
+
+        // Inisialisasi Permainan
+        function initGame() {
+            // Reset state
+            matchedPairs = 0;
+            selectedIndo = null;
+            selectedArab = null;
+            colIndo.innerHTML = '';
+            colArab.innerHTML = '';
+            levelEl.innerText = currentLevel;
+            
+            // Pilih kata acak untuk level ini
+            const shuffledVocab = shuffleArray([...vocabulary]);
+            const levelData = shuffledVocab.slice(0, pairsPerLevel);
+
+            // Buat array terpisah dan acak urutannya
+            const indoCards = shuffleArray([...levelData]);
+            const arabCards = shuffleArray([...levelData]);
+
+            // Render Kartu Kiri (Indonesia + Emoji)
+            indoCards.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white border-2 border-gray-200 rounded-2xl p-3 md:p-4 flex flex-col items-center justify-center cursor-pointer shadow-sm hover:shadow-md h-24 md:h-32';
+                card.dataset.id = item.id;
+                card.dataset.side = 'indo';
+                card.innerHTML = `
+                    <span class="text-3xl md:text-5xl mb-1">${item.emoji}</span>
+                    <span class="text-xs md:text-sm font-bold text-gray-700 text-center leading-tight">${item.idn}</span>
+                `;
+                card.addEventListener('click', () => handleCardClick(card, 'indo'));
+                colIndo.appendChild(card);
+            });
+
+            // Render Kartu Kanan (Arab)
+            arabCards.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white border-2 border-gray-200 rounded-2xl p-3 md:p-4 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-md h-24 md:h-32';
+                card.dataset.id = item.id;
+                card.dataset.side = 'arab';
+                card.innerHTML = `
+                    <span class="arabic-text text-2xl md:text-4xl font-bold text-green-800 text-center w-full" dir="rtl">${item.ar}</span>
+                `;
+                card.addEventListener('click', () => handleCardClick(card, 'arab'));
+                colArab.appendChild(card);
+            });
+        }
+
+        // Logika saat kartu diklik
+        function handleCardClick(card, side) {
+            // Cegah klik ganda atau klik saat animasi berjalan
+            if (isAnimating || card.classList.contains('matched') || card.classList.contains('selected')) return;
+
+            // Pilih kartu
+            card.classList.add('selected');
+
+            if (side === 'indo') {
+                if (selectedIndo) selectedIndo.classList.remove('selected');
+                selectedIndo = card;
+                selectedIndo.classList.add('selected');
+            } else {
+                if (selectedArab) selectedArab.classList.remove('selected');
+                selectedArab = card;
+                selectedArab.classList.add('selected');
+            }
+
+            // Jika dua kartu sudah dipilih, cek kecocokan
+            if (selectedIndo && selectedArab) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            isAnimating = true; // Kunci interaksi
+            const idIndo = selectedIndo.dataset.id;
+            const idArab = selectedArab.dataset.id;
+
+            if (idIndo === idArab) {
+                // Benar
+                setTimeout(() => {
+                    selectedIndo.classList.replace('selected', 'matched');
+                    selectedArab.classList.replace('selected', 'matched');
+                    
+                    // Tambah skor dan mainkan efek sukses sederhana
+                    score += 10;
+                    scoreEl.innerText = score;
+                    scoreEl.classList.add('scale-150', 'text-green-500');
+                    setTimeout(() => scoreEl.classList.remove('scale-150', 'text-green-500'), 300);
+
+                    resetSelection();
+                    matchedPairs++;
+                    
+                    if (matchedPairs === pairsPerLevel) {
+                        setTimeout(showWinModal, 500);
+                    }
+                    isAnimating = false;
+                }, 300);
+            } else {
+                // Salah
+                setTimeout(() => {
+                    selectedIndo.classList.replace('selected', 'wrong');
+                    selectedArab.classList.replace('selected', 'wrong');
+                    
+                    // Kurangi skor jika salah
+                    score = Math.max(0, score - 2);
+                    scoreEl.innerText = score;
+                    
+                    setTimeout(() => {
+                        selectedIndo.classList.remove('wrong');
+                        selectedArab.classList.remove('wrong');
+                        resetSelection();
+                        isAnimating = false;
+                    }, 500); // Durasi animasi getar
+                }, 300);
+            }
+        }
+
+        function resetSelection() {
+            selectedIndo = null;
+            selectedArab = null;
+        }
+
+        function showWinModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Sedikit delay untuk animasi masuk
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-90');
+                modalContent.classList.add('scale-100');
+            }, 10);
+            createConfetti();
+        }
+
+        function hideWinModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        function nextLevel() {
+            hideWinModal();
+            currentLevel++;
+            // Tingkatkan kesulitan sedikit (tambah jumlah kartu jika layar muat, tapi kita tahan di 6 max untuk mobile)
+            if (currentLevel % 2 === 0 && pairsPerLevel < 6) {
+                pairsPerLevel = 6;
+            }
+            initGame();
+        }
+
+        // Efek Confetti saat menang
+        function createConfetti() {
+            const colors = ['#22c55e', '#eab308', '#3b82f6', '#ef4444', '#a855f7'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.opacity = Math.random();
+                document.body.appendChild(confetti);
+
+                // Hapus setelah selesai animasi
+                setTimeout(() => {
+                    confetti.remove();
+                }, 4000);
+            }
+        }
+
+        // Mulai game saat halaman dimuat
+        window.onload = initGame;
+    </script>
+</body>
+</html>
+
+```
