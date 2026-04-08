@@ -1,0 +1,538 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bahasa Arab - Profesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0fdf4;
+            background-image: radial-gradient(#22c55e 0.5px, transparent 0.5px), radial-gradient(#22c55e 0.5px, #f0fdf4 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-attachment: fixed;
+        }
+        .arabic {
+            font-family: 'Amiri', serif;
+            font-size: 1.8rem;
+            line-height: 1.5;
+        }
+        .arabic-large {
+            font-family: 'Amiri', serif;
+            font-size: 2.5rem;
+            line-height: 1.5;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #16a34a; }
+        
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800 flex items-center justify-center p-4">
+
+    <!-- Main Container -->
+    <div id="app-container" class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col h-[90vh] border-t-8 border-green-500">
+        
+        <!-- HEADER -->
+        <header class="bg-green-50 p-6 border-b border-green-100 flex justify-between items-center text-center sm:text-left shrink-0">
+            <div>
+                <h1 class="text-2xl font-bold text-green-700"><i class="fa-solid fa-book-open text-green-500 mr-2"></i> Kuis Bahasa Arab Kelas 4</h1>
+                <p class="text-sm text-gray-500 mt-1">Materi: Profesi (المِهْنَةُ) & Tempat</p>
+            </div>
+            <div id="header-timer" class="hidden bg-white px-4 py-2 rounded-full shadow-sm font-mono text-lg font-bold text-green-600 border border-green-200">
+                <i class="fa-regular fa-clock mr-2"></i><span id="timer-display">00:00</span>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-grow p-6 relative overflow-y-auto" id="main-content">
+            
+            <!-- HOME SCREEN -->
+            <div id="home-screen" class="fade-in space-y-6">
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-yellow-800 mb-4 border-b border-yellow-200 pb-2"><i class="fa-solid fa-list mr-2"></i>Ringkasan Kosakata (Kosa Kata)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 text-sm">
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Sawah</span> <span class="arabic text-xl font-bold text-green-700">مَزْرَعَةٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Rumah sakit</span> <span class="arabic text-xl font-bold text-green-700">مُسْتَشْفَى</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Bandara</span> <span class="arabic text-xl font-bold text-green-700">مَطَارٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Perawat</span> <span class="arabic text-xl font-bold text-green-700">مُمَرِّضٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Profesi</span> <span class="arabic text-xl font-bold text-green-700">مِهْنَةٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Pegawai</span> <span class="arabic text-xl font-bold text-green-700">مُوَظَّفٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Arsitek</span> <span class="arabic text-xl font-bold text-green-700">مُهَنْدِسٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Tukang kayu</span> <span class="arabic text-xl font-bold text-green-700">نَجَّارٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Di mana</span> <span class="arabic text-xl font-bold text-green-700">أَيْنَ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Laut</span> <span class="arabic text-xl font-bold text-green-700">بَحْرٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Pedagang</span> <span class="arabic text-xl font-bold text-green-700">تَاجِرٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Tentara</span> <span class="arabic text-xl font-bold text-green-700">جُنْدِيٌّ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Tukang cukur</span> <span class="arabic text-xl font-bold text-green-700">حَلَّاقٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Kantor</span> <span class="arabic text-xl font-bold text-green-700">دِيْوَانٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Pengurus</span> <span class="arabic text-xl font-bold text-green-700">رَبَّةٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Sopir</span> <span class="arabic text-xl font-bold text-green-700">سَائِقٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Pasar</span> <span class="arabic text-xl font-bold text-green-700">سُوْقٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Polisi</span> <span class="arabic text-xl font-bold text-green-700">شُرْطِيٌّ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Nelayan</span> <span class="arabic text-xl font-bold text-green-700">صَيَّادٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Dokter</span> <span class="arabic text-xl font-bold text-green-700">طَبِيْبٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Pilot</span> <span class="arabic text-xl font-bold text-green-700">طَيَّارٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Paman</span> <span class="arabic text-xl font-bold text-green-700">عَمٌّ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Bibi</span> <span class="arabic text-xl font-bold text-green-700">عَمَّةٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Petani</span> <span class="arabic text-xl font-bold text-green-700">فَلَّاحٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Sekolah</span> <span class="arabic text-xl font-bold text-green-700">مَدْرَسَةٌ</span></div>
+                        <div class="flex justify-between border-b border-yellow-100 py-1"><span>Guru</span> <span class="arabic text-xl font-bold text-green-700">مُدَرِّسٌ</span></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <h3 class="text-xl font-bold text-gray-700 mb-4">Pilih Paket Soal:</h3>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="startQuiz('A')" class="group relative px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                            <span class="block text-2xl mb-1">Paket A</span>
+                            <span class="block text-sm font-normal opacity-80">40 Soal Pilihan Ganda</span>
+                        </button>
+                        <button onclick="startQuiz('B')" class="group relative px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+                            <span class="block text-2xl mb-1">Paket B</span>
+                            <span class="block text-sm font-normal opacity-80">40 Soal Pilihan Ganda</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUIZ SCREEN -->
+            <div id="quiz-screen" class="hidden fade-in flex-col h-full">
+                <div class="mb-6 sticky top-0 bg-white z-10 pt-2 pb-4 border-b border-gray-100">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider" id="package-indicator">Paket A</span>
+                        <span class="text-sm font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full" id="page-counter">Halaman 1 dari 4</span>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-green-600 h-2.5 rounded-full transition-all duration-300" id="progress-bar" style="width: 25%"></div>
+                    </div>
+                    <p class="text-xs text-center text-gray-400 mt-2"><i class="fa-solid fa-circle-info mr-1"></i> Jawab semua 10 soal di halaman ini untuk melanjutkan.</p>
+                </div>
+
+                <!-- Multiple questions will be injected here -->
+                <div id="questions-container" class="space-y-6 flex-grow pb-8">
+                </div>
+
+                <div class="flex justify-end mt-4 mb-4">
+                    <button id="next-btn" onclick="handleNextPage()" disabled class="px-8 py-4 bg-gray-300 text-gray-500 cursor-not-allowed font-bold rounded-xl transition-colors flex items-center shadow-sm w-full sm:w-auto justify-center">
+                        Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULT SCREEN -->
+            <div id="result-screen" class="hidden fade-in flex-col items-center justify-center text-center py-8">
+                <div class="mb-4">
+                    <i class="fa-solid fa-trophy text-6xl text-yellow-400"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Kuis Selesai!</h2>
+                <p class="text-gray-500 mb-8" id="result-message">Kamu telah menyelesaikan kuis ini.</p>
+                
+                <div class="bg-green-50 border-2 border-green-200 rounded-2xl p-8 mb-8 w-full max-w-md shadow-sm">
+                    <div class="text-sm text-green-600 font-bold uppercase tracking-widest mb-2">Nilai Akhir</div>
+                    <div class="text-7xl font-black text-green-700 mb-4 drop-shadow-sm" id="final-score">100</div>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-left border-t border-green-200 pt-4 mt-4">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Waktu Pengerjaan</p>
+                            <p class="font-bold text-gray-800 font-mono text-lg" id="final-time">00:00</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Jawaban Benar</p>
+                            <p class="font-bold text-gray-800 text-lg" id="correct-count">40 / 40</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+                    <button onclick="showReview()" class="flex-1 px-6 py-3 bg-white border-2 border-green-600 text-green-700 font-bold rounded-xl hover:bg-green-50 transition-colors">
+                        <i class="fa-solid fa-list-check mr-2"></i>Lihat Pembahasan
+                    </button>
+                    <button onclick="resetQuiz()" class="flex-1 px-6 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-colors shadow-md">
+                        <i class="fa-solid fa-rotate-right mr-2"></i>Kerjakan Ulang
+                    </button>
+                </div>
+            </div>
+
+            <!-- REVIEW SCREEN -->
+            <div id="review-screen" class="hidden fade-in flex-col h-full">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 sticky top-0 bg-white z-10 pt-2">
+                    <h2 class="text-2xl font-bold text-gray-800">Pembahasan Kunci Jawaban</h2>
+                    <button onclick="goHomeFromReview()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>Kembali
+                    </button>
+                </div>
+                
+                <div id="review-container" class="space-y-6 pb-8">
+                    <!-- Review items injected by JS -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- DATA & LOGIC -->
+    <script>
+        // --- DATA SOAL ---
+        const soalPaketA = [
+            { q: "Apa arti dari kata bahasa Arab <span class='arabic text-green-600'>طَبِيْبٌ</span> ?", options: ["Guru", "Dokter", "Polisi", "Petani"], a: 1, ex: "Kata <span class='arabic'>طَبِيْبٌ</span> (thobiibun) artinya adalah <b>Dokter</b>." },
+            { q: "Bahasa Arab dari 'Petani' adalah...", options: ["<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>"], a: 1, ex: "Petani dalam bahasa Arab adalah <span class='arabic'>فَلَّاحٌ</span> (fallaahun)." },
+            { q: "Di mana seorang <span class='arabic text-green-600'>مُدَرِّسٌ</span> (Guru) bekerja?", options: ["<span class='arabic-large block text-center mt-2'>مَدْرَسَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُسْتَشْفَى</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>"], a: 0, ex: "Guru (<span class='arabic'>مُدَرِّسٌ</span>) bekerja di Sekolah (<span class='arabic'>مَدْرَسَةٌ</span>)." },
+            { q: "Ahmad bekerja merancang bangunan dan gedung. Profesi Ahmad dalam bahasa Arab adalah...", options: ["<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>"], a: 2, ex: "Orang yang merancang bangunan adalah Arsitek/Insinyur, bahasa Arabnya <span class='arabic'>مُهَنْدِسٌ</span> (muhandisun)." },
+            { q: "Apa bahasa Arab dari 'Bandara'?", options: ["<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>"], a: 1, ex: "Bandara dalam bahasa Arab adalah <span class='arabic'>مَطَارٌ</span> (mathoorun)." },
+            { q: "Selain dokter, siapa yang bekerja di <span class='arabic text-green-600'>مُسْتَشْفَى</span> (Rumah sakit)?", options: ["<span class='arabic-large block text-center mt-2'>مُمَرِّضٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>"], a: 0, ex: "Di rumah sakit selain dokter juga terdapat Perawat (<span class='arabic'>مُمَرِّضٌ</span>)." },
+            { q: "Paman mencari ikan setiap malam. Tempat paman bekerja dalam bahasa Arab adalah...", options: ["<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>", "<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>"], a: 2, ex: "Mencari ikan dilakukan di Laut. Laut dalam bahasa Arab adalah <span class='arabic'>بَحْرٌ</span> (bahrun)." },
+            { q: "Profesi paman yang mencari ikan disebut...", options: ["<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>"], a: 1, ex: "Pencari ikan adalah Nelayan, bahasa Arabnya <span class='arabic'>صَيَّادٌ</span> (shoyyaadun)." },
+            { q: "Apa arti dari <span class='arabic text-green-600'>سَائِقٌ</span> ?", options: ["Sopir", "Pilot", "Masinis", "Tentara"], a: 0, ex: "Kata <span class='arabic'>سَائِقٌ</span> (saa-iqun) artinya adalah <b>Sopir</b>." },
+            { q: "Orang yang membuat meja dan kursi dari kayu disebut...", options: ["<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>"], a: 0, ex: "Pembuat meja kursi adalah Tukang kayu (<span class='arabic'>نَجَّارٌ</span>)." },
+            { q: "Ibu pergi ke <span class='arabic text-green-600'>سُوْقٌ</span>. Tempat apa itu?", options: ["Kantor", "Sekolah", "Pasar", "Rumah Sakit"], a: 2, ex: "Kata <span class='arabic'>سُوْقٌ</span> (suuqun) artinya adalah <b>Pasar</b>." },
+            { q: "Siapa yang biasanya berjualan di pasar (<span class='arabic'>سُوْقٌ</span>)?", options: ["<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>"], a: 0, ex: "Yang berjualan di pasar adalah Pedagang (<span class='arabic'>تَاجِرٌ</span>)." },
+            { q: "Bahasa Arab dari 'Polisi' adalah...", options: ["<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>"], a: 1, ex: "Polisi dalam bahasa Arab adalah <span class='arabic'>شُرْطِيٌّ</span> (syurthiyyun)." },
+            { q: "Orang yang mengemudikan pesawat terbang disebut...", options: ["<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>"], a: 1, ex: "Pengemudi pesawat adalah Pilot (<span class='arabic'>طَيَّارٌ</span>)." },
+            { q: "Apa arti dari profesi <span class='arabic text-green-600'>جُنْدِيٌّ</span> ?", options: ["Polisi", "Satpam", "Tentara", "Pegawai"], a: 2, ex: "Kata <span class='arabic'>جُنْدِيٌّ</span> (jundiyyun) artinya adalah <b>Tentara</b>." },
+            { q: "Ayah bekerja di kantor. 'Kantor' dalam bahasa Arab adalah...", options: ["<span class='arabic-large block text-center mt-2'>مَدْرَسَةٌ</span>", "<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُسْتَشْفَى</span>"], a: 1, ex: "Kantor dalam bahasa Arab adalah <span class='arabic'>دِيْوَانٌ</span> (diiwaanun)." },
+            { q: "Orang yang bekerja di kantor (<span class='arabic'>دِيْوَانٌ</span>) biasanya adalah seorang...", options: ["<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>"], a: 0, ex: "Orang yang bekerja di kantor adalah Pegawai (<span class='arabic'>مُوَظَّفٌ</span>)." },
+            { q: "Jika rambutmu panjang, kamu pergi ke...", options: ["<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>"], a: 2, ex: "Untuk memotong rambut kita pergi ke Tukang cukur (<span class='arabic'>حَلَّاقٌ</span>)." },
+            { q: "Apa arti dari kata <span class='arabic text-green-600'>مِهْنَةٌ</span> ?", options: ["Tempat", "Nama", "Profesi/Pekerjaan", "Hobi"], a: 2, ex: "Kata <span class='arabic'>مِهْنَةٌ</span> (mihnatun) artinya adalah <b>Profesi</b> atau pekerjaan." },
+            { q: "Kata tanya <span class='arabic text-green-600'>أَيْنَ</span> digunakan untuk menanyakan...", options: ["Waktu", "Tempat (Di mana)", "Orang (Siapa)", "Alasan (Mengapa)"], a: 1, ex: "Kata <span class='arabic'>أَيْنَ</span> (ayna) artinya <b>Di mana</b>, untuk menanyakan tempat." },
+            { q: "Bahasa Arab dari 'Paman' adalah...", options: ["<span class='arabic-large block text-center mt-2'>أَبٌ</span>", "<span class='arabic-large block text-center mt-2'>عَمٌّ</span>", "<span class='arabic-large block text-center mt-2'>أَخٌ</span>", "<span class='arabic-large block text-center mt-2'>جَدٌّ</span>"], a: 1, ex: "Paman dalam bahasa Arab adalah <span class='arabic'>عَمٌّ</span> (ammun)." },
+            { q: "Bahasa Arab dari 'Bibi' adalah...", options: ["<span class='arabic-large block text-center mt-2'>أُمٌّ</span>", "<span class='arabic-large block text-center mt-2'>عَمَّةٌ</span>", "<span class='arabic-large block text-center mt-2'>أُخْتٌ</span>", "<span class='arabic-large block text-center mt-2'>جَدَّةٌ</span>"], a: 1, ex: "Bibi dalam bahasa Arab adalah <span class='arabic'>عَمَّةٌ</span> (ammatun)." },
+            { q: "Tempat menanam padi disebut Sawah, bahasa Arabnya adalah...", options: ["<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>", "<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>"], a: 2, ex: "Sawah atau ladang adalah <span class='arabic'>مَزْرَعَةٌ</span> (mazro'atun)." },
+            { q: "Ibu yang mengurus urusan rumah tangga disebut Pengurus (rumah). Bahasa Arab 'Pengurus' adalah...", options: ["<span class='arabic-large block text-center mt-2'>رَبَّةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُعَلِّمَةٌ</span>", "<span class='arabic-large block text-center mt-2'>طَبِيْبَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُمَرِّضَةٌ</span>"], a: 0, ex: "Pengurus (biasanya disandingkan menjadi pengurus rumah tangga/ibu rumah tangga) adalah <span class='arabic'>رَبَّةٌ</span> (robatun)." },
+            { q: "Lengkapi kalimat berikut: <br><span class='arabic text-2xl'>أَبِي ... ، هُوَ يَعْمَلُ فِي الْمُسْتَشْفَى</span><br>(Ayahku ..., dia bekerja di rumah sakit)", options: ["<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>", "<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>"], a: 0, ex: "Karena bekerja di rumah sakit (<span class='arabic'>مُسْتَشْفَى</span>), maka profesinya adalah Dokter (<span class='arabic'>طَبِيْبٌ</span>)." },
+            { q: "Lengkapi kalimat berikut: <br><span class='arabic text-2xl'>... الْمُدَرِّسُ؟ فِي الْمَدْرَسَةِ</span>", options: ["<span class='arabic-large block text-center mt-2'>مَنْ</span>", "<span class='arabic-large block text-center mt-2'>مَاذَا</span>", "<span class='arabic-large block text-center mt-2'>أَيْنَ</span>", "<span class='arabic-large block text-center mt-2'>هَلْ</span>"], a: 2, ex: "Jawabannya menunjukkan tempat (Di sekolah), maka kata tanyanya harus Di mana (<span class='arabic'>أَيْنَ</span>)." },
+            { q: "Profesi yang berhubungan dengan menjaga keamanan negara adalah...", options: ["<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>"], a: 1, ex: "Penjaga keamanan negara adalah Tentara (<span class='arabic'>جُنْدِيٌّ</span>)." },
+            { q: "Orang yang menyetir mobil disebut <span class='arabic text-green-600'>سَائِقٌ</span>, sedangkan yang menerbangkan pesawat terbang disebut...", options: ["<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>"], a: 0, ex: "Penerbang pesawat adalah Pilot (<span class='arabic'>طَيَّارٌ</span>)." },
+            { q: "Apa pekerjaan utama seorang <span class='arabic text-green-600'>فَلَّاحٌ</span> ?", options: ["Menjual barang", "Menangkap ikan", "Menanam padi/sayur", "Mengatur lalu lintas"], a: 2, ex: "<span class='arabic'>فَلَّاحٌ</span> adalah Petani, pekerjaannya menanam padi/sayur di sawah (<span class='arabic'>مَزْرَعَةٌ</span>)." },
+            { q: "Kata <span class='arabic text-green-600'>مُمَرِّضٌ</span> memiliki arti...", options: ["Pasien", "Apoteker", "Dokter", "Perawat"], a: 3, ex: "Kata <span class='arabic'>مُمَرِّضٌ</span> (mumaridshon) artinya adalah <b>Perawat</b>." },
+            { q: "Jika <span class='arabic text-green-600'>عَمٌّ</span> artinya Paman, maka bibi adalah...", options: ["<span class='arabic-large block text-center mt-2'>أُمٌّ</span>", "<span class='arabic-large block text-center mt-2'>أُخْتٌ</span>", "<span class='arabic-large block text-center mt-2'>عَمَّةٌ</span>", "<span class='arabic-large block text-center mt-2'>جَدَّةٌ</span>"], a: 2, ex: "Bibi adalah <span class='arabic'>عَمَّةٌ</span> (ammatun)." },
+            { q: "Manakah pasangan profesi dan tempat kerja yang BENAR?", options: ["<span class='arabic text-xl'>طَبِيْبٌ - مَزْرَعَةٌ</span>", "<span class='arabic text-xl'>مُدَرِّسٌ - مَدْرَسَةٌ</span>", "<span class='arabic text-xl'>طَيَّارٌ - بَحْرٌ</span>", "<span class='arabic text-xl'>صَيَّادٌ - دِيْوَانٌ</span>"], a: 1, ex: "Guru (<span class='arabic'>مُدَرِّسٌ</span>) bekerja di Sekolah (<span class='arabic'>مَدْرَسَةٌ</span>). Pilihan lain salah tempat." },
+            { q: "Manakah pasangan profesi dan tempat kerja yang SALAH?", options: ["<span class='arabic text-xl'>فَلَّاحٌ - مَزْرَعَةٌ</span>", "<span class='arabic text-xl'>تَاجِرٌ - سُوْقٌ</span>", "<span class='arabic text-xl'>مُوَظَّفٌ - دِيْوَانٌ</span>", "<span class='arabic text-xl'>شُرْطِيٌّ - بَحْرٌ</span>"], a: 3, ex: "Polisi (<span class='arabic'>شُرْطِيٌّ</span>) tidak bekerja mencari ikan di Laut (<span class='arabic'>بَحْرٌ</span>)." },
+            { q: "Terjemahkan ke dalam bahasa Arab: 'Ini pamanku, dia seorang arsitek.'", options: ["<span class='arabic text-xl block mt-2 text-right' dir='rtl'>هَذَا عَمِّي، هُوَ مُهَنْدِسٌ</span>", "<span class='arabic text-xl block mt-2 text-right' dir='rtl'>هَذَا أَبِي، هُوَ مُهَنْدِسٌ</span>", "<span class='arabic text-xl block mt-2 text-right' dir='rtl'>هَذَا عَمِّي، هُوَ طَبِيْبٌ</span>", "<span class='arabic text-xl block mt-2 text-right' dir='rtl'>هَذِهِ عَمَّتِي، هِيَ مُهَنْدِسَةٌ</span>"], a: 0, ex: "Ini pamanku (<span class='arabic'>هَذَا عَمِّي</span>), dia (<span class='arabic'>هُوَ</span>) arsitek (<span class='arabic'>مُهَنْدِسٌ</span>)." },
+            { q: "Pekerjaan membuat pintu dan lemari dilakukan oleh...", options: ["<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>", "<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>"], a: 1, ex: "Membuat barang dari kayu adalah tugas Tukang Kayu (<span class='arabic'>نَجَّارٌ</span>)." },
+            { q: "Orang yang bertugas mengatur lalu lintas di jalan raya adalah...", options: ["<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>"], a: 2, ex: "Pengatur lalu lintas adalah Polisi (<span class='arabic'>شُرْطِيٌّ</span>)." },
+            { q: "Profesi <span class='arabic text-green-600'>مُوَظَّفٌ</span> identik dengan orang yang bekerja di...", options: ["Sekolah", "Pasar", "Rumah Sakit", "Kantor/Instansi"], a: 3, ex: "<span class='arabic'>مُوَظَّفٌ</span> adalah Pegawai yang umumnya bekerja di Kantor (<span class='arabic'>دِيْوَانٌ</span>)." },
+            { q: "Untuk merawat kesehatan gigi, kita pergi ke <span class='arabic text-green-600'>طَبِيْبٌ</span>. Kata ini berarti...", options: ["Perawat", "Bidan", "Dokter", "Apoteker"], a: 2, ex: "<span class='arabic'>طَبِيْبٌ</span> artinya Dokter." },
+            { q: "Tempat bertemunya penjual (<span class='arabic'>تَاجِرٌ</span>) dan pembeli adalah...", options: ["<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>"], a: 0, ex: "Tempat jual beli adalah Pasar (<span class='arabic'>سُوْقٌ</span>)." },
+            { q: "Pesawat terbang lepas landas dan mendarat di...", options: ["<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُسْتَشْفَى</span>", "<span class='arabic-large block text-center mt-2'>مَدْرَسَةٌ</span>"], a: 1, ex: "Tempat pesawat adalah Bandara (<span class='arabic'>مَطَارٌ</span>)." }
+        ];
+
+        const soalPaketB = [
+            { q: "Apa bahasa Arab dari kata 'Profesi'?", options: ["<span class='arabic-large block text-center mt-2'>عَمَلٌ</span>", "<span class='arabic-large block text-center mt-2'>مِهْنَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مَكَانٌ</span>", "<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>"], a: 1, ex: "Profesi dalam bahasa Arab adalah <span class='arabic'>مِهْنَةٌ</span> (mihnatun)." },
+            { q: "Kata <span class='arabic text-green-600'>مُهَنْدِسٌ</span> dalam bahasa Indonesia berarti...", options: ["Arsitek/Insinyur", "Tukang Kayu", "Sopir", "Pegawai"], a: 0, ex: "Kata <span class='arabic'>مُهَنْدِسٌ</span> (muhandisun) artinya adalah <b>Arsitek/Insinyur</b>." },
+            { q: "Seorang Nelayan bekerja mencari ikan di...", options: ["<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>", "<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>", "<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>"], a: 2, ex: "Nelayan mencari ikan di Laut (<span class='arabic'>بَحْرٌ</span>)." },
+            { q: "Bahasa Arab dari 'Nelayan' adalah...", options: ["<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>"], a: 0, ex: "Nelayan dalam bahasa Arab adalah <span class='arabic'>صَيَّادٌ</span> (shoyyaadun)." },
+            { q: "Siapa yang bekerja membantu Dokter merawat pasien di <span class='arabic text-green-600'>مُسْتَشْفَى</span> ?", options: ["<span class='arabic-large block text-center mt-2'>مُمَرِّضٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>"], a: 0, ex: "Asisten dokter yang merawat pasien adalah Perawat (<span class='arabic'>مُمَرِّضٌ</span>)." },
+            { q: "Apa arti dari <span class='arabic text-green-600'>حَلَّاقٌ</span> ?", options: ["Tukang jahit", "Tukang cukur", "Tukang besi", "Tukang kayu"], a: 1, ex: "Kata <span class='arabic'>حَلَّاقٌ</span> (hallaqun) artinya adalah <b>Tukang cukur</b>." },
+            { q: "Bapak pergi ke <span class='arabic text-green-600'>دِيْوَانٌ</span> untuk bekerja. Tempat apa itu?", options: ["Pabrik", "Sawah", "Pasar", "Kantor"], a: 3, ex: "Kata <span class='arabic'>دِيْوَانٌ</span> (diiwaanun) artinya adalah <b>Kantor</b>." },
+            { q: "Pekerja di kantor biasanya memiliki profesi sebagai...", options: ["<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>"], a: 1, ex: "Pekerja kantor disebut Pegawai (<span class='arabic'>مُوَظَّفٌ</span>)." },
+            { q: "Orang yang berjualan beras, sayur, dan pakaian di pasar disebut...", options: ["<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>"], a: 1, ex: "Orang yang berjualan adalah Pedagang (<span class='arabic'>تَاجِرٌ</span>)." },
+            { q: "Bahasa Arab dari 'Tentara' adalah...", options: ["<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>"], a: 2, ex: "Tentara dalam bahasa Arab adalah <span class='arabic'>جُنْدِيٌّ</span> (jundiyyun)." },
+            { q: "Pekerjaan seorang <span class='arabic text-green-600'>طَيَّارٌ</span> dilakukan di udara, mereka mengemudikan pesawat yang berangkat dari...", options: ["<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>", "<span class='arabic-large block text-center mt-2'>مُسْتَشْفَى</span>", "<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>"], a: 0, ex: "Pesawat berangkat dari Bandara (<span class='arabic'>مَطَارٌ</span>)." },
+            { q: "Apa arti dari profesi <span class='arabic text-green-600'>شُرْطِيٌّ</span> ?", options: ["Hakim", "Polisi", "Jaksa", "Pengacara"], a: 1, ex: "Kata <span class='arabic'>شُرْطِيٌّ</span> (syurthiyyun) artinya adalah <b>Polisi</b>." },
+            { q: "Orang yang bertugas mendidik dan mengajar murid di kelas adalah...", options: ["<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>عَالِمٌ</span>"], a: 1, ex: "Pengajar di kelas adalah Guru (<span class='arabic'>مُدَرِّسٌ</span>)." },
+            { q: "Guru mengajar di <span class='arabic text-green-600'>مَدْرَسَةٌ</span>. Apa arti kata tersebut?", options: ["Perpustakaan", "Universitas", "Sekolah", "Laboratorium"], a: 2, ex: "Kata <span class='arabic'>مَدْرَسَةٌ</span> (madrosatun) artinya adalah <b>Sekolah</b>." },
+            { q: "Bahasa Arab dari 'Sopir' adalah...", options: ["<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>"], a: 0, ex: "Sopir dalam bahasa Arab adalah <span class='arabic'>سَائِقٌ</span> (saa-iqun)." },
+            { q: "Pekerja yang menanam buah dan sayur di sawah disebut...", options: ["<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>"], a: 0, ex: "Penanam padi/sayur adalah Petani (<span class='arabic'>فَلَّاحٌ</span>)." },
+            { q: "Bahasa Arab dari 'Sawah' adalah...", options: ["<span class='arabic-large block text-center mt-2'>حَدِيْقَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>", "<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>"], a: 1, ex: "Sawah dalam bahasa Arab adalah <span class='arabic'>مَزْرَعَةٌ</span> (mazro'atun)." },
+            { q: "Tugas utama seorang <span class='arabic text-green-600'>طَبِيْبٌ</span> adalah...", options: ["Mengatur jalan raya", "Membangun rumah", "Memeriksa orang sakit", "Menjual pakaian"], a: 2, ex: "Tugas <span class='arabic'>طَبِيْبٌ</span> (Dokter) adalah memeriksa dan mengobati orang sakit." },
+            { q: "Ibu rumah tangga dalam bahasa Arab disebut dengan kata <span class='arabic text-green-600'>رَبَّةٌ</span> yang berarti...", options: ["Pembantu", "Pengurus", "Pemilik", "Perawat"], a: 1, ex: "Kata <span class='arabic'>رَبَّةٌ</span> (robatun) secara bahasa berarti <b>Pengurus</b> (sering dipakai untuk pengurus rumah tangga)." },
+            { q: "Apa bahasa Arab dari kata tanya 'Di mana'?", options: ["<span class='arabic-large block text-center mt-2'>مَتَى</span>", "<span class='arabic-large block text-center mt-2'>أَيْنَ</span>", "<span class='arabic-large block text-center mt-2'>كَيْفَ</span>", "<span class='arabic-large block text-center mt-2'>مَاذَا</span>"], a: 1, ex: "Di mana dalam bahasa Arab adalah <span class='arabic'>أَيْنَ</span> (ayna)." },
+            { q: "Kata <span class='arabic text-green-600'>نَجَّارٌ</span> memiliki arti...", options: ["Tukang Kayu", "Tukang Batu", "Tukang Cukur", "Tukang Jahit"], a: 0, ex: "Kata <span class='arabic'>نَجَّارٌ</span> (najjaarun) artinya adalah <b>Tukang Kayu</b>." },
+            { q: "Paman bekerja menerbangkan pesawat terbang. Profesi paman adalah...", options: ["<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>"], a: 1, ex: "Penerbang pesawat adalah Pilot (<span class='arabic'>طَيَّارٌ</span>)." },
+            { q: "Bibi merawat pasien di rumah sakit. Profesi bibi adalah...", options: ["<span class='arabic-large block text-center mt-2'>طَبِيْبَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُدَرِّسَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُمَرِّضَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفَةٌ</span>"], a: 2, ex: "Perawat perempuan disebut <span class='arabic'>مُمَرِّضَةٌ</span> (mumaridshotun) dari kata dasar <span class='arabic'>مُمَرِّضٌ</span>." },
+            { q: "Bahasa Arab dari 'Bibi' adalah...", options: ["<span class='arabic-large block text-center mt-2'>عَمٌّ</span>", "<span class='arabic-large block text-center mt-2'>عَمَّةٌ</span>", "<span class='arabic-large block text-center mt-2'>خَالٌ</span>", "<span class='arabic-large block text-center mt-2'>خَالَةٌ</span>"], a: 1, ex: "Bibi (dari pihak ayah) dalam bahasa Arab adalah <span class='arabic'>عَمَّةٌ</span> (ammatun)." },
+            { q: "Bahasa Arab dari 'Paman' adalah...", options: ["<span class='arabic-large block text-center mt-2'>أَخٌ</span>", "<span class='arabic-large block text-center mt-2'>جَدٌّ</span>", "<span class='arabic-large block text-center mt-2'>عَمٌّ</span>", "<span class='arabic-large block text-center mt-2'>عَمَّةٌ</span>"], a: 2, ex: "Paman (dari pihak ayah) dalam bahasa Arab adalah <span class='arabic'>عَمٌّ</span> (ammun)." },
+            { q: "Lengkapi kalimat: <br><span class='arabic text-2xl'>أَيْنَ الْفَلَّاحُ؟ هُوَ فِي ...</span>", options: ["<span class='arabic-large block text-center mt-2'>الْمَزْرَعَةِ</span>", "<span class='arabic-large block text-center mt-2'>الْمُسْتَشْفَى</span>", "<span class='arabic-large block text-center mt-2'>الدِّيْوَانِ</span>", "<span class='arabic-large block text-center mt-2'>الْمَطَارِ</span>"], a: 0, ex: "Petani (<span class='arabic'>فَلَّاحٌ</span>) berada di Sawah (<span class='arabic'>مَزْرَعَةٌ</span>)." },
+            { q: "Lengkapi kalimat: <br><span class='arabic text-2xl'>أَيْنَ الطَّيَّارُ؟ هُوَ فِي ...</span>", options: ["<span class='arabic-large block text-center mt-2'>الْمَدْرَسَةِ</span>", "<span class='arabic-large block text-center mt-2'>الْمَطَارِ</span>", "<span class='arabic-large block text-center mt-2'>الْبَحْرِ</span>", "<span class='arabic-large block text-center mt-2'>السُّوْقِ</span>"], a: 1, ex: "Pilot (<span class='arabic'>طَيَّارٌ</span>) berada di Bandara (<span class='arabic'>مَطَارٌ</span>)." },
+            { q: "Manakah pasangan yang TEPAT?", options: ["<span class='arabic text-xl'>سَائِقٌ - مَطَارٌ</span>", "<span class='arabic text-xl'>طَبِيْبٌ - دِيْوَانٌ</span>", "<span class='arabic text-xl'>صَيَّادٌ - بَحْرٌ</span>", "<span class='arabic text-xl'>مُهَنْدِسٌ - سُوْقٌ</span>"], a: 2, ex: "Nelayan (<span class='arabic'>صَيَّادٌ</span>) bekerja di Laut (<span class='arabic'>بَحْرٌ</span>)." },
+            { q: "Profesi yang berhubungan dengan menjaga pertahanan dan keamanan dari musuh adalah...", options: ["<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>", "<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>"], a: 1, ex: "Menjaga pertahanan negara adalah tugas Tentara (<span class='arabic'>جُنْدِيٌّ</span>)." },
+            { q: "Jika mobilmu rusak, kamu mungkin butuh bantuan montir, tetapi orang yang sehari-hari <b>menyetir</b> mobil untuk bekerja disebut...", options: ["<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>"], a: 0, ex: "Penyetir mobil adalah Sopir (<span class='arabic'>سَائِقٌ</span>)." },
+            { q: "Tempat merawat orang sakit disebut Rumah Sakit. Bahasa Arabnya adalah...", options: ["<span class='arabic-large block text-center mt-2'>مَطَارٌ</span>", "<span class='arabic-large block text-center mt-2'>مُسْتَشْفَى</span>", "<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>", "<span class='arabic-large block text-center mt-2'>مَدْرَسَةٌ</span>"], a: 1, ex: "Rumah sakit dalam bahasa Arab adalah <span class='arabic'>مُسْتَشْفَى</span> (mustasyfa)." },
+            { q: "Orang yang bekerja mencari ikan menggunakan kapal di laut adalah...", options: ["<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>", "<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>"], a: 1, ex: "Pencari ikan adalah Nelayan (<span class='arabic'>صَيَّادٌ</span>)." },
+            { q: "Kakek bekerja mengajar anak-anak mengaji di madrasah. Profesi kakek berkaitan dengan...", options: ["<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>"], a: 1, ex: "Orang yang mengajar adalah Guru (<span class='arabic'>مُدَرِّسٌ</span>)." },
+            { q: "Di manakah seorang <span class='arabic text-green-600'>مُوَظَّفٌ</span> (Pegawai) biasanya bekerja?", options: ["<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>", "<span class='arabic-large block text-center mt-2'>بَحْرٌ</span>", "<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>", "<span class='arabic-large block text-center mt-2'>مَزْرَعَةٌ</span>"], a: 2, ex: "Pegawai bekerja di Kantor (<span class='arabic'>دِيْوَانٌ</span>)." },
+            { q: "Terjemahkan ke dalam bahasa Arab: 'Ayahku seorang insinyur.'", options: ["<span class='arabic text-xl block mt-2 text-right' dir='rtl'>أَبِي مُهَنْدِسٌ</span>", "<span class='arabic text-xl block mt-2 text-right' dir='rtl'>أَبِي مُدَرِّسٌ</span>", "<span class='arabic text-xl block mt-2 text-right' dir='rtl'>أَبِي طَبِيْبٌ</span>", "<span class='arabic text-xl block mt-2 text-right' dir='rtl'>أَبِي نَجَّارٌ</span>"], a: 0, ex: "Ayahku (<span class='arabic'>أَبِي</span>) insinyur (<span class='arabic'>مُهَنْدِسٌ</span>)." },
+            { q: "Profesi apakah yang sering membawa tas berisi obat-obatan dan stetoskop?", options: ["<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>", "<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>", "<span class='arabic-large block text-center mt-2'>مُوَظَّفٌ</span>"], a: 1, ex: "Yang membawa alat medis adalah Dokter (<span class='arabic'>طَبِيْبٌ</span>)." },
+            { q: "Profesi <span class='arabic text-green-600'>تَاجِرٌ</span> artinya Pedagang. Tempat kerjanya adalah di...", options: ["<span class='arabic-large block text-center mt-2'>دِيْوَانٌ</span>", "<span class='arabic-large block text-center mt-2'>سُوْقٌ</span>", "<span class='arabic-large block text-center mt-2'>مَدْرَسَةٌ</span>", "<span class='arabic-large block text-center mt-2'>مُسْتَشْفَى</span>"], a: 1, ex: "Pedagang bekerja di Pasar (<span class='arabic'>سُوْقٌ</span>)." },
+            { q: "Kayu adalah bahan utama bagi seorang...", options: ["<span class='arabic-large block text-center mt-2'>حَلَّاقٌ</span>", "<span class='arabic-large block text-center mt-2'>نَجَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>طَيَّارٌ</span>", "<span class='arabic-large block text-center mt-2'>صَيَّادٌ</span>"], a: 1, ex: "Yang mengolah kayu adalah Tukang kayu (<span class='arabic'>نَجَّارٌ</span>)." },
+            { q: "Siapa yang menertibkan kendaraan yang melanggar lampu merah?", options: ["<span class='arabic-large block text-center mt-2'>جُنْدِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>شُرْطِيٌّ</span>", "<span class='arabic-large block text-center mt-2'>سَائِقٌ</span>", "<span class='arabic-large block text-center mt-2'>مُهَنْدِسٌ</span>"], a: 1, ex: "Yang menertibkan lalu lintas adalah Polisi (<span class='arabic'>شُرْطِيٌّ</span>)." },
+            { q: "Lengkapi kalimat: <br><span class='arabic text-2xl'>هُوَ يَعْمَلُ فِي الْمَدْرَسَةِ، هُوَ ...</span><br>(Dia bekerja di sekolah, dia adalah...)", options: ["<span class='arabic-large block text-center mt-2'>مُدَرِّسٌ</span>", "<span class='arabic-large block text-center mt-2'>طَبِيْبٌ</span>", "<span class='arabic-large block text-center mt-2'>فَلَّاحٌ</span>", "<span class='arabic-large block text-center mt-2'>تَاجِرٌ</span>"], a: 0, ex: "Yang bekerja di sekolah adalah Guru (<span class='arabic'>مُدَرِّسٌ</span>)." }
+        ];
+
+        // --- STATE VARIABLES ---
+        const ITEMS_PER_PAGE = 10;
+        let currentQuestions = [];
+        let currentPackageName = "";
+        let currentPage = 0;
+        let userAnswers = {}; // Map: qIndex -> selectedOptionIdx
+        
+        let timerInterval;
+        let secondsElapsed = 0;
+
+        // --- DOM ELEMENTS ---
+        const screens = {
+            home: document.getElementById('home-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            result: document.getElementById('result-screen'),
+            review: document.getElementById('review-screen')
+        };
+        const els = {
+            pkgIndicator: document.getElementById('package-indicator'),
+            pageCounter: document.getElementById('page-counter'),
+            progressBar: document.getElementById('progress-bar'),
+            qContainer: document.getElementById('questions-container'),
+            nextBtn: document.getElementById('next-btn'),
+            headerTimer: document.getElementById('header-timer'),
+            timerDisplay: document.getElementById('timer-display'),
+            finalScore: document.getElementById('final-score'),
+            finalTime: document.getElementById('final-time'),
+            correctCount: document.getElementById('correct-count'),
+            reviewContainer: document.getElementById('review-container')
+        };
+
+        // --- FUNCTIONS ---
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(s => s.classList.add('hidden'));
+            screens[screenName].classList.remove('hidden');
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        function formatTime(totalSeconds) {
+            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function startTimer() {
+            secondsElapsed = 0;
+            els.headerTimer.classList.remove('hidden');
+            els.timerDisplay.innerText = "00:00";
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                els.timerDisplay.innerText = formatTime(secondsElapsed);
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            els.headerTimer.classList.add('hidden');
+        }
+
+        function startQuiz(pkg) {
+            currentPackageName = `Paket ${pkg}`;
+            let qArray = pkg === 'A' ? [...soalPaketA] : [...soalPaketB];
+            currentQuestions = qArray.sort(() => Math.random() - 0.5); 
+            
+            currentPage = 0;
+            userAnswers = {};
+            
+            els.pkgIndicator.innerText = currentPackageName;
+            
+            switchScreen('quiz');
+            startTimer();
+            renderPage();
+        }
+
+        function renderPage() {
+            els.qContainer.innerHTML = '';
+            
+            const totalPages = Math.ceil(currentQuestions.length / ITEMS_PER_PAGE);
+            const startIdx = currentPage * ITEMS_PER_PAGE;
+            const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, currentQuestions.length);
+            
+            els.pageCounter.innerText = `Halaman ${currentPage + 1} dari ${totalPages}`;
+            els.progressBar.style.width = `${((currentPage + 1) / totalPages) * 100}%`;
+
+            for (let i = startIdx; i < endIdx; i++) {
+                const q = currentQuestions[i];
+                const qDiv = document.createElement('div');
+                qDiv.className = 'bg-white border-2 border-gray-100 rounded-2xl p-6 shadow-sm';
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    const isSelected = userAnswers[i] === optIdx;
+                    const btnClass = isSelected 
+                        ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                        : 'border-gray-200 hover:border-green-300 hover:bg-green-50';
+                    
+                    optionsHtml += `
+                        <button onclick="selectOption(${i}, ${optIdx})" class="w-full text-left p-4 mt-3 rounded-xl border-2 transition-all font-medium text-gray-700 opt-btn-${i} ${btnClass}">
+                            <span class="inline-block w-8 font-bold text-gray-400 mr-2">${String.fromCharCode(65 + optIdx)}.</span> ${opt}
+                        </button>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <div class="flex items-center mb-4 border-b border-gray-100 pb-2">
+                        <div class="bg-green-100 text-green-700 font-bold px-3 py-1 rounded-lg mr-3">Soal ${i + 1}</div>
+                    </div>
+                    <h2 class="text-xl md:text-2xl font-medium text-gray-800 mb-4 leading-relaxed">${q.q}</h2>
+                    <div class="space-y-3">
+                        ${optionsHtml}
+                    </div>
+                `;
+                els.qContainer.appendChild(qDiv);
+            }
+            
+            checkPageComplete();
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        function selectOption(qIndex, optIdx) {
+            userAnswers[qIndex] = optIdx;
+            
+            // Update UI
+            const allBtns = document.querySelectorAll(`.opt-btn-${qIndex}`);
+            allBtns.forEach((btn, idx) => {
+                if (idx === optIdx) {
+                    btn.classList.remove('border-gray-200', 'hover:border-green-300', 'hover:bg-green-50');
+                    btn.classList.add('border-green-500', 'bg-green-50', 'ring-2', 'ring-green-200');
+                } else {
+                    btn.classList.remove('border-green-500', 'bg-green-50', 'ring-2', 'ring-green-200');
+                    btn.classList.add('border-gray-200', 'hover:border-green-300', 'hover:bg-green-50');
+                }
+            });
+            
+            checkPageComplete();
+        }
+
+        function checkPageComplete() {
+            const totalPages = Math.ceil(currentQuestions.length / ITEMS_PER_PAGE);
+            const startIdx = currentPage * ITEMS_PER_PAGE;
+            const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, currentQuestions.length);
+            
+            let allAnswered = true;
+            for (let i = startIdx; i < endIdx; i++) {
+                if (userAnswers[i] === undefined) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            
+            els.nextBtn.disabled = !allAnswered;
+            if (allAnswered) {
+                els.nextBtn.classList.replace('bg-gray-300', 'bg-green-600');
+                els.nextBtn.classList.replace('text-gray-500', 'text-white');
+                els.nextBtn.classList.remove('cursor-not-allowed');
+            } else {
+                els.nextBtn.classList.replace('bg-green-600', 'bg-gray-300');
+                els.nextBtn.classList.replace('text-white', 'text-gray-500');
+                els.nextBtn.classList.add('cursor-not-allowed');
+            }
+
+            if (currentPage === totalPages - 1) {
+                els.nextBtn.innerHTML = 'Selesai <i class="fa-solid fa-check ml-2"></i>';
+            } else {
+                els.nextBtn.innerHTML = 'Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i>';
+            }
+        }
+
+        function handleNextPage() {
+            const totalPages = Math.ceil(currentQuestions.length / ITEMS_PER_PAGE);
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                renderPage();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            stopTimer();
+            els.progressBar.style.width = `100%`;
+            
+            let correctNum = 0;
+            currentQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.a) {
+                    correctNum++;
+                }
+            });
+
+            let finalScoreRounded = Math.round((correctNum / currentQuestions.length) * 100);
+            els.finalScore.innerText = finalScoreRounded;
+            els.finalTime.innerText = formatTime(secondsElapsed);
+            els.correctCount.innerText = `${correctNum} / ${currentQuestions.length}`;
+            
+            els.finalScore.className = 'text-7xl font-black mb-4 drop-shadow-sm ' + 
+                (finalScoreRounded >= 80 ? 'text-green-600' : 
+                 finalScoreRounded >= 60 ? 'text-yellow-500' : 'text-red-500');
+
+            switchScreen('result');
+        }
+
+        function showReview() {
+            els.reviewContainer.innerHTML = '';
+            
+            currentQuestions.forEach((q, idx) => {
+                const userAnsIdx = userAnswers[idx];
+                const isCorrect = userAnsIdx === q.a;
+                
+                const div = document.createElement('div');
+                div.className = `p-5 rounded-2xl border-l-8 shadow-sm bg-white ${isCorrect ? 'border-green-500' : 'border-red-500'}`;
+                
+                let optionsHTML = '';
+                q.options.forEach((opt, oIdx) => {
+                    let optClass = 'text-gray-600 border border-gray-100 p-2 rounded-lg my-1 bg-gray-50';
+                    let icon = '';
+                    
+                    if (oIdx === q.a) {
+                        optClass = 'text-green-800 border border-green-300 bg-green-100 p-2 rounded-lg my-1 font-bold';
+                        icon = '<i class="fa-solid fa-check text-green-600 ml-2 float-right mt-1"></i>';
+                    } else if (oIdx === userAnsIdx && !isCorrect) {
+                        optClass = 'text-red-800 border border-red-300 bg-red-100 p-2 rounded-lg my-1';
+                        icon = '<i class="fa-solid fa-xmark text-red-600 ml-2 float-right mt-1"></i>';
+                    }
+
+                    optionsHTML += `<div class="${optClass}"><span class="font-bold mr-2">${String.fromCharCode(65 + oIdx)}.</span> ${opt} ${icon}</div>`;
+                });
+
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-gray-800 text-lg"><span class="bg-gray-100 px-2 py-1 rounded text-sm mr-2 text-gray-600">Soal ${idx + 1}</span></h3>
+                        <span class="px-3 py-1 rounded-full text-sm font-bold ${isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
+                            ${isCorrect ? '<i class="fa-solid fa-check mr-1"></i> Benar' : '<i class="fa-solid fa-xmark mr-1"></i> Salah'}
+                        </span>
+                    </div>
+                    <p class="text-gray-800 mb-4 font-medium text-lg">${q.q}</p>
+                    <div class="space-y-2 mb-4 text-sm">
+                        ${optionsHTML}
+                    </div>
+                    <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl mt-4">
+                        <p class="text-sm font-bold text-blue-800 mb-1"><i class="fa-solid fa-lightbulb mr-2 text-yellow-500"></i>Pembahasan:</p>
+                        <p class="text-blue-900 text-sm leading-relaxed">${q.ex}</p>
+                    </div>
+                `;
+                els.reviewContainer.appendChild(div);
+            });
+            
+            switchScreen('review');
+        }
+
+        function goHomeFromReview() {
+            switchScreen('result');
+        }
+
+        function resetQuiz() {
+            switchScreen('home');
+        }
+
+        // Initialize
+        switchScreen('home');
+
+    </script>
+</body>
+</html>
+
+
+```
