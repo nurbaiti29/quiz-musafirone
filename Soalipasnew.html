@@ -1,0 +1,515 @@
+```html
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Soal IPAS - Bimbel Musafir One</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .radio-custom:checked + div { background-color: #eff6ff; border-color: #3b82f6; }
+        .radio-custom:checked + div .radio-circle { border-color: #3b82f6; border-width: 5px; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 md:py-5 flex flex-col md:flex-row items-center justify-between">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-center md:text-left">Bimbel Musafir One</h1>
+                <p class="text-blue-100 text-sm md:text-base text-center md:text-left mt-1">Latihan Soal IPAS: Mengenal Daerahku</p>
+            </div>
+            <div id="header-status" class="mt-4 md:mt-0 bg-blue-800 px-4 py-2 rounded-lg text-sm font-semibold shadow-inner">
+                Pilih Paket Soal
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8">
+        
+        <!-- VIEW: BERANDA (Pilih Paket) -->
+        <div id="view-home" class="fade-in space-y-6">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-800 mb-3">Selamat Datang!</h2>
+                <p class="text-slate-500 max-w-xl mx-auto">Silakan pilih paket soal untuk memulai latihan. Masing-masing paket terdiri dari 40 soal pilihan ganda.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <button onclick="startQuiz('A')" class="bg-white border-2 border-slate-200 hover:border-blue-500 rounded-2xl p-8 text-left transition-all hover:shadow-lg group">
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">A</div>
+                    <h3 class="text-xl font-bold mb-2">Paket A (Kategori Sedang)</h3>
+                    <p class="text-slate-500 text-sm">Menguji pemahaman dasar, hafalan sejarah, dan identifikasi materi secara langsung.</p>
+                    <div class="mt-6 text-blue-600 font-semibold text-sm flex items-center gap-1">
+                        Mulai Kerjakan <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                </button>
+                <button onclick="startQuiz('B')" class="bg-white border-2 border-slate-200 hover:border-orange-500 rounded-2xl p-8 text-left transition-all hover:shadow-lg group">
+                    <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-2xl font-bold mb-4 group-hover:bg-orange-600 group-hover:text-white transition-colors">B</div>
+                    <h3 class="text-xl font-bold mb-2">Paket B (Kategori Sulit)</h3>
+                    <p class="text-slate-500 text-sm">Menguji kemampuan analisis, pemahaman hubungan sebab-akibat, dan logika lanjutan.</p>
+                    <div class="mt-6 text-orange-600 font-semibold text-sm flex items-center gap-1">
+                        Mulai Kerjakan <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: KUIS -->
+        <div id="view-quiz" class="hidden fade-in">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+                <div class="flex justify-between items-center border-b pb-4 mb-6">
+                    <h2 id="quiz-title" class="text-xl font-bold text-slate-800">Paket Soal</h2>
+                    <div class="bg-slate-100 px-4 py-1.5 rounded-full text-sm font-medium text-slate-600">
+                        Halaman <span id="current-page-indicator">1</span> dari 4
+                    </div>
+                </div>
+                
+                <div id="questions-container" class="space-y-8">
+                    <!-- Soal akan digenerate di sini oleh JS -->
+                </div>
+            </div>
+
+            <!-- Navigasi Bawah -->
+            <div class="flex justify-between items-center">
+                <button id="btn-prev" onclick="prevPage()" class="px-6 py-3 bg-white border border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors hidden">
+                    &larr; Sebelumnya
+                </button>
+                <div class="flex-grow"></div>
+                <button id="btn-next" onclick="nextPage()" class="px-8 py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-md hover:bg-blue-700 transition-colors">
+                    Selanjutnya &rarr;
+                </button>
+                <button id="btn-finish" onclick="finishQuiz()" class="px-8 py-3 bg-green-600 text-white rounded-xl font-semibold shadow-md hover:bg-green-700 transition-colors hidden">
+                    Selesai & Cek Skor &#10003;
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: HASIL -->
+        <div id="view-result" class="hidden fade-in">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12 text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6">Ujian Selesai!</h2>
+                
+                <div class="relative w-48 h-48 mx-auto mb-8">
+                    <svg class="w-full h-full" viewBox="0 0 36 36">
+                        <path class="text-slate-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path id="score-circle" class="text-blue-600" stroke-dasharray="0, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-5xl font-bold text-slate-800" id="final-score">0</span>
+                        <span class="text-sm text-slate-500 mt-1">Skor Akhir</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mb-8">
+                    <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+                        <div class="text-2xl font-bold text-green-600" id="stat-benar">0</div>
+                        <div class="text-xs font-medium text-green-800 mt-1">Benar</div>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-xl border border-red-100">
+                        <div class="text-2xl font-bold text-red-600" id="stat-salah">0</div>
+                        <div class="text-xs font-medium text-red-800 mt-1">Salah</div>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-xl border border-slate-200">
+                        <div class="text-2xl font-bold text-slate-600" id="stat-kosong">0</div>
+                        <div class="text-xs font-medium text-slate-700 mt-1">Kosong</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showKey()" class="px-6 py-3 bg-blue-100 text-blue-700 font-semibold rounded-xl hover:bg-blue-200 transition-colors">
+                        Lihat Kunci Jawaban
+                    </button>
+                    <button onclick="goHome()" class="px-6 py-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-colors">
+                        Kembali ke Beranda
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: KUNCI JAWABAN -->
+        <div id="view-key" class="hidden fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+                <h2 class="text-2xl font-bold text-slate-800">Evaluasi & Kunci Jawaban</h2>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="backToResult()" class="flex-1 md:flex-none px-4 py-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-100 transition-colors">
+                        Kembali ke Skor
+                    </button>
+                    <button onclick="goHome()" class="flex-1 md:flex-none px-4 py-2 bg-white border border-slate-300 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+                        Selesai (Beranda)
+                    </button>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <div id="key-container" class="space-y-6">
+                    <!-- Kunci digenerate via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL KONFIRMASI KUSTOM -->
+        <div id="modal-confirm" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 fade-in">
+            <div class="bg-white rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-xl">
+                <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Peringatan!</h3>
+                <p class="text-slate-600 mb-8" id="modal-text">Ada beberapa soal yang belum terjawab. Yakin ingin mengakhiri ujian dan mengecek skor?</p>
+                <div class="flex justify-end gap-3">
+                    <button onclick="closeModal()" class="px-5 py-2.5 bg-white border border-slate-300 text-slate-700 font-medium rounded-xl hover:bg-slate-50">Lanjut Mengerjakan</button>
+                    <button onclick="forceSubmit()" class="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 shadow-sm">Ya, Selesai</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center text-slate-500 text-sm py-6 bg-white border-t border-slate-200 mt-auto">
+        &copy; 2026 Bimbel Musafir One. All rights reserved.
+    </footer>
+
+    <!-- LOGIK & DATA SOAL -->
+    <script>
+        // --- DATA SOAL ---
+        const rawA = [
+            ["Kesultanan Kadriyah Pontianak didirikan pada tahun berapa?", "1770", "1771", "1772", "1773", "B"],
+            ["Siapakah tokoh yang mendirikan Kesultanan Kadriyah Pontianak?", "Opu Daeng Menambun", "Syarif Abdurrahman Alkadrie", "Sultan Agung", "Pangeran Antasari", "B"],
+            ["Pusat pemerintahan Kesultanan Kadriyah didirikan di pertemuan dua sungai, yaitu...", "Sungai Mahakam dan Kapuas", "Sungai Landak dan Melawi", "Sungai Landak dan Kapuas", "Sungai Kapuas dan Barito", "C"],
+            ["Peninggalan sejarah dari Kesultanan Pontianak yang masih dapat dilihat hingga saat ini adalah...", "Istana Kusuma Negara", "Keraton Ismahayana", "Istana Kadriah", "Istana Surya Negara", "C"],
+            ["Kerajaan Mempawah pada masa lampau dipimpin oleh seorang tokoh bernama...", "Opu Daeng Menambun", "Syarif Abdurrahman", "Raden Patah", "Sultan Hasanuddin", "A"],
+            ["Salah satu kerajaan Islam tertua di Kalimantan Barat yang berkembang dalam bidang perdagangan dan pendidikan Islam adalah...", "Kerajaan Sintang", "Kerajaan Sambas", "Kerajaan Tayan", "Kerajaan Sekadau", "B"],
+            ["Kerajaan Matan atau Tanjungpura merupakan salah satu kerajaan tertua yang terletak di wilayah Kabupaten...", "Sanggau", "Kapuas Hulu", "Landak", "Ketapang", "D"],
+            ["Keraton Ismahayana merupakan pusat dari kerajaan...", "Landak", "Sintang", "Kubu", "Tayan", "A"],
+            ["Kerajaan yang memiliki kaitan erat dengan sejarah penyebaran agama di wilayah hulu adalah...", "Kerajaan Sambas", "Kerajaan Sintang", "Kerajaan Kubu", "Kerajaan Mempawah", "B"],
+            ["Istana Kusuma Negara merupakan peninggalan dari kerajaan yang terletak di Kabupaten...", "Sekadau", "Sanggau", "Melawi", "Bengkayang", "A"],
+            ["Kayu ulin banyak ditemukan di daerah Kapuas Hulu dan Sintang. Ciri utama dari kayu ulin adalah...", "Sangat lentur dan ringan", "Sangat kuat dan tahan air", "Berwarna putih dan mudah rapuh", "Hanya bisa tumbuh di pegunungan es", "B"],
+            ["Jenis kayu yang banyak dimanfaatkan sebagai bahan utama bangunan dan tersebar di Ketapang serta Sanggau adalah kayu...", "Ramin", "Rotan", "Meranti", "Jati", "C"],
+            ["Tumbuhan khas yang hidup di daerah rawa gambut Kabupaten Kubu Raya adalah...", "Ulin", "Ramin", "Anggrek hitam", "Beringin", "B"],
+            ["Tanaman hias langka yang merupakan ciri khas flora daerah Kapuas Hulu adalah...", "Bunga Bangkai", "Anggrek Hitam", "Bunga Raflesia", "Kantong Semar", "B"],
+            ["Bahan alam yang banyak ditemukan di pedalaman Kalimantan Barat dan sering digunakan sebagai bahan kerajinan anyaman adalah...", "Rotan", "Daun pisang", "Kayu meranti", "Pasir kuarsa", "A"],
+            ["Primata besar yang dilindungi dan dapat ditemukan di Taman Nasional Gunung Palung adalah...", "Gorila", "Bekantan", "Orangutan Kalimantan", "Simpanse", "C"],
+            ["Ciri fisik paling menonjol dari fauna Bekantan yang banyak tersebar di pesisir Mempawah adalah...", "Telinga panjang", "Hidung panjang", "Ekor yang sangat pendek", "Memiliki cula", "B"],
+            ["Hewan jenis burung yang menjadi ikon budaya masyarakat Dayak di daerah Kapuas Hulu adalah...", "Burung Merak", "Burung Cendrawasih", "Burung Enggang", "Burung Kasuari", "C"],
+            ["Beruang madu yang merupakan jenis beruang terkecil di dunia dapat ditemukan di daerah...", "Singkawang dan Sambas", "Sintang dan Melawi", "Ketapang dan Kayong Utara", "Kubu Raya dan Mempawah", "B"],
+            ["Jenis ikan hias bernilai mahal yang endemik berhabitat di Danau Sentarum adalah...", "Ikan Koi", "Ikan Arwana merah", "Ikan Louhan", "Ikan Belida", "B"],
+            ["Barang tambang yang banyak ditemukan di Ketapang dan Sanggau serta bermanfaat sebagai bahan baku pembuatan aluminium adalah...", "Bauksit", "Kaolin", "Tembaga", "Pasir kuarsa", "A"],
+            ["Daerah persebaran tambang emas di Kalimantan Barat umumnya berada di kabupaten...", "Kubu Raya dan Pontianak", "Sintang dan Kapuas Hulu", "Landak dan Bengkayang", "Mempawah dan Sambas", "C"],
+            ["Bahan galian yang digunakan untuk pembuatan kaca dan alat elektronik yang terdapat di Ketapang adalah...", "Kaolin", "Pasir kuarsa", "Batu bara", "Minyak bumi", "B"],
+            ["Daerah di Kalimantan Barat yang terkenal sebagai penghasil Kaolin untuk bahan keramik adalah...", "Singkawang", "Sintang", "Pontianak", "Kapuas Hulu", "A"],
+            ["Tambang batu bara yang berfungsi sebagai sumber energi banyak terdapat di kabupaten...", "Landak", "Ketapang", "Bengkayang", "Sambas", "B"],
+            ["Sungai terpanjang di Indonesia yang berada di Kalimantan Barat adalah...", "Sungai Musi", "Sungai Barito", "Sungai Kapuas", "Sungai Mahakam", "C"],
+            ["Lahan dataran rendah dan rawa gambut di Kalimantan Barat sangat cocok dimanfaatkan untuk perkebunan...", "Teh dan stroberi", "Apel dan anggur", "Kelapa sawit dan lidah buaya", "Kopi dan lada", "C"],
+            ["Secara geografis, kota Pontianak dibelah oleh sungai besar dan terletak di daerah...", "Pegunungan tinggi", "Dataran rendah", "Lembah curam", "Padang pasir", "B"],
+            ["Mengapa Pontianak menjadi pusat perdagangan antarwilayah?", "Karena memiliki tambang emas terbesar", "Letaknya strategis di pinggir sungai dan dekat dengan laut", "Karena merupakan daerah dataran tinggi", "Karena jauh dari jangkauan transportasi", "B"],
+            ["Banyak pabrik pengolahan di Pontianak yang bahan bakunya diambil dari daerah sekitarnya. Contoh bahan baku industri tersebut adalah...", "Emas dan perak", "Karet dan lidah buaya", "Kaca dan keramik", "Kapas dan sutra", "B"],
+            ["Sebagian warga di sekitar Sungai Kapuas memiliki mata pencaharian sebagai nelayan sungai dengan cara...", "Menambang pasir kuarsa", "Budidaya keramba ikan", "Berkebun kelapa sawit di atas sungai", "Membuat kerajinan rotan", "B"],
+            ["Alat transportasi masyarakat Pontianak zaman dahulu yang sangat bergantung pada Sungai Kapuas adalah...", "Mobil dan motor", "Kereta api", "Sampan dan kapal motor", "Pesawat terbang", "C"],
+            ["Perubahan alat transportasi sungai ke darat di Pontianak saat ini didukung oleh pembangunan infrastruktur berupa...", "Bandara internasional", "Pelabuhan peti kemas", "Jembatan besar", "Terowongan bawah tanah", "C"],
+            ["Bentuk bangunan rumah panggung kayu masyarakat Pontianak zaman dahulu umumnya dibangun menghadap ke...", "Hutan", "Jalan raya", "Sungai", "Gunung", "C"],
+            ["Bangunan modern masyarakat Pontianak masa kini seperti ruko beton dan mall umumnya menghadap ke arah...", "Sungai Kapuas", "Jalan raya", "Hutan belantara", "Muara laut", "B"],
+            ["Pada zaman dahulu, masyarakat Pontianak berkomunikasi jarak jauh melalui...", "Smartphone", "Internet", "Surat atau pertemuan langsung", "Pesan suara", "C"],
+            ["Kondisi lingkungan pinggiran kota Pontianak pada zaman dahulu ditandai dengan...", "Banyaknya gedung pencakar langit", "Hutan dan rawa yang masih sangat lebat", "Pemukiman padat penduduk", "Banyaknya jalan tol", "B"],
+            ["Saat ini, banyak lahan rawa di Pontianak yang mengalami perubahan fungsi menjadi...", "Pemukiman penduduk", "Hutan lindung", "Cagar alam", "Jalur aliran sungai baru", "A"],
+            ["Penyebaran agama Islam di wilayah Mempawah tidak lepas dari peran pemimpinnya saat itu, yaitu...", "Syarif Abdurrahman", "Opu Daeng Menambun", "Sultan Agung", "Tokoh Dayak Punan", "B"],
+            ["Keraton Kubu adalah pusat pemerintahan bersejarah yang terletak di wilayah kabupaten...", "Kubu Raya", "Ketapang", "Bengkayang", "Mempawah", "A"]
+        ];
+
+        const rawB = [
+            ["Berdasarkan sejarahnya, alasan logis mengapa Kesultanan Kadriyah didirikan di pertemuan dua sungai besar adalah...", "Untuk menghindari serangan hewan buas dari darat", "Karena sungai merupakan jalur utama transportasi dan pusat perdagangan saat itu", "Karena tanah di sekitar sungai tidak bisa digunakan untuk bertani", "Karena perintah dari kolonial Belanda pada masa penjajahan", "B"],
+            ["Manakah pasangan antara nama kerajaan dan peninggalan/keratonnya yang <b>tidak</b> tepat?", "Kerajaan Landak - Keraton Ismahayana", "Kerajaan Sanggau - Istana Surya Negara", "Kerajaan Selimbau - Istana Kusuma Negara", "Kesultanan Pontianak - Istana Kadriah", "C"],
+            ["Istana Agung Nur Mahkota adalah peninggalan dari kerajaan yang terletak di Kecamatan Selimbau. Kerajaan tersebut berada di wilayah Kabupaten...", "Sintang", "Kapuas Hulu", "Sekadau", "Melawi", "B"],
+            ["Berikut ini adalah kerajaan-kerajaan yang terdapat di Kalimantan Barat, <b>kecuali</b>...", "Kerajaan Matan", "Kerajaan Sekadau", "Kerajaan Tayan", "Kerajaan Tarumanegara", "D"],
+            ["Peran penting Kerajaan Sambas dalam sejarah peradaban masyarakat Kalimantan Barat menonjol dalam bidang...", "Penaklukan militer dan perluasan wilayah laut", "Pertanian lahan kering dan industri modern", "Perdagangan dan pusat pendidikan agama Islam", "Penambangan minyak bumi lepas pantai", "C"],
+            ["Jika seorang perajin mebel membutuhkan jenis kayu yang sangat kuat dan tahan terhadap air untuk tiang rumah panggung, kayu jenis apakah yang dipesan dari Kapuas Hulu?", "Kayu Meranti", "Kayu Ulin (Kayu Besi)", "Kayu Ramin", "Batang Rotan", "B"],
+            ["Kondisi tanah di daerah Kubu Raya sebagian besar berupa rawa gambut. Ekosistem ini sangat mendukung pertumbuhan flora khas berupa...", "Pohon Jati", "Pohon Pinus", "Pohon Ramin", "Tanaman Kaktus", "C"],
+            ["Hubungan yang tepat antara jenis fauna, ciri utama, dan daerah asalnya adalah...", "Enggang - Ikon budaya Dayak - Mempawah", "Bekantan - Primata berhidung panjang - Pesisir Mempawah", "Arwana merah - Ikan hias sungai air asin - Danau Sentarum", "Orangutan - Primata terkecil - Gunung Palung", "B"],
+            ["Beruang madu diklasifikasikan sebagai beruang terkecil di dunia. Keberadaannya dapat kita temui di wilayah...", "Sintang dan Melawi", "Kapuas Hulu dan Danau Sentarum", "Pesisir Mempawah dan Pontianak", "Ketapang dan Bengkayang", "A"],
+            ["Danau Sentarum bukan sekadar genangan air, melainkan habitat endemik bernilai ekonomi tinggi bagi spesies...", "Burung Enggang", "Orangutan", "Arwana Merah", "Ikan Paus Air Tawar", "C"],
+            ["Jika sebuah pabrik peleburan logam membutuhkan mineral untuk membuat bahan dasar aluminium, ke daerah manakah di Kalimantan Barat mereka harus mencarinya?", "Landak dan Bengkayang", "Singkawang", "Ketapang dan Sanggau", "Pontianak", "C"],
+            ["Pasir kuarsa yang ditambang di wilayah Ketapang banyak disuplai ke sektor industri untuk pembuatan...", "Bahan bakar Pembangkit Listrik", "Perhiasan mewah", "Keramik lantai", "Kaca dan komponen elektronik", "D"],
+            ["Pengrajin tembikar dan keramik di Singkawang sangat terbantu oleh sumber daya alam lokal berupa...", "Emas murni", "Kaolin", "Batu bara", "Pasir kuarsa", "B"],
+            ["Pernyataan yang <b>salah</b> mengenai potensi bahan tambang di Kalimantan Barat adalah...", "Landak dan Bengkayang penghasil emas", "Ketapang memiliki tambang bauksit dan kuarsa", "Singkawang penghasil batu bara terbesar", "Bauksit di Sanggau untuk bahan aluminium", "C"],
+            ["Bagaimana hubungan antara struktur geologi pegunungan pedalaman dengan kekayaan alam Kalimantan Barat?", "Menyediakan lahan subur untuk rumput laut", "Menyimpan cadangan mineral melimpah seperti bauksit", "Menjadi tempat hidup utama ikan arwana", "Menyebabkan daerah tersebut selalu kena banjir", "B"],
+            ["Keberadaan Sungai Kapuas memberikan dampak ekonomi langsung bagi masyarakat sekitarnya, <b>kecuali</b>...", "Jalur transportasi angkut hasil bumi", "Tempat budidaya keramba ikan air tawar", "Lahan utama perkebunan kelapa sawit terapung", "Jalur perdagangan antarwilayah", "C"],
+            ["Sektor industri pengolahan dapat tumbuh subur di kota Pontianak. Faktor geografis yang mendukung hal tersebut adalah...", "Jauhnya Pontianak dari laut", "Kedekatan kota dengan sumber bahan baku karet dan lidah buaya", "Banyak pegunungan di tengah kota", "Berada di wilayah iklim dingin", "B"],
+            ["Perubahan orientasi bangunan masyarakat Pontianak dari menghadap ke sungai menjadi menghadap ke jalan raya mengindikasikan bahwa...", "Sungai Kapuas sudah mengering", "Kualitas kayu ulin sudah tidak bagus", "Jalur darat menjadi akses utama dan lebih berkembang", "Dilarang membangun rumah di pinggir sungai", "C"],
+            ["Akibat pesatnya perkembangan kota, hutan dan rawa di pinggiran kota Pontianak mengalami perubahan menjadi...", "Area tambang batu bara", "Kawasan lindung suaka margasatwa", "Lahan pemukiman penduduk yang padat", "Danau buatan", "C"],
+            ["Salah satu dampak positif modernisasi sistem komunikasi bagi masyarakat tradisional yang biasa bertemu di pasar adalah...", "Pasar tradisional langsung hilang", "Tidak perlu berinteraksi lagi", "Transaksi dan informasi lebih cepat lewat internet/smartphone", "Surat menyurat kertas lebih cepat", "C"],
+            ["Opu Daeng Menambun dan Syarif Abdurrahman merupakan tokoh penting. Perbedaan wilayah kepemimpinan mereka adalah...", "Menambun di Sintang, Abdurrahman di Kubu", "Menambun di Mempawah, Abdurrahman di Pontianak", "Menambun di Sambas, Abdurrahman di Landak", "Menambun di Matan, Abdurrahman di Tayan", "B"],
+            ["Mengapa Kerajaan Sintang dianggap memiliki kaitan erat dengan sejarah penyebaran agama di wilayah hulu?", "Karena Sintang daerah pesisir", "Karena posisinya strategis di pedalaman (hulu) sebagai pusat interaksi masyarakat", "Karena Sintang memiliki tambang emas terbesar", "Karena kerajaan paling modern", "B"],
+            ["Istana Surya Negara berada di Sanggau, sedangkan Istana Kusuma Negara berada di...", "Kubu Raya", "Sekadau", "Landak", "Ketapang", "B"],
+            ["Berdasarkan letak geografisnya, daerah mana yang kayunya banyak digunakan sebagai material konstruksi (bahan bangunan)?", "Kayu Ulin dari Kubu Raya", "Kayu Ramin dari Kapuas Hulu", "Kayu Meranti dari Ketapang dan Sanggau", "Kayu Rotan dari Singkawang", "C"],
+            ["Anggrek hitam merupakan tanaman hias langka. Secara geografis, habitat aslinya berada di wilayah...", "Pesisir Pontianak", "Dataran tinggi Kapuas Hulu", "Pertambangan Singkawang", "Rawa Mempawah", "B"],
+            ["Sifat flora Rotan yang ulet dan fleksibel sangat cocok bagi masyarakat di pedalaman Kalbar untuk mengembangkan industri...", "Bahan bakar listrik", "Kerajinan tangan dan anyaman", "Pembuatan perhiasan", "Bahan baku kaca", "B"],
+            ["Gunung Palung merupakan Taman Nasional. Fauna primata besar yang dilindungi di lokasi ini adalah...", "Bekantan", "Orangutan Kalimantan", "Burung Enggang", "Beruang Madu", "B"],
+            ["Burung Enggang memiliki nilai filosofis tinggi bagi masyarakat Dayak. Nilai tersebut menjadikan Burung Enggang sebagai...", "Bahan konsumsi", "Ikon budaya yang disucikan dan dihormati", "Hewan ternak ekspor", "Satwa penunjuk arah", "B"],
+            ["Kegiatan pertambangan emas di wilayah Landak dan Bengkayang akan bermuara pada sektor industri...", "Agrobisnis", "Keramik dan tembikar", "Perhiasan dan komponen industri presisi", "Bahan bakar alternatif", "C"],
+            ["Manakah pernyataan yang merupakan analisis logis hubungan potensi geografi Kalbar dan industrinya?", "Pegunungan cocok untuk pelabuhan", "Gambut potensial tambang emas", "Lahan dataran rendah memberi peluang agribisnis lidah buaya", "Jauhnya dari sungai membuat perahu sampan berkembang", "C"],
+            ["Masyarakat kini menggunakan kendaraan darat dan jembatan besar karena...", "Sungai Kapuas telah ditimbun", "Mobilitas semakin tinggi butuh akses cepat efisien", "Perahu sampan tidak diproduksi lagi", "Jembatan lebih dekat budaya nenek moyang", "B"],
+            ["Di masa lalu, rumah panggung kayu difungsikan menghadap sungai dengan tujuan...", "Jalur evakuasi kebakaran", "Memudahkan akses transportasi utama sungai", "Menghindari polusi jalan raya", "Mempercantik pemandangan", "B"],
+            ["Bahan tambang/alam yang <b>tidak</b> terdapat di wilayah Ketapang menurut teks tersebut adalah...", "Batu bara", "Pasir kuarsa", "Meranti", "Kaolin", "D"],
+            ["Pembangunan ekonomi keramba ikan di Sungai Kapuas merupakan bentuk adaptasi karena...", "Tidak punya lahan pertanian darat", "Rawa tidak bisa ditanami", "Pemanfaatan sumber daya air yang tersedia luas", "Air sungai mengandung garam tinggi", "C"],
+            ["Peralihan cara komunikasi ke smartphone membawa dampak signifikan pada bidang perdagangan, yaitu...", "Terjadi kelangkaan barang", "Transaksi dagang bisa lebih luas tanpa tatap muka", "Pasar semakin ramai oleh penulis surat", "Terputusnya komunikasi pedalaman", "B"],
+            ["Konsekuensi ekologis terburuk jika lahan rawa beralih fungsi menjadi pemukiman secara masif adalah...", "Meningkatnya tangkapan arwana", "Kehilangan resapan air penyebab banjir", "Bertambah habitat anggrek", "Gambut semakin subur", "B"],
+            ["Keberadaan pabrik pengolahan karet di Pontianak memiliki korelasi positif bagi perekonomian desa karena...", "Mengubah desa jadi kota", "Membuka peluang pasar stabil bagi petani karet", "Petani dipaksa pindah ke kota", "Masyarakat dialihkan menambang", "B"],
+            ["Kerajaan besar di Kalbar mayoritas terbentuk di muara sungai. Hal ini membuktikan bahwa...", "Penguasaan sungai = penguasaan ekonomi & pertahanan", "Masyarakat takut daratan tinggi", "Sumber makanan hanya di air", "Bahan keraton dari laut", "A"],
+            ["Daerah Kapuas Hulu memiliki posisi ekologis dan budaya unik, terbukti dengan adanya...", "Pesisir laut & kaolin", "Bekantan & kerajaan maritim", "Flora Anggrek Hitam, Ulin, dan Fauna Enggang", "Pusat industri beton", "C"],
+            ["Kesimpulan tepat mengenai perubahan sosial ekonomi di Pontianak adalah...", "Sepenuhnya meninggalkan sungai jadi industri pegunungan", "Transformasi kehidupan berbasis sungai menuju infrastruktur darat modern dengan tetap memanfaatkan letak strategis", "Teknologi menghancurkan adat tanpa sisa", "Pertanian lahan basah terhapus pabrik elektronik", "B"]
+        ];
+
+        function formatData(rawArray) {
+            return rawArray.map((q, i) => ({
+                id: i + 1,
+                text: q[0],
+                options: { A: q[1], B: q[2], C: q[3], D: q[4] },
+                answer: q[5]
+            }));
+        }
+
+        const questions = {
+            'A': formatData(rawA),
+            'B': formatData(rawB)
+        };
+
+        // --- STATE MANAGEMEN ---
+        let state = {
+            paket: null,
+            page: 0, 
+            answers: {} 
+        };
+
+        const ITEMS_PER_PAGE = 10;
+        const TOTAL_PAGES = 4;
+
+        // --- FUNGSI UI ---
+        function switchView(viewId) {
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-quiz').classList.add('hidden');
+            document.getElementById('view-result').classList.add('hidden');
+            document.getElementById('view-key').classList.add('hidden');
+            
+            document.getElementById(viewId).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function startQuiz(paket) {
+            state.paket = paket;
+            state.page = 0;
+            state.answers = {};
+            
+            document.getElementById('header-status').innerText = `Mengerjakan Paket ${paket}`;
+            document.getElementById('quiz-title').innerText = `Soal Latihan Paket ${paket}`;
+            
+            renderQuizPage();
+            switchView('view-quiz');
+        }
+
+        function renderQuizPage() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = ''; 
+            
+            const startIdx = state.page * ITEMS_PER_PAGE;
+            const endIdx = startIdx + ITEMS_PER_PAGE;
+            const currentQuestions = questions[state.paket].slice(startIdx, endIdx);
+
+            document.getElementById('current-page-indicator').innerText = state.page + 1;
+
+            currentQuestions.forEach((q, index) => {
+                const globalIndex = startIdx + index + 1;
+                
+                let optionsHtml = '';
+                for(const [key, value] of Object.entries(q.options)) {
+                    const isChecked = state.answers[q.id] === key ? 'checked' : '';
+                    optionsHtml += `
+                        <label class="block relative cursor-pointer group">
+                            <input type="radio" name="q${q.id}" value="${key}" class="radio-custom sr-only" onchange="saveAnswer(${q.id}, '${key}')" ${isChecked}>
+                            <div class="flex items-start gap-4 p-4 rounded-xl border-2 border-slate-100 hover:border-blue-200 hover:bg-slate-50 transition-all">
+                                <div class="radio-circle w-6 h-6 mt-0.5 rounded-full border-2 border-slate-300 flex-shrink-0 transition-all"></div>
+                                <div class="font-medium text-slate-700 leading-relaxed"><span class="font-bold mr-2 text-slate-400">${key}.</span>${value}</div>
+                            </div>
+                        </label>
+                    `;
+                }
+
+                const questionHtml = `
+                    <div class="mb-8 fade-in" style="animation-delay: ${index * 0.05}s">
+                        <p class="text-lg font-semibold text-slate-800 mb-4 flex gap-3">
+                            <span class="bg-blue-100 text-blue-700 w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0">${globalIndex}</span>
+                            <span class="mt-0.5">${q.text}</span>
+                        </p>
+                        <div class="space-y-3 pl-11">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questionHtml;
+            });
+
+            // Atur tombol navigasi
+            document.getElementById('btn-prev').classList.toggle('hidden', state.page === 0);
+            
+            if (state.page === TOTAL_PAGES - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-finish').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-finish').classList.add('hidden');
+            }
+        }
+
+        function saveAnswer(questionId, answerKey) {
+            state.answers[questionId] = answerKey;
+        }
+
+        function nextPage() {
+            if (state.page < TOTAL_PAGES - 1) {
+                state.page++;
+                renderQuizPage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function prevPage() {
+            if (state.page > 0) {
+                state.page--;
+                renderQuizPage();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // FUNGSI MODAL KUSTOM
+        function finishQuiz() {
+            const totalDijawab = Object.keys(state.answers).length;
+            if(totalDijawab < 40) {
+                const sisa = 40 - totalDijawab;
+                document.getElementById('modal-text').innerText = `Ada ${sisa} soal yang belum kamu jawab. Yakin ingin mengakhiri ujian dan mengecek skor?`;
+                document.getElementById('modal-confirm').classList.remove('hidden');
+            } else {
+                calculateScore();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-confirm').classList.add('hidden');
+        }
+
+        function forceSubmit() {
+            closeModal();
+            calculateScore();
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let wrong = 0;
+            let empty = 0;
+
+            const qList = questions[state.paket];
+            
+            qList.forEach(q => {
+                const userAns = state.answers[q.id];
+                if (!userAns) {
+                    empty++;
+                } else if (userAns === q.answer) {
+                    correct++;
+                } else {
+                    wrong++;
+                }
+            });
+
+            // Hitung nilai (skala 100)
+            const score = Math.round((correct / 40) * 100);
+
+            // Update UI Hasil
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('stat-benar').innerText = correct;
+            document.getElementById('stat-salah').innerText = wrong;
+            document.getElementById('stat-kosong').innerText = empty;
+
+            // Update Circle Animasi & Warna
+            const circle = document.getElementById('score-circle');
+            circle.setAttribute('stroke-dasharray', `${score}, 100`);
+            
+            // Hapus kelas warna yang mungkin ada dari tes sebelumnya
+            circle.classList.remove('text-blue-600', 'text-red-500', 'text-orange-500', 'text-green-500');
+            
+            // Beri warna baru berdasarkan skor
+            if(score < 60) circle.classList.add('text-red-500');
+            else if(score < 80) circle.classList.add('text-orange-500');
+            else circle.classList.add('text-green-500');
+
+            document.getElementById('header-status').innerText = `Hasil Paket ${state.paket}`;
+            switchView('view-result');
+        }
+
+        function showKey() {
+            const container = document.getElementById('key-container');
+            container.innerHTML = '';
+            
+            const qList = questions[state.paket];
+            
+            qList.forEach((q, index) => {
+                const userAns = state.answers[q.id];
+                const isCorrect = userAns === q.answer;
+                
+                let badge = '';
+                if (!userAns) {
+                    badge = `<span class="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-bold uppercase">Kosong</span>`;
+                } else if (isCorrect) {
+                    badge = `<span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold uppercase">&#10003; Benar</span>`;
+                } else {
+                    badge = `<span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold uppercase">&#10007; Salah</span>`;
+                }
+
+                let html = `
+                    <div class="border-b border-slate-100 pb-6 last:border-0">
+                        <p class="font-semibold text-slate-800 mb-2">${index + 1}. ${q.text}</p>
+                        <div class="flex items-center gap-3 mb-2">
+                            ${badge}
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-sm mt-3">
+                `;
+
+                for(const [key, value] of Object.entries(q.options)) {
+                    let textClass = "text-slate-600";
+                    let icon = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                    
+                    if (key === q.answer) {
+                        textClass = "text-green-700 font-bold bg-green-50 p-1 rounded";
+                        icon = "✓ ";
+                    } else if (key === userAns && !isCorrect) {
+                        textClass = "text-red-600 line-through bg-red-50 p-1 rounded";
+                        icon = "✗ ";
+                    }
+
+                    html += `<div class="${textClass}">${icon} ${key}. ${value}</div>`;
+                }
+
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+
+            document.getElementById('header-status').innerText = `Kunci Jawaban Paket ${state.paket}`;
+            switchView('view-key');
+        }
+
+        function backToResult() {
+            document.getElementById('header-status').innerText = `Hasil Paket ${state.paket}`;
+            switchView('view-result');
+        }
+
+        function goHome() {
+            document.getElementById('header-status').innerText = "Pilih Paket Soal";
+            switchView('view-home');
+        }
+    </script>
+</body>
+</html>
+
+
+```
