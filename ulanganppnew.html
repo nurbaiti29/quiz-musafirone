@@ -1,0 +1,354 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal PP Kelas 4 - Kerja Sama & Keberagaman</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #fff7ed; /* Amber-50 */
+            /* Pola background titik dan kotak yang ceria dan sangat aman untuk anak */
+            background-image: radial-gradient(#fcd34d 2px, transparent 2px), radial-gradient(#fcd34d 2px, transparent 2px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #fbbf24; box-shadow: 8px 8px 0px #d97706; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, box-shadow 0.1s; border-bottom: 4px solid rgba(0,0,0,0.2); }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; margin-bottom: 4px;}
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #d97706; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #b45309; font-weight: bold;">Memuat Soal Pancasila...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (40 SOAL) ---
+        const paketA = [
+            // Dari Dokumen Asli
+            { id: 1, text: "Indonesia memiliki banyak suku bangsa yang tersebar di berbagai daerah. Suku bangsa yang berasal dari pulau Kalimantan antara lain...", options: { A: "Batak", B: "Dayak", C: "Bugis", D: "Sunda" }, answer: "B", discussion: "Suku Dayak adalah penduduk asli Pulau Kalimantan." },
+            { id: 2, text: "Semboyan Bhinneka Tunggal Ika berarti...", options: { A: "Berbeda-beda budaya", B: "Berbeda-beda tetapi bersatu", C: "Berbeda-beda menjadi sama", D: "Walaupun berbeda-beda, tetapi tetap satu jua" }, answer: "D", discussion: "Bhinneka Tunggal Ika artinya walaupun berbeda-beda, tetapi tetap satu kesatuan." },
+            { id: 3, text: "Salah satu perbedaan antara budaya Batak dan Bugis terlihat jelas dari...", options: { A: "Tata krama penduduknya", B: "Warna kulit penduduknya", C: "Bentuk rumah adat penduduknya", D: "Hanya dari bahasanya saja" }, answer: "C", discussion: "Perbedaan budaya sangat menonjol pada bentuk rumah adat (Bolon vs Balla/Tongkonan), pakaian, dan bahasa." },
+            { id: 4, text: "Togar berasal dari suku Batak, sedangkan teman sekelasnya, Adit berasal dari suku Bali. Sikap yang harus mereka tunjukkan agar terwujudnya persatuan yaitu...", options: { A: "Menganggap suku sendiri lebih baik", B: "Mengapresiasi adanya keberagaman suku", C: "Tidak kerja kelompok agar tidak berdebat", D: "Berteman dengan suku yang sama saja" }, answer: "B", discussion: "Sikap saling menghargai (apresiasi) keberagaman mewujudkan persatuan." },
+            { id: 5, text: "Bahasa Indonesia menjunjung bahasa persatuan, bahasa Indonesia. Pernyataan tersebut sesuai ikrar yang bernama...", options: { A: "Pancasila", B: "Sumpah Pemuda", C: "Piagam Jakarta", D: "Semboyan Bangsa" }, answer: "B", discussion: "Sumpah Pemuda bait ke-3: 'Kami putra dan putri Indonesia menjunjung bahasa persatuan, bahasa Indonesia'." },
+            
+            // Keberagaman Suku & Budaya
+            { id: 6, text: "Suku Sunda dan Betawi sebagian besar mendiami pulau...", options: { A: "Sumatera", B: "Jawa", C: "Kalimantan", D: "Sulawesi" }, answer: "B", discussion: "Sunda (Jawa Barat) dan Betawi (Jakarta) berada di Pulau Jawa." },
+            { id: 7, text: "Rumah adat yang berasal dari Sumatera Barat dan memiliki atap melengkung runcing seperti tanduk kerbau disebut...", options: { A: "Rumah Joglo", B: "Rumah Honai", C: "Rumah Gadang", D: "Rumah Tongkonan" }, answer: "C", discussion: "Rumah Gadang adalah khas suku Minangkabau, Sumbar." },
+            { id: 8, text: "Tari Saman yang sangat membutuhkan kekompakan dan kerja sama tim yang luar biasa berasal dari daerah...", options: { A: "Aceh", B: "Bali", C: "Jawa Timur", D: "Papua" }, answer: "A", discussion: "Tari Saman adalah tarian tradisional dari Aceh." },
+            { id: 9, text: "Suku Asmat dan Suku Dani adalah contoh keberagaman suku bangsa yang berasal dari wilayah...", options: { A: "Nusa Tenggara", B: "Maluku", C: "Papua", D: "Sulawesi" }, answer: "C", discussion: "Asmat dan Dani adalah suku asli Papua." },
+            { id: 10, text: "Senjata tradisional Keris merupakan peninggalan budaya yang banyak ditemukan di daerah...", options: { A: "Jawa", B: "Kalimantan", C: "Papua", D: "Maluku" }, answer: "A", discussion: "Keris identik dengan budaya Jawa." },
+
+            // Konsep Kerja Sama & Gotong Royong
+            { id: 11, text: "Kerja sama adalah melakukan suatu pekerjaan secara bersama-sama untuk mencapai...", options: { A: "Keuntungan pribadi", B: "Tujuan bersama", C: "Kemenangan kelompok lain", D: "Hadiah dari guru" }, answer: "B", discussion: "Tujuan utama kerja sama adalah mencapai tujuan bersama dengan lebih mudah." },
+            { id: 12, text: "Contoh sikap kerja sama di lingkungan keluarga adalah...", options: { A: "Membantu ibu mencuci piring", B: "Mengerjakan PR teman", C: "Membersihkan selokan desa", D: "Piket kelas" }, answer: "A", discussion: "Membantu pekerjaan rumah adalah kerja sama keluarga." },
+            { id: 13, text: "Contoh kegiatan gotong royong di lingkungan sekolah adalah...", options: { A: "Menyontek saat ujian", B: "Membersihkan kelas sesuai jadwal piket", C: "Mengerjakan tugas individu bersama-sama", D: "Bermain game online bersama" }, answer: "B", discussion: "Piket kelas adalah wujud gotong royong di sekolah." },
+            { id: 14, text: "Manfaat utama jika kita melakukan pekerjaan berat secara bergotong royong adalah...", options: { A: "Pekerjaan menjadi lebih lama", B: "Pekerjaan menjadi lebih ringan dan cepat selesai", C: "Menambah biaya pekerjaan", D: "Menimbulkan perdebatan" }, answer: "B", discussion: "Kerja sama meringankan beban pekerjaan." },
+            { id: 15, text: "Sikap yang BUKAN merupakan nilai-nilai dalam gotong royong adalah...", options: { A: "Kekeluargaan", B: "Tolong-menolong", C: "Egois (ingin menang sendiri)", D: "Kebersamaan" }, answer: "C", discussion: "Sikap egois bertentangan dengan gotong royong." },
+
+            // Analisis Kasus (HOTS)
+            { id: 16, text: "Andi dan teman-temannya sedang mendapat tugas kelompok membuat majalah dinding. Budi merasa paling pintar, sehingga ia ingin mengerjakan semuanya sendiri dan tidak membagi tugas. Akibat dari sikap Budi adalah...", options: { A: "Tugas cepat selesai", B: "Kelompok menjadi kompak", C: "Hilangnya semangat kerja sama dan persatuan dalam kelompok", D: "Guru akan memberi nilai paling tinggi" }, answer: "C", discussion: "Sikap ingin mendominasi merusak kerja sama." },
+            { id: 17, text: "Siti beragama Islam, sedangkan Maria beragama Kristen. Saat sedang belajar kelompok di rumah Siti, tiba waktu azan Ashar. Sikap Maria yang menunjukkan toleransi adalah...", options: { A: "Menyuruh Siti terus belajar", B: "Mempersilakan Siti untuk shalat terlebih dahulu", C: "Meninggalkan Siti pulang", D: "Menyalakan TV dengan suara keras" }, answer: "B", discussion: "Memberikan waktu beribadah adalah wujud toleransi beragama." },
+            { id: 18, text: "Saat istirahat, Doni mengejek logat bicara Edo yang berasal dari daerah lain. Sikap Doni tersebut dapat mengakibatkan...", options: { A: "Persahabatan semakin erat", B: "Perpecahan dan pertengkaran", C: "Edo menjadi anak yang kuat", D: "Mereka berdua dipuji guru" }, answer: "B", discussion: "Mengejek budaya/logat orang lain memicu perpecahan." },
+            { id: 19, text: "Desa Makmur sedang membangun jembatan darurat karena jembatan lama rusak. Semua warga laki-laki ikut membantu menyumbang tenaga, sedangkan warga perempuan memasak makanan. Tujuan kegiatan warga tersebut adalah...", options: { A: "Mengharapkan bayaran dari kepala desa", B: "Agar bisa masuk televisi", C: "Mewujudkan kepentingan bersama agar jembatan cepat selesai", D: "Memaksa warga yang malas agar bekerja" }, answer: "C", discussion: "Gotong royong untuk fasilitas umum demi kepentingan bersama." },
+            { id: 20, text: "Dalam sebuah permainan Tarik Tambang, tim kelas 4A kalah dari tim 4B karena ada satu anggota yang terjatuh. Sikap yang tepat dari tim 4A adalah...", options: { A: "Menyalahkan anggota yang terjatuh", B: "Marah kepada tim 4B", C: "Menerima kekalahan dengan lapang dada dan menghibur temannya", D: "Meninggalkan lapangan sambil menangis" }, answer: "C", discussion: "Sportivitas dan saling mendukung dalam tim saat kalah." },
+
+            // Sumpah Pemuda & Persatuan
+            { id: 21, text: "Sumpah Pemuda yang menjadi tonggak persatuan bangsa Indonesia diikrarkan pada tanggal...", options: { A: "17 Agustus 1945", B: "28 Oktober 1928", C: "1 Juni 1945", D: "21 April 1908" }, answer: "B", discussion: "Diikrarkan pada Kongres Pemuda II, 28 Oktober 1928." },
+            { id: 22, text: "Salah satu isi Sumpah Pemuda berbunyi 'Kami putra dan putri Indonesia, mengaku bertumpah darah yang satu,...'", options: { A: "Tanah Air Indonesia", B: "Bangsa Indonesia", C: "Bahasa Indonesia", D: "Negara Indonesia" }, answer: "A", discussion: "Bait pertama: bertumpah darah yang satu, tanah air Indonesia." },
+            { id: 23, text: "Keberagaman suku, budaya, dan agama di Indonesia harus kita anggap sebagai...", options: { A: "Sumber masalah", B: "Kekayaan dan kebanggaan bangsa", C: "Alasan untuk berpisah", D: "Hal yang biasa saja" }, answer: "B", discussion: "Keberagaman adalah anugerah dan kekayaan bangsa." },
+            { id: 24, text: "Semboyan Bhinneka Tunggal Ika diambil dari kitab Sutasoma karangan...", options: { A: "Mpu Prapanca", B: "Mpu Sedah", C: "Mpu Tantular", D: "Gajah Mada" }, answer: "C", discussion: "Kitab Sutasoma karya Mpu Tantular pada masa Majapahit." },
+            { id: 25, text: "Semboyan Bhinneka Tunggal Ika terdapat pada lambang negara kita, yang dituliskan pada...", options: { A: "Pita yang dicengkeram kaki burung Garuda", B: "Dada burung Garuda", C: "Sayap burung Garuda", D: "Ekor burung Garuda" }, answer: "A", discussion: "Berada di pita putih yang dicengkeram Garuda." },
+
+            // Lanjutan Keberagaman & Toleransi
+            { id: 26, text: "Makanan tradisional 'Pempek' sangat terkenal. Makanan ini berasal dari daerah...", options: { A: "Padang", B: "Palembang", C: "Makassar", D: "Bandung" }, answer: "B", discussion: "Pempek adalah khas Palembang, Sumatera Selatan." },
+            { id: 27, text: "Ketika teman kita merayakan hari besar agamanya, ucapan yang sebaiknya kita berikan adalah...", options: { A: "Selamat merayakan hari raya", B: "Pura-pura tidak tahu", C: "Meminta makanan", D: "Menyuruhnya diam" }, answer: "A", discussion: "Ucapan selamat adalah bentuk toleransi dan saling menghormati." },
+            { id: 28, text: "Ibu guru membagi kelompok belajar secara acak sehingga kamu sekelompok dengan anak yang berbeda suku dan kurang kamu kenal. Sikapmu sebaiknya...", options: { A: "Meminta pindah kelompok", B: "Mengerjakan tugas sendiri saja", C: "Berkenalan dan bekerja sama dengan baik", D: "Diam dan tidak ikut campur" }, answer: "C", discussion: "Belajar menerima perbedaan dan bekerja sama dengan siapa saja." },
+            { id: 29, text: "Sikap saling menghargai dan menghormati antar pemeluk agama yang berbeda disebut...", options: { A: "Diskriminasi", B: "Toleransi", C: "Egoisme", D: "Simpati" }, answer: "B", discussion: "Definisi dari toleransi antar umat beragama." },
+            { id: 30, text: "Pernyataan 'Bersatu kita teguh, bercerai kita...' lanjutannya adalah...", options: { A: "Jatuh", B: "Runtuh", C: "Menjauh", D: "Rapuh" }, answer: "B", discussion: "Bersatu kita teguh, bercerai kita runtuh." },
+
+            // Istilah & Implementasi
+            { id: 31, text: "Kerja bakti membersihkan selokan di desa biasanya dilakukan pada hari...", options: { A: "Saat hujan deras", B: "Malam hari", C: "Hari libur / Minggu pagi", D: "Saat ada pejabat datang" }, answer: "C", discussion: "Biasanya hari libur agar semua warga bisa ikut berpartisipasi." },
+            { id: 32, text: "Gotong royong membangun rumah ibadah merupakan cerminan pengamalan Pancasila, khususnya sila ke-...", options: { A: "Satu", B: "Dua", C: "Tiga", D: "Empat" }, answer: "C", discussion: "Kerja sama dan gotong royong mencerminkan Persatuan Indonesia (Sila ke-3)." },
+            { id: 33, text: "Membayar pajak dengan taat adalah wujud kerja sama warga negara dengan...", options: { A: "Guru", B: "Pemerintah (Negara)", C: "Tetangga", D: "Kepala Sekolah" }, answer: "B", discussion: "Pajak digunakan pemerintah untuk membangun fasilitas bersama." },
+            { id: 34, text: "Salah satu contoh alat musik tradisional yang dimainkan dengan cara dipukul adalah...", options: { A: "Angklung", B: "Seruling", C: "Kolintang", D: "Sasando" }, answer: "C", discussion: "Kolintang (dari Minahasa) dimainkan dengan dipukul." },
+            { id: 35, text: "Tari Kecak adalah salah satu kebudayaan yang sangat terkenal hingga ke mancanegara. Tarian ini berasal dari...", options: { A: "Jawa Tengah", B: "Bali", C: "Lombok", D: "Sumbawa" }, answer: "B", discussion: "Kecak sangat identik dengan Pulau Dewata, Bali." },
+            { id: 36, text: "Berikut ini pekerjaan yang TIDAK BOLEH dilakukan dengan cara kerja sama adalah...", options: { A: "Mengerjakan ulangan harian (Ujian) di kelas", B: "Membangun pos ronda", C: "Membuat mading sekolah", D: "Membersihkan halaman" }, answer: "A", discussion: "Ujian harus dikerjakan secara mandiri untuk mengukur kemampuan diri." },
+            { id: 37, text: "Upacara bendera setiap hari Senin di sekolah melatih siswa untuk...", options: { A: "Disiplin dan cinta tanah air", B: "Bisa baris berbaris saja", C: "Tahan panas matahari", D: "Menghafal lagu" }, answer: "A", discussion: "Makna upacara adalah patriotisme dan kedisiplinan." },
+            { id: 38, text: "Temanmu membawa bekal kue khas dari daerahnya dan menawarkan kepadamu. Sayangnya, bentuknya asing bagimu. Sikapmu sebaiknya...", options: { A: "Mengejek bentuknya", B: "Menolak dengan kasar", C: "Berterima kasih dan mencoba mencicipinya", D: "Membuangnya ke tempat sampah" }, answer: "C", discussion: "Menghargai pemberian dan kebudayaan daerah lain." },
+            { id: 39, text: "Istilah 'Mapalus' adalah sebutan gotong royong masyarakat dari daerah...", options: { A: "Minahasa (Sulawesi Utara)", B: "Jawa", C: "Bali", D: "Sumatera Barat" }, answer: "A", discussion: "Mapalus adalah tradisi kerja sama suku Minahasa." },
+            { id: 40, text: "Kerja sama dapat menghindarkan kita dari sikap...", options: { A: "Tolong menolong", B: "Individualisme (mementingkan diri sendiri)", C: "Kepedulian", D: "Toleransi" }, answer: "B", discussion: "Individualisme adalah sikap hidup sendiri tanpa peduli orang lain." }
+        ];
+
+        // --- DATA SOAL PAKET B (40 SOAL - VARIASI) ---
+        const paketB = [
+            // Dari Dokumen Asli
+            { id: 1, text: "Contoh kegiatan yang menunjukkan semangat persatuan dalam ajaran Islam, seperti tolong-menolong dalam kebaikan di lingkungan sekitar adalah...", options: { A: "Saling menghina antarwarga", B: "Berselisih karena berbeda pendapat", C: "Gotong royong membersihkan masjid", D: "Lomba antar kampung untuk menunjukkan siapa yang paling hebat" }, answer: "C", discussion: "Membersihkan masjid bersama adalah wujud tolong menolong dalam kebaikan (Al-Maidah: 2)." },
+            { id: 2, text: "Istilah gotong royong di daerah Jawa disebut...", options: { A: "Sambatan", B: "Ammosi", C: "Ngayah", D: "Gemohing" }, answer: "A", discussion: "Sambatan adalah tradisi saling membantu di pedesaan Jawa." },
+            { id: 3, text: "Siswa dan guru SDIT Al Mumtaz gotong royong membersihkan lingkungan sekolah. Manfaat yang diperoleh dari gotong royong tersebut yaitu...", options: { A: "Siswa menjadi lebih kompetitif", B: "Waktu yang diperlukan lebih singkat", C: "Tenaga yang dikeluarkan lebih besar", D: "Tidak perlu menyewa petugas kebersihan" }, answer: "B", discussion: "Pekerjaan yang dilakukan bersama-sama akan lebih cepat selesai." },
+            { id: 4, text: "Akibat yang muncul dari tidak adanya sikap gotong royong di lingkungan sekolah yaitu...", options: { A: "Timbulnya rasa egois", B: "Perpecahan keluarga", C: "Meningkatkan persatuan", D: "Mempercepat keakraban" }, answer: "A", discussion: "Tanpa gotong royong, setiap anak hanya peduli pada dirinya sendiri (egois)." },
+            { id: 5, text: "Dalam permainan Gobak Sodor, setiap pemain harus menjaga posisi masing-masing agar lawan tidak lolos. Jika satu pemain tidak kompak, strategi akan gagal. Nilai utamanya adalah...", options: { A: "Kecepatan dan kekuatan fisik", B: "Keinginan untuk menjadi pemimpin", C: "Disiplin dan kerja sama dalam tim", D: "Ketegasan dan keberanian individu" }, answer: "C", discussion: "Gobak sodor sangat bergantung pada kerja sama dan disiplin posisi antar pemain." },
+
+            // Istilah & Keberagaman Budaya Lanjutan
+            { id: 6, text: "Tradisi gotong royong dari daerah Bali yang biasanya dilakukan untuk persiapan upacara keagamaan di Pura disebut...", options: { A: "Sambatan", B: "Ngayah", C: "Mapalus", D: "Sikep" }, answer: "B", discussion: "Ngayah adalah kerja bakti tulus ikhlas masyarakat Bali." },
+            { id: 7, text: "Suku Madura dan Suku Tengger adalah contoh keberagaman penduduk di provinsi...", options: { A: "Jawa Barat", B: "Jawa Tengah", C: "Jawa Timur", D: "Banten" }, answer: "C", discussion: "Madura dan kawasan Gunung Bromo (Tengger) ada di Jawa Timur." },
+            { id: 8, text: "Alat musik Angklung yang terbuat dari bambu berasal dari budaya suku...", options: { A: "Sunda (Jawa Barat)", B: "Batak (Sumatera Utara)", C: "Minang (Sumatera Barat)", D: "Dayak (Kalimantan)" }, answer: "A", discussion: "Angklung adalah warisan budaya Sunda." },
+            { id: 9, text: "Rumah adat Honai yang memiliki bentuk seperti jamur tanpa jendela, bertujuan menahan hawa dingin. Ini adalah rumah khas daerah...", options: { A: "Nusa Tenggara", B: "Papua", C: "Maluku", D: "Sulawesi" }, answer: "B", discussion: "Honai adalah rumah suku Dani di Pegunungan Papua." },
+            { id: 10, text: "Tari Pendet dan Tari Legong berasal dari...", options: { A: "Jawa Tengah", B: "Bali", C: "Sumatera Selatan", D: "Kalimantan Timur" }, answer: "B", discussion: "Tarian terkenal dari Bali." },
+
+            // Kerja Sama & Siskamling
+            { id: 11, text: "Kegiatan ronda malam (Siskamling) dilakukan oleh warga secara bergilir. Tujuan utama kerja sama ini adalah...", options: { A: "Mencari pencuri untuk dipukuli", B: "Menjaga keamanan dan ketertiban desa bersama-sama", C: "Bermain gaple semalaman", D: "Mendapat bayaran dari RT" }, answer: "B", discussion: "Siskamling bertujuan menjaga keamanan lingkungan." },
+            { id: 12, text: "Contoh kerja sama di lingkungan bangsa dan negara adalah...", options: { A: "Membayar pajak tepat waktu", B: "Mengerjakan PR teman", C: "Kerja bakti membersihkan selokan RT", D: "Merapikan tempat tidur" }, answer: "A", discussion: "Membayar pajak adalah kontribusi/kerja sama kita kepada negara." },
+            { id: 13, text: "Kegiatan yang membutuhkan kekompakan dan kerja sama tim yang baik di sekolah adalah...", options: { A: "Mengikuti lomba catur", B: "Mengerjakan ulangan semester", C: "Mengikuti lomba tarik tambang", D: "Membaca buku di perpustakaan" }, answer: "C", discussion: "Tarik tambang tidak bisa dimenangkan sendirian." },
+            { id: 14, text: "Kata dasar dari 'Persatuan' adalah...", options: { A: "Satu", B: "Satuan", C: "Persatu", D: "Bersatu" }, answer: "A", discussion: "Dari kata 'Satu' yang berarti tidak terpecah-pecah." },
+            { id: 15, text: "Gotong royong adalah ciri khas kepribadian bangsa Indonesia yang tertuang dalam Pancasila sila ke-...", options: { A: "1 dan 2", B: "3 dan 5", C: "4", D: "1" }, answer: "B", discussion: "Persatuan (Sila 3) dan Keadilan Sosial yang mencakup kekeluargaan (Sila 5)." },
+
+            // Analisis Kasus (HOTS)
+            { id: 16, text: "Kelompok Dita mendapat tugas membuat kerajinan. Dita pandai melukis, Rio pandai memotong kayu, dan Sari pandai merangkai. Cara terbaik menyelesaikan tugas adalah...", options: { A: "Menyuruh Dita mengerjakan semuanya karena dia pintar", B: "Membagi tugas sesuai keahlian masing-masing agar cepat selesai", C: "Rio memotong kayu, sisanya dibiarkan saja", D: "Menyewa tukang kayu" }, answer: "B", discussion: "Kerja sama terbaik adalah membagi tugas sesuai keahlian." },
+            { id: 17, text: "Saat kerja bakti, kamu melihat seorang kakek kesulitan memindahkan batu yang menghalangi jalan. Sikapmu sebaiknya...", options: { A: "Pura-pura tidak melihat", B: "Meneriakinya agar minggir", C: "Segera datang dan membantu kakek tersebut bersama teman-teman", D: "Menertawakan kakek itu" }, answer: "C", discussion: "Empati dan tolong menolong adalah inti gotong royong." },
+            { id: 18, text: "Di kelasmu ada siswa baru pindahan dari luar pulau. Ia berbicara dengan logat yang berbeda. Sikapmu...", options: { A: "Menirukan logatnya untuk bercanda", B: "Mengajaknya mengobrol dan berteman dengan baik", C: "Menghindarinya karena tidak paham", D: "Menyuruhnya belajar bahasa daerahmu" }, answer: "B", discussion: "Menerima teman baru tanpa membedakan asal daerah." },
+            { id: 19, text: "Pak RT mengadakan rapat untuk membahas lomba 17 Agustus. Ada perbedaan pendapat antara warga. Cara menyelesaikannya dengan kerja sama adalah...", options: { A: "Melakukan musyawarah untuk mencapai mufakat", B: "Pak RT yang memutuskan sendiri", C: "Membatalkan lomba", D: "Warga yang suaranya keras yang menang" }, answer: "A", discussion: "Musyawarah adalah jalan keluar perbedaan pendapat." },
+            { id: 20, text: "Suku Baduy adalah kelompok masyarakat yang sangat menjaga adat istiadatnya dan menolak teknologi modern. Suku ini berada di wilayah...", options: { A: "DKI Jakarta", B: "Banten", C: "Sumatera Utara", D: "Kalimantan Tengah" }, answer: "B", discussion: "Suku Baduy Dalam & Luar tinggal di Lebak, Banten." },
+
+            // Sumpah Pemuda & Sejarah
+            { id: 21, text: "Makna dari 'Satu Nusa' dalam Sumpah Pemuda adalah...", options: { A: "Satu wilayah tanah air, yaitu kepulauan Indonesia", B: "Satu bahasa yang digunakan", C: "Satu jenis suku", D: "Satu benua" }, answer: "A", discussion: "Nusa berarti pulau/wilayah tanah air." },
+            { id: 22, text: "Bahasa Indonesia ditetapkan sebagai bahasa persatuan karena...", options: { A: "Paling mudah dipelajari", B: "Agar bisa berkomunikasi dan menyatukan ribuan suku bangsa yang bahasanya berbeda", C: "Merupakan bahasa penjajah", D: "Hanya satu-satunya bahasa yang ada" }, answer: "B", discussion: "Bahasa Indonesia adalah jembatan komunikasi antar suku." },
+            { id: 23, text: "Sikap pahlawan yang bisa kita teladani dalam kehidupan sehari-hari (Kerja Sama) adalah...", options: { A: "Rela berkorban untuk kepentingan bersama", B: "Cepat putus asa", C: "Minta imbalan", D: "Mementingkan keluarga saja" }, answer: "A", discussion: "Rela berkorban (waktu/tenaga) demi kelompok/bersama." },
+            { id: 24, text: "Lagu kebangsaan Indonesia Raya pertama kali dikumandangkan pada peristiwa...", options: { A: "Proklamasi Kemerdekaan", B: "Kongres Pemuda II (Sumpah Pemuda)", C: "Sumpah Palapa", D: "Hari Pahlawan" }, answer: "B", discussion: "WR Supratman memainkannya dengan biola saat Kongres Pemuda 1928." },
+            { id: 25, text: "Semboyan 'Bhinneka Tunggal Ika' membuktikan bahwa bangsa Indonesia...", options: { A: "Kaya akan emas", B: "Beragam budayanya namun tetap satu kesatuan", C: "Memiliki satu agama saja", D: "Tidak suka perbedaan" }, answer: "B", discussion: "Unity in Diversity." },
+
+            // Evaluasi Keseluruhan (HOTS)
+            { id: 26, text: "Perilaku yang menunjukkan bahwa manusia adalah makhluk sosial adalah...", options: { A: "Suka hidup menyendiri di hutan", B: "Selalu mengurung diri di kamar", C: "Bekerja sama dengan tetangga membersihkan lingkungan", D: "Tidak mau meminjamkan pensil" }, answer: "C", discussion: "Makhluk sosial artinya butuh orang lain dan berinteraksi (kerja sama)." },
+            { id: 27, text: "Bentuk rumah Tongkonan yang atapnya melengkung menyerupai perahu merupakan warisan budaya dari suku...", options: { A: "Toraja (Sulawesi Selatan)", B: "Minangkabau", C: "Banjar", D: "Sasak" }, answer: "A", discussion: "Tongkonan adalah rumah suku Toraja." },
+            { id: 28, text: "Rendang adalah makanan olahan daging sapi khas Minangkabau yang dimasak lama dengan rempah. Makanan ini berasal dari provinsi...", options: { A: "Sumatera Utara", B: "Sumatera Barat", C: "Sumatera Selatan", D: "Riau" }, answer: "B", discussion: "Sumatera Barat (Padang)." },
+            { id: 29, text: "Jika kamu sedang bermain sepak bola, hal terpenting selain kemampuan individu adalah...", options: { A: "Sepatu yang mahal", B: "Baju yang bagus", C: "Kerja sama tim (passing/operan) yang baik", D: "Berteriak keras" }, answer: "C", discussion: "Sepak bola adalah olahraga tim, butuh kerja sama." },
+            { id: 30, text: "Kerja sama yang baik harus didasarkan pada niat yang...", options: { A: "Ingin dipuji guru", B: "Tulus ikhlas tanpa paksaan", C: "Terpaksa agar tidak dihukum", D: "Mencari uang" }, answer: "B", discussion: "Keikhlasan membuat gotong royong bermakna." },
+            { id: 31, text: "Tradisi 'Lompat Batu' (Fahombo) dilakukan oleh para pemuda sebagai tanda kedewasaan di daerah...", options: { A: "Nias, Sumatera Utara", B: "Mentawai", C: "Sumba", D: "Maluku" }, answer: "A", discussion: "Lompat batu (Fahombo) dari Nias." },
+            { id: 32, text: "Suku Sasak mendiami pulau...", options: { A: "Bali", B: "Lombok (NTB)", C: "Timor", D: "Jawa" }, answer: "B", discussion: "Suku Sasak ada di Lombok." },
+            { id: 33, text: "Kerja sama tidak selamanya baik. Contoh kerja sama yang DILARANG adalah...", options: { A: "Membersihkan lapangan sekolah", B: "Mengumpulkan uang untuk korban bencana", C: "Bersekongkol mencuri buah tetangga", D: "Menghias kelas" }, answer: "C", discussion: "Tolong menolong dalam dosa dan permusuhan dilarang." },
+            { id: 34, text: "Ketika kerja bakti kelas, Budi tidak sengaja menjatuhkan pot bunga hingga pecah. Sikap kelompok yang benar adalah...", options: { A: "Menyoraki dan menyalahkan Budi", B: "Melaporkan Budi ke polisi", C: "Membantu Budi membersihkan pecahannya dan memaafkan", D: "Meninggalkan Budi sendirian" }, answer: "C", discussion: "Meringankan beban teman dan memaafkan ketidaksengajaan." },
+            { id: 35, text: "Sebagai pelajar SDIT, contoh mencintai keberagaman budaya di sekolah adalah...", options: { A: "Hanya berteman dengan anak seagama dan sesuku", B: "Menonton dan mengapresiasi pentas seni tarian daerah lain", C: "Malu memakai batik", D: "Mengejek pakaian adat teman saat karnaval" }, answer: "B", discussion: "Apresiasi seni." },
+            { id: 36, text: "Makna toleransi dalam pergaulan sehari-hari adalah...", options: { A: "Ikut-ikutan ibadah agama lain", B: "Saling menghargai dan tidak mengganggu hak orang lain", C: "Membiarkan teman berbuat salah", D: "Saling mengejek" }, answer: "B", discussion: "Batas toleransi." },
+            { id: 37, text: "Apa yang terjadi jika bangsa Indonesia yang beragam ini tidak memiliki semboyan Bhinneka Tunggal Ika?", options: { A: "Akan menjadi bangsa yang paling kuat", B: "Akan rentan terjadi perpecahan dan konflik antar suku", C: "Semua orang akan menjadi kaya", D: "Negara lain akan takut" }, answer: "B", discussion: "Semboyan itu perekat bangsa." },
+            { id: 38, text: "Orang yang egois dalam kelompok biasanya...", options: { A: "Mau mendengarkan saran teman", B: "Mementingkan ide dan dirinya sendiri", C: "Suka membagi makanan", D: "Rela berkorban" }, answer: "B", discussion: "Ciri egois." },
+            { id: 39, text: "Jika warga desa jarang melakukan gotong royong, lingkungan desa tersebut kemungkinan besar akan...", options: { A: "Kotor, tidak terawat, dan warga kurang akrab", B: "Sangat bersih karena dibayar", C: "Aman dan sejahtera", D: "Menjadi kota maju" }, answer: "A", discussion: "Gotong royong merawat kebersihan dan keakraban." },
+            { id: 40, text: "Peristiwa alam apa yang biasanya membutuhkan semangat gotong royong dan kerja sama seluruh warga secara darurat?", options: { A: "Panen raya", B: "Pesta pernikahan", C: "Bencana alam (Banjir/Gempa)", D: "Liburan sekolah" }, answer: "C", discussion: "Bencana membutuhkan respons cepat dan solidaritas tinggi." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+            const [errorMsg, setErrorMsg] = useState('');
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { 
+                    setErrorMsg("Halo! Silakan tulis nama kamu dulu ya."); 
+                    return; 
+                }
+                setErrorMsg('');
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-amber-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-amber-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan PP Kelas 4 (Kerja Sama & Keberagaman)</p>
+                            
+                            <div className="mb-6 flex justify-center gap-2 text-4xl">
+                                🤝 🇮🇩 🏫
+                            </div>
+
+                            <input 
+                                type="text" 
+                                value={nama} 
+                                onChange={e => {setNama(e.target.value); setErrorMsg('');}} 
+                                placeholder="Tulis Nama Kamu..." 
+                                className="w-full p-4 border-2 border-amber-300 rounded-xl mb-2 text-center font-bold text-lg focus:outline-none focus:border-amber-500" 
+                            />
+                            {errorMsg && <p className="text-red-500 text-sm font-bold mb-4 animate-bounce">{errorMsg}</p>}
+                            
+                            <div className="flex gap-2 mb-6 mt-2">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-amber-500 text-white shadow-md border-amber-600' : 'bg-white text-gray-500 border-gray-200'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-orange-500 text-white shadow-md border-orange-600' : 'bg-white text-gray-500 border-gray-200'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-amber-600 py-4 rounded-xl font-black text-xl border-b-4 border-amber-800 btn-fun shadow-lg text-white">MULAI! ✨</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-amber-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-amber-800">SISWA</div><div className="font-bold text-amber-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-lg border border-amber-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-amber-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-amber-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-amber-100 border-amber-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-amber-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-amber-50 rounded-2xl border-2 border-amber-200 text-center">
+                            <h3 className="text-sm font-bold text-amber-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-amber-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-amber-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-orange-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-orange-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-amber-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-orange-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-amber-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-amber-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-amber-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-amber-100 text-amber-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat! Kamu Juara Pancasila! 🌟" : score >= 60 ? "Bagus! Terus Semangat Belajar! 👍" : "Jangan Menyerah, Ayo Coba Lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-orange-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Review Jawaban Salah ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 SEMPURNA! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+```
