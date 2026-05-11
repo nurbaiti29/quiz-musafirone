@@ -1,0 +1,339 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan Soal Bahasa Indonesia Kelas 4 (Bab 7 & 8) - Bimbel Musafir One</title>
+    
+    <!-- React & Tailwind -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #eff6ff; /* Blue-50 */
+            /* Pola background titik dan gelombang aman untuk anak */
+            background-image: radial-gradient(#93c5fd 2px, transparent 2px), radial-gradient(#93c5fd 2px, transparent 2px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            -webkit-tap-highlight-color: transparent; 
+        }
+        h1, h2, h3 { font-family: 'Comic Neue', cursive; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 4px solid #60a5fa; box-shadow: 8px 8px 0px #2563eb; border-radius: 1.5rem; }
+        .btn-fun { transition: transform 0.1s, box-shadow 0.1s; border-bottom: 4px solid rgba(0,0,0,0.2); }
+        .btn-fun:active { transform: translateY(4px); border-bottom: 0px; margin-bottom: 4px;}
+        
+        /* Loading Animation */
+        .loader { border: 6px solid #f3f3f3; border-top: 6px solid #2563eb; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="text-align: center; padding-top: 100px;">
+            <div class="loader"></div>
+            <h3 style="color: #1e3a8a; font-weight: bold;">Memuat Soal...</h3>
+            <p style="color: #888; font-size: 12px;">Bimbel Musafir One</p>
+        </div>
+    </div>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const root = document.getElementById('root');
+            root.innerHTML = '<div style="padding:20px; text-align:center; color:red;"><h3>Terjadi Kesalahan</h3><p>'+message+'</p><button onclick="window.location.reload()" style="padding:10px; margin-top:10px; border:1px solid #ccc; background:#eee;">Muat Ulang</button></div>';
+        };
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- DATA SOAL PAKET A (40 SOAL - Fokus Bab 7 & 8) ---
+        const paketA = [
+            // Puisi dan Lagu (Bait, Rima, Irama)
+            { id: 1, text: "Perhatikan penggalan lagu berikut!\nBangunlah jiwanya\nBangunlah badannya\nUntuk Indonesia Raya\n\nJumlah baris pada bait di atas adalah...", options: { A: "2", B: "3", C: "4", D: "5" }, answer: "B", discussion: "Terdapat 3 baris dalam kutipan lagu tersebut." },
+            { id: 2, text: "Persamaan bunyi pada akhir baris lagu atau puisi disebut...", options: { A: "Irama", B: "Judul", C: "Rima", D: "Tema" }, answer: "C", discussion: "Rima adalah pengulangan bunyi yang berselang, baik di dalam maupun di akhir baris sajak/lagu." },
+            { id: 3, text: "Perhatikan penggalan lagu berikut!\nBalonku ada lima (a)\nRupa-rupa warnanya (a)\nRima pada lagu tersebut adalah...", options: { A: "a-a", B: "a-b", C: "b-a", D: "b-b" }, answer: "A", discussion: "Kedua baris berakhiran bunyi 'a' (lima, warnanya), sehingga rimanya a-a." },
+            { id: 4, text: "Kumpulan beberapa baris dalam sebuah lagu atau puisi disebut...", options: { A: "Nada", B: "Bait", C: "Judul", D: "Syair" }, answer: "B", discussion: "Bait adalah satu kesatuan dalam puisi yang terdiri atas beberapa baris." },
+            { id: 5, text: "Bunyi akhir lagu yang teratur (rima yang baik) membuat lagu terdengar lebih...", options: { A: "Lambat", B: "Cepat", C: "Merdu", D: "Pelan" }, answer: "C", discussion: "Rima dan irama yang teratur menambah keindahan/kemerduan lagu." },
+            { id: 6, text: "Sajak bersilang memiliki pola rima...", options: { A: "a-a-a-a", B: "a-b-a-b", C: "a-b-b-a", D: "a-a-b-b" }, answer: "B", discussion: "Sajak silang berbunyi akhir a-b-a-b (baris 1 sama dengan 3, baris 2 sama dengan 4)." },
+            { id: 7, text: "Puisi: \nPagi hari aku bangun (a)\nMelihat burung bernyanyi (i)\nBunga-bunga mekar rimbun (a)\nMenyambut mentari pagi (i)\nPola rima pada puisi di atas adalah...", options: { A: "a-a-a-a", B: "a-b-b-a", C: "a-b-a-b", D: "a-a-b-b" }, answer: "C", discussion: "Bunyi akhirnya un-i-un-i, atau disimbolkan a-b-a-b." },
+
+            // Konjungsi Antarkalimat
+            { id: 8, text: "Bacalah teks berikut!\nHari ini hujan turun cukup deras. ..., siswa kelas 4 tetap semangat mengikuti pelajaran olahraga di aula.\nKonjungsi antarkalimat yang tepat adalah...", options: { A: "Oleh karena itu", B: "Namun", C: "Dengan demikian", D: "Kemudian" }, answer: "B", discussion: "Kata 'Namun' digunakan untuk menyatakan pertentangan dengan kalimat sebelumnya." },
+            { id: 9, text: "Bacalah teks berikut!\nDika selalu membuang sampah pada tempatnya. Ia juga mengingatkan teman-temannya untuk menjaga kebersihan. ..., kelas menjadi bersih dan nyaman.\nKonjungsi yang tepat adalah...", options: { A: "Sebaliknya", B: "Akan tetapi", C: "Oleh karena itu", D: "Sementara itu" }, answer: "C", discussion: "'Oleh karena itu' menyatakan akibat dari perbuatan Dika." },
+            { id: 10, text: "Konjungsi antarkalimat 'Sebaliknya' digunakan untuk menyatakan...", options: { A: "Kesimpulan", B: "Sebab akibat", C: "Pertentangan/Kebalikan", D: "Waktu/Urutan" }, answer: "C", discussion: "'Sebaliknya' membalik keadaan dari pernyataan kalimat pertama." },
+            { id: 11, text: "Budi sangat malas belajar. ..., ia sering mendapat nilai buruk saat ulangan.\nKonjungsi yang tepat adalah...", options: { A: "Akibatnya / Oleh karena itu", B: "Namun", C: "Sebaliknya", D: "Kemudian" }, answer: "A", discussion: "Menyatakan akibat dari kemalasannya." },
+            { id: 12, text: "Ibu memasak nasi goreng di dapur. ..., Ayah membersihkan halaman depan.\nKonjungsi yang menunjukkan kegiatan yang dilakukan bersamaan oleh orang berbeda adalah...", options: { A: "Sementara itu", B: "Oleh sebab itu", C: "Dengan demikian", D: "Namun" }, answer: "A", discussion: "'Sementara itu' menghubungkan dua kejadian berbeda dalam waktu yang sama." },
+            { id: 13, text: "Rani ingin membeli sepeda baru. ..., uang tabungannya belum cukup.\nKata hubung yang tepat adalah...", options: { A: "Kemudian", B: "Akan tetapi", C: "Dengan demikian", D: "Oleh karena itu" }, answer: "B", discussion: "Menyatakan pertentangan/kendala." },
+            { id: 14, text: "Paman menuangkan kopi ke dalam cangkir. ..., ia menambahkan sedikit gula.\nKata hubung urutan waktu yang tepat adalah...", options: { A: "Namun", B: "Kemudian", C: "Sebaliknya", D: "Oleh karena itu" }, answer: "B", discussion: "'Kemudian' menunjukkan kelanjutan aksi." },
+
+            // Fakta dan Opini
+            { id: 15, text: "Bacalah paragraf berikut!\nAisyah selalu membaca doa sebelum belajar. Ia juga mendengarkan penjelasan guru dengan baik. Aisyah adalah murid paling sopan di sekolah.\nKalimat opini pada paragraf tersebut adalah...", options: { A: "Aisyah membaca doa sebelum belajar.", B: "Ia mendengarkan penjelasan guru dengan baik.", C: "Aisyah belajar di sekolah setiap hari.", D: "Aisyah adalah murid paling sopan di sekolah." }, answer: "D", discussion: "Kata 'paling sopan' merupakan penilaian subjektif (opini)." },
+            { id: 16, text: "Kalimat berikut yang termasuk fakta adalah...", options: { A: "Membaca buku adalah kegiatan paling menyenangkan.", B: "Semua siswa harus menjadi seperti Rafi.", C: "Rafi membawa Al-Qur'an ke sekolah hari ini.", D: "Salat Subuh adalah ibadah paling berat dilakukan." }, answer: "C", discussion: "Fakta adalah hal yang benar-benar terjadi dan bisa dibuktikan secara nyata." },
+            { id: 17, text: "'Menjaga kebersihan kelas adalah kebiasaan yang sangat baik.'\nKalimat tersebut termasuk...", options: { A: "Fakta", B: "Opini", C: "Ajakan", D: "Perintah" }, answer: "B", discussion: "Kata 'sangat baik' merupakan pendapat atau penilaian (opini)." },
+            { id: 18, text: "Ciri utama dari kalimat fakta adalah...", options: { A: "Berdasarkan perasaan seseorang", B: "Dapat dibuktikan kebenarannya dan benar-benar terjadi", C: "Menggunakan kata 'mungkin' atau 'sepertinya'", D: "Hanya berupa dugaan" }, answer: "B", discussion: "Fakta adalah kenyataan objektif." },
+            { id: 19, text: "Manakah yang merupakan kalimat fakta?", options: { A: "Matahari terbit dari sebelah timur.", B: "Kue cokelat itu sangat enak.", C: "Pemandangan di gunung lebih bagus daripada di laut.", D: "Andi adalah anak yang paling tampan." }, answer: "A", discussion: "Matahari terbit dari timur adalah kebenaran alam mutlak (fakta)." },
+            { id: 20, text: "Ciri kalimat opini biasanya menggunakan kata-kata berikut, KECUALI...", options: { A: "Sepertinya", B: "Menurut saya", C: "Telah terjadi", D: "Sangat bagus" }, answer: "C", discussion: "'Telah terjadi' menunjukkan kejadian nyata (fakta)." },
+            { id: 21, text: "'Indonesia memproklamasikan kemerdekaan pada tanggal 17 Agustus 1945.' Kalimat ini adalah...", options: { A: "Fakta sejarah", B: "Opini", C: "Fiksi", D: "Saran" }, answer: "A", discussion: "Bisa dibuktikan dengan catatan sejarah." },
+
+            // Jenis Paragraf dan Ide Pokok
+            { id: 22, text: "Paragraf yang kalimat utamanya (ide pokoknya) terletak di akhir paragraf disebut...", options: { A: "Deduktif", B: "Narasi", C: "Deskripsi", D: "Induktif" }, answer: "D", discussion: "In-duktif = In-End (Akhir). Deduktif = Depan." },
+            { id: 23, text: "Bacalah paragraf berikut!\nSetiap pagi Hasan menyiram tanaman di depan rumah. Ia juga membantu ayah membersihkan halaman. Hasan memang anak yang rajin.\nJenis paragraf tersebut adalah...", options: { A: "Deduktif", B: "Induktif", C: "Narasi", D: "Campuran" }, answer: "B", discussion: "Kesimpulan 'Hasan anak rajin' ada di akhir paragraf (Induktif)." },
+            { id: 24, text: "Perhatikan paragraf berikut!\nDisiplin adalah sikap yang harus dimiliki setiap murid. Oleh karena itu, murid kelas 4 selalu datang tepat waktu ke sekolah, memakai seragam rapi, dan mengumpulkan tugas tepat waktu.\nJenis paragraf tersebut adalah...", options: { A: "Narasi", B: "Campuran", C: "Deduktif", D: "Induktif" }, answer: "C", discussion: "Pernyataan utama (Disiplin harus dimiliki murid) ada di awal kalimat (Deduktif)." },
+            { id: 25, text: "Bacalah paragraf berikut!\nSiswa kelas 4 melaksanakan salat Dhuha bersama setiap Jumat pagi. Kegiatan tersebut dilakukan sebelum pembelajaran dimulai. Semua siswa mengikuti kegiatan dengan tertib.\nIde pokok paragraf tersebut adalah...", options: { A: "Ketertiban siswa di sekolah", B: "Jadwal pelajaran hari Jumat", C: "Kegiatan salat Dhuha bersama siswa kelas 4", D: "Cara belajar siswa" }, answer: "C", discussion: "Paragraf tersebut secara keseluruhan membahas kegiatan Salat Dhuha siswa kelas 4." },
+            { id: 26, text: "Kalimat yang menjadi dasar pengembangan sebuah paragraf disebut...", options: { A: "Kalimat penjelas", B: "Kalimat utama", C: "Kalimat penutup", D: "Kalimat tanya" }, answer: "B", discussion: "Kalimat utama memuat ide pokok yang kemudian dijelaskan oleh kalimat penjelas." },
+            { id: 27, text: "Kalimat penjelas berfungsi untuk...", options: { A: "Mengakhiri cerita", B: "Menyimpulkan isi bacaan", C: "Menjelaskan atau merinci kalimat utama", D: "Membuat judul" }, answer: "C", discussion: "Memberikan detail tambahan untuk ide pokok." },
+            { id: 28, text: "Teks:\nSayuran sangat penting untuk kesehatan tubuh. Sayuran mengandung banyak serat yang baik untuk pencernaan. Selain itu, sayuran kaya akan vitamin yang bisa meningkatkan kekebalan tubuh.\nKalimat utama paragraf di atas adalah...", options: { A: "Sayuran mengandung banyak serat.", B: "Sayuran kaya akan vitamin.", C: "Sayuran sangat penting untuk kesehatan tubuh.", D: "Serat baik untuk pencernaan." }, answer: "C", discussion: "Terdapat di kalimat pertama (Deduktif)." },
+
+            // Evaluasi Keseluruhan (HOTS)
+            { id: 29, text: "Penggunaan tanda koma (,) yang tepat sebelum kata hubung antarkalimat adalah...", options: { A: "Namun ia tetap berangkat.", B: "Namun, ia tetap berangkat.", C: "Namun ia, tetap berangkat.", D: ",Namun ia tetap berangkat." }, answer: "B", discussion: "Kata hubung antarkalimat (Namun, Oleh karena itu, dsb) harus diikuti tanda koma." },
+            { id: 30, text: "Pilih kalimat yang berisi fakta!", options: { A: "Jeruk Bali adalah buah yang paling lezat.", B: "Jeruk Bali memiliki ukuran yang lebih besar dari jeruk biasa.", C: "Makan jeruk Bali setiap hari akan membuatmu sangat bahagia.", D: "Semua orang pasti menyukai jeruk Bali." }, answer: "B", discussion: "Ukuran jeruk bisa diukur secara fisik (objektif/fakta)." },
+            { id: 31, text: "Pilih kalimat yang berisi opini!", options: { A: "Ular adalah hewan melata.", B: "Ular berkembang biak dengan bertelur.", C: "Ular adalah hewan yang paling menakutkan di dunia.", D: "Beberapa ular memiliki bisa beracun." }, answer: "C", discussion: "Menakutkan adalah perasaan/pandangan subjektif seseorang." },
+            { id: 32, text: "Paragraf campuran adalah paragraf yang kalimat utamanya terletak di...", options: { A: "Awal saja", B: "Akhir saja", C: "Awal dan akhir (ditegaskan kembali)", D: "Tengah saja" }, answer: "C", discussion: "Campuran (Deduktif-Induktif) ide pokoknya ada di awal dan ditegaskan lagi di akhir." },
+            { id: 33, text: "Kata konjungsi 'Dengan demikian' biasanya digunakan untuk...", options: { A: "Memulai cerita", B: "Menarik kesimpulan dari kalimat sebelumnya", C: "Menyatakan waktu", D: "Menyatakan pertentangan" }, answer: "B", discussion: "Berfungsi menyimpulkan." },
+            { id: 34, text: "Sajak dengan pola a-a-a-a disebut sajak...", options: { A: "Silang", B: "Terus/Lurus", C: "Peluk", D: "Kembar" }, answer: "B", discussion: "Sajak terus / lurus memiliki bunyi akhir yang sama semua." },
+            { id: 35, text: "Caca bangun kesiangan. ..., ia terlambat tiba di sekolah.\nKonjungsi yang tepat...", options: { A: "Akibatnya", B: "Meskipun begitu", C: "Sebaliknya", D: "Namun" }, answer: "A", discussion: "Menyatakan akibat." },
+            { id: 36, text: "Fakta: Harimau adalah karnivora.\nOpini yang tepat untuk melengkapi fakta tersebut adalah...", options: { A: "Harimau memakan daging.", B: "Harimau mempunyai gigi taring.", C: "Harimau adalah hewan buas yang paling gagah.", D: "Harimau berburu mangsa." }, answer: "C", discussion: "Gagah adalah opini." },
+            { id: 37, text: "Rima pada akhir puisi berguna untuk memberikan kesan...", options: { A: "Menakutkan", B: "Keindahan/Estetika", C: "Menyedihkan", D: "Membosankan" }, answer: "B", discussion: "Keindahan bunyi (Estetika)." },
+            { id: 38, text: "Paragraf:\n1) Udara di Puncak sangat dingin. 2) Kabut tebal menutupi jalanan. 3) Warga harus memakai jaket tebal. 4) Memang, cuaca di daerah pegunungan saat ini sedang ekstrem.\nKalimat utama ada pada nomor...", options: { A: "1", B: "2", C: "3", D: "4" }, answer: "D", discussion: "Kesimpulan/Ide pokok dirangkum pada kalimat 4 (Induktif)." },
+            { id: 39, text: "Lawan dari Paragraf Deduktif adalah...", options: { A: "Deskripsi", B: "Eksposisi", C: "Induktif", D: "Narasi" }, answer: "C", discussion: "Deduktif (Awal) vs Induktif (Akhir)." },
+            { id: 40, text: "Syarat kalimat fakta adalah...", options: { A: "Mengandung kebohongan", B: "Belum pernah terjadi", C: "Tidak dapat dibuktikan", D: "Objektif dan dapat dibuktikan" }, answer: "D", discussion: "Syarat mutlak fakta." }
+        ];
+
+        // --- DATA SOAL PAKET B (40 SOAL - VARIASI) ---
+        const paketB = [
+            { id: 1, text: "Lagu 'Bintang Kecil' di langit yang biru (u)\nAmat banyak menghias angkasa (a)\nAku ingin terbang dan menari (i)\nJauh tinggi ke tempat kau berada (a)\n\nLagu di atas terdiri dari berapa baris?", options: { A: "2", B: "3", C: "4", D: "5" }, answer: "C", discussion: "Ada 4 baris dalam 1 bait." },
+            { id: 2, text: "Jika bunyi akhir puisi adalah u-a-u-a, maka pola rimanya disebut...", options: { A: "a-b-a-b (Silang)", B: "a-a-a-a (Terus)", C: "a-b-b-a (Peluk)", D: "a-a-b-b (Kembar)" }, answer: "A", discussion: "Silang karena baris 1=3 dan 2=4." },
+            { id: 3, text: "Baris dalam puisi berfungsi membentuk...", options: { A: "Paragraf", B: "Bait", C: "Cerita", D: "Bab" }, answer: "B", discussion: "Kumpulan baris membentuk bait." },
+            { id: 4, text: "Keindahan puisi tidak hanya dari maknanya, tetapi juga dari ... dan iramanya.", options: { A: "Rima (persamaan bunyi)", B: "Buku", C: "Gambar", D: "Warna tulisan" }, answer: "A", discussion: "Rima memperindah puisi." },
+            { id: 5, text: "Andi suka bermain sepak bola. ..., adiknya lebih suka bermain catur.\nKonjungsi antarkalimat yang tepat adalah...", options: { A: "Oleh karena itu", B: "Sementara itu / Sebaliknya", C: "Kemudian", D: "Sehingga" }, answer: "B", discussion: "Membandingkan dua hal berbeda yang terjadi bersamaan/berlawanan." },
+            { id: 6, text: "Tim nasional berlatih dengan sangat keras setiap hari. ..., mereka berhasil menjadi juara satu.\nKata hubung yang tepat adalah...", options: { A: "Namun", B: "Dengan demikian / Oleh karena itu", C: "Akan tetapi", D: "Sebaliknya" }, answer: "B", discussion: "Menunjukkan hasil/kesimpulan." },
+            { id: 7, text: "Ibu lupa mematikan kompor saat memasak air. ..., air di panci itu mendidih hingga habis.\nKonjungsi yang tepat adalah...", options: { A: "Namun", B: "Akibatnya", C: "Sebaliknya", D: "Kemudian" }, answer: "B", discussion: "Menunjukkan akibat kelalaian." },
+            { id: 8, text: "Rika berjanji akan datang ke rumah Lani jam 3 sore. ..., hingga jam 4 sore Rika belum juga tiba.\nKonjungsi yang paling pas adalah...", options: { A: "Akan tetapi / Namun", B: "Oleh karena itu", C: "Dengan demikian", D: "Selanjutnya" }, answer: "A", discussion: "Pertentangan harapan." },
+            { id: 9, text: "Penulisan tanda baca koma (,) yang benar setelah konjungsi antarkalimat adalah...", options: { A: "Akan tetapi ia tidak menangis.", B: "Akan tetapi, ia tidak menangis.", C: "Akan, tetapi ia tidak menangis.", D: "Akan tetapi ia, tidak menangis." }, answer: "B", discussion: "Koma diletakkan tepat setelah konjungsi." },
+            { id: 10, text: "Manakah yang termasuk Opini?", options: { A: "Ibukota Indonesia adalah Jakarta.", B: "Kucing adalah hewan mamalia.", C: "Belajar matematika itu sangat sulit.", D: "Air mendidih pada suhu 100 derajat celcius." }, answer: "C", discussion: "Sulit bagi seseorang belum tentu sulit bagi orang lain (Subjektif)." },
+            { id: 11, text: "Manakah yang termasuk Fakta?", options: { A: "Hujan turun di kota Bandung kemarin sore.", B: "Hujan sore ini membuat suasana sangat romantis.", C: "Hujan adalah cuaca yang paling membosankan.", D: "Sebaiknya kita tidur saja saat hujan." }, answer: "A", discussion: "Bisa dibuktikan kebenarannya oleh saksi mata/berita." },
+            { id: 12, text: "'Menurut saya, warna biru lebih bagus daripada merah.' Kalimat tersebut adalah...", options: { A: "Fakta", B: "Opini", C: "Berita", D: "Pengumuman" }, answer: "B", discussion: "Pendapat pribadi." },
+            { id: 13, text: "Kalimat fakta bersifat...", options: { A: "Subjektif (tergantung orangnya)", B: "Objektif (apa adanya/nyata)", C: "Dibuat-buat", D: "Tidak pasti" }, answer: "B", discussion: "Sifat fakta." },
+            { id: 14, text: "Paragraf Deduktif memulai penjelasannya dari hal yang ... menuju hal yang ...", options: { A: "Khusus - Umum", B: "Umum (Ide Pokok) - Khusus (Penjelasan)", C: "Tidak penting - Penting", D: "Opini - Fakta" }, answer: "B", discussion: "Deduktif: Pernyataan umum di awal, lalu dirinci." },
+            { id: 15, text: "Paragraf Induktif menyajikan kalimat ... terlebih dahulu, lalu diakhiri dengan ...", options: { A: "Penjelas - Kalimat Utama (Kesimpulan)", B: "Utama - Penjelas", C: "Judul - Penutup", D: "Opini - Fakta" }, answer: "A", discussion: "Rincian dulu, baru kesimpulan di akhir." },
+            { id: 16, text: "Paragraf:\nIkan bernapas menggunakan insang. Kucing bernapas dengan paru-paru. Katak bernapas menggunakan kulit dan paru-paru. Kesimpulannya, setiap hewan memiliki alat pernapasan yang berbeda-beda.\nIni adalah contoh paragraf...", options: { A: "Deduktif", B: "Induktif", C: "Campuran", D: "Narasi" }, answer: "B", discussion: "Kesimpulan ada di akhir kalimat." },
+            { id: 17, text: "Paragraf:\nGotong royong memiliki banyak manfaat. Pekerjaan yang berat akan terasa ringan jika dikerjakan bersama. Selain itu, gotong royong dapat mempererat tali persaudaraan antarwarga.\nIde pokok paragraf di atas adalah...", options: { A: "Pekerjaan berat", B: "Tali persaudaraan", C: "Manfaat gotong royong", D: "Warga desa" }, answer: "C", discussion: "Terdapat pada kalimat pertama (Deduktif)." },
+            { id: 18, text: "Kalimat 'Selain itu, gotong royong dapat mempererat tali persaudaraan antarwarga.' pada paragraf sebelumnya berfungsi sebagai...", options: { A: "Kalimat utama", B: "Kalimat penjelas", C: "Ide pokok", D: "Judul" }, answer: "B", discussion: "Menjelaskan salah satu manfaat." },
+            { id: 19, text: "Dalam membaca paragraf, kita bisa menemukan ide pokok dengan cara...", options: { A: "Membaca kata pertama saja", B: "Menghitung jumlah kata", C: "Membaca kalimat awal dan akhir paragraf secara cermat", D: "Melihat gambar" }, answer: "C", discussion: "Ide pokok biasanya di awal (Deduktif) atau di akhir (Induktif)." },
+            { id: 20, text: "Konjungsi 'Oleh karena itu' dan 'Dengan demikian' merupakan penanda hubungan...", options: { A: "Penyebaban/Akibat/Kesimpulan", B: "Waktu", C: "Pilihan", D: "Pertentangan" }, answer: "A", discussion: "Fungsi konjungsi." },
+            { id: 21, text: "Iwan jarang menyikat gigi. ..., ia sering sakit gigi.\nKonjungsi yang tepat adalah...", options: { A: "Namun", B: "Akibatnya", C: "Sebaliknya", D: "Padahal" }, answer: "B", discussion: "Menyatakan dampak." },
+            { id: 22, text: "Pola rima kembar/pasangan ditulis dengan simbol...", options: { A: "a-b-a-b", B: "a-b-b-a", C: "a-a-b-b", D: "a-a-a-a" }, answer: "C", discussion: "Rima kembar berpasangan." },
+            { id: 23, text: "Teks opini banyak digunakan dalam iklan agar...", options: { A: "Orang menjadi takut", B: "Pembeli tertarik dengan klaim keunggulan produk", C: "Barang tidak laku", D: "Orang marah" }, answer: "B", discussion: "Opini dalam iklan bersifat persuasif." },
+            { id: 24, text: "'Mie ayam di warung Pak Joko adalah yang terlezat se-Indonesia'. Kalimat ini termasuk...", options: { A: "Fakta sejarah", B: "Opini (promosi berlebihan)", C: "Kalimat majemuk", D: "Kalimat tanya" }, answer: "B", discussion: "Rasa lezat itu subjektif." },
+            { id: 25, text: "Untuk mengubah opini menjadi fakta, kita harus...", options: { A: "Menambahkan kata 'sangat'", B: "Menyajikan data, angka, atau bukti yang jelas", C: "Menghapus tanda titik", D: "Membaca dengan keras" }, answer: "B", discussion: "Fakta butuh bukti objektif." },
+            { id: 26, text: "Kalimat fakta: 'Suhu ruangan ini 20 derajat Celcius'.\nKalimat opininya bisa berupa...", options: { A: "Ruangan ini suhunya 20 derajat.", B: "AC di ruangan ini menyala.", C: "Ruangan ini terasa sangat dingin.", D: "Ada termometer di ruangan ini." }, answer: "C", discussion: "Rasa dingin tiap orang berbeda (Opini)." },
+            { id: 27, text: "Lagu anak-anak umumnya memiliki rima yang...", options: { A: "Berantakan", B: "Teratur dan ceria", C: "Sedih dan kaku", D: "Tidak jelas" }, answer: "B", discussion: "Agar mudah dihafal dan dinyanyikan." },
+            { id: 28, text: "Teks:\nSampah plastik sangat berbahaya bagi lingkungan. Plastik butuh ratusan tahun untuk terurai. Banyak hewan laut mati karena memakan sampah plastik.\nJenis paragraf ini adalah...", options: { A: "Deduktif", B: "Induktif", C: "Campuran", D: "Dialog" }, answer: "A", discussion: "Gagasan utamanya ada di awal (Sampah plastik berbahaya)." },
+            { id: 29, text: "Kalimat penghubung antar paragraf disebut konjungsi...", options: { A: "Intrakalimat", B: "Antarkalimat / Antarparagraf", C: "Bawahan", D: "Setara" }, answer: "B", discussion: "Menghubungkan dua kalimat terpisah." },
+            { id: 30, text: "Ayah sudah minum obat flu. ..., demamnya belum juga turun.\nKata yang tepat...", options: { A: "Akan tetapi", B: "Dengan demikian", C: "Sehingga", D: "Oleh sebab itu" }, answer: "A", discussion: "Pertentangan." },
+            { id: 31, text: "Penggunaan huruf kapital yang benar pada awal kalimat fakta adalah...", options: { A: "bumi mengelilingi matahari.", B: "Bumi mengelilingi matahari.", C: "Bumi Mengelilingi Matahari.", D: "BUMI mengelilingi MATAHARI." }, answer: "B", discussion: "Awal kalimat kapital." },
+            { id: 32, text: "'Penduduk desa sedang panen padi raya. ... , mereka akan mengadakan syukuran besok malam.'\nKonjungsi yang tepat adalah...", options: { A: "Namun", B: "Oleh karena itu", C: "Sebaliknya", D: "Sedangkan" }, answer: "B", discussion: "Syukuran adalah akibat dari panen raya." },
+            { id: 33, text: "Kumpulan kata indah yang memiliki rima dan ritme tanpa diiringi musik biasanya disebut...", options: { A: "Puisi/Sajak", B: "Berita", C: "Koran", D: "Pengumuman" }, answer: "A", discussion: "Puisi." },
+            { id: 34, text: "Bait dalam puisi sama fungsinya dengan ... pada teks biasa.", options: { A: "Huruf", B: "Kata", C: "Paragraf", D: "Judul" }, answer: "C", discussion: "Bait = Paragraf dalam puisi." },
+            { id: 35, text: "Kalimat penjelas yang baik harus...", options: { A: "Bertentangan dengan ide pokok", B: "Sesuai dan mendukung ide pokok", C: "Berisi kebohongan", D: "Mengubah topik pembicaraan" }, answer: "B", discussion: "Relevansi kalimat." },
+            { id: 36, text: "Roni ingin bermain bola di lapangan. ..., lapangan sedang direnovasi.\nKata hubung yang tepat...", options: { A: "Namun / Akan tetapi", B: "Oleh karena itu", C: "Kemudian", D: "Jadi" }, answer: "A", discussion: "Menunjukkan hambatan/pertentangan." },
+            { id: 37, text: "Fakta: 'Kambing adalah hewan berkaki empat'.\nManakah yang merupakan kalimat penjelas yang sesuai?", options: { A: "Kambing bisa terbang.", B: "Kambing termasuk hewan herbivora (pemakan tumbuhan).", C: "Kambing hidup di laut.", D: "Kambing sangat menakutkan." }, answer: "B", discussion: "Fakta yang mendukung ciri hewan kambing." },
+            { id: 38, text: "Gagasan yang menjadi inti pembicaraan dalam suatu paragraf disebut...", options: { A: "Kesimpulan", B: "Ide pokok / Gagasan utama", C: "Saran", D: "Tanggapan" }, answer: "B", discussion: "Definisi Ide Pokok." },
+            { id: 39, text: "Ide pokok biasanya hanya ada ... dalam setiap satu paragraf.", options: { A: "Satu", B: "Dua", C: "Tiga", D: "Banyak" }, answer: "A", discussion: "Setiap paragraf hanya punya 1 ide pokok." },
+            { id: 40, text: "Membaca teks secara keseluruhan sebelum menentukan ide pokok bertujuan agar...", options: { A: "Cepat selesai", B: "Tidak salah memahami isi dan kesimpulan teks", C: "Bisa tertidur", D: "Mendapat nilai jelek" }, answer: "B", discussion: "Pemahaman utuh (Reading Comprehension)." }
+        ];
+
+        function App() {
+            const [step, setStep] = useState('welcome');
+            const [paket, setPaket] = useState('A');
+            const [nama, setNama] = useState('');
+            const [answers, setAnswers] = useState({});
+            const [page, setPage] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(90 * 60);
+            const [activeQuestions, setActiveQuestions] = useState([]);
+            const [errorMsg, setErrorMsg] = useState('');
+
+            useEffect(() => {
+                let timer;
+                if (step === 'quiz' && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && step === 'quiz') {
+                    setStep('result');
+                }
+                return () => clearInterval(timer);
+            }, [step, timeLeft]);
+
+            const startQuiz = () => {
+                if (!nama.trim()) { 
+                    setErrorMsg("Halo! Silakan tulis nama kamu dulu ya."); 
+                    return; 
+                }
+                setErrorMsg('');
+                setActiveQuestions(paket === 'A' ? paketA : paketB);
+                setAnswers({});
+                setPage(0);
+                setTimeLeft(90 * 60);
+                setStep('quiz');
+                window.scrollTo(0, 0);
+            };
+
+            const calculateScore = () => {
+                let correct = 0;
+                activeQuestions.forEach(q => { if (answers[q.id] === q.answer) correct++; });
+                return (correct / activeQuestions.length) * 100;
+            };
+
+            const formatTime = (s) => {
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+            };
+
+            // HALAMAN DEPAN
+            if (step === 'welcome') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4">
+                        <div className="glass-panel p-8 max-w-md w-full text-center bg-white/95">
+                            <h2 className="text-xl font-bold text-blue-800">Selamat Datang di</h2>
+                            <h1 className="text-3xl font-black text-blue-600 mb-2">Bimbel Musafir One</h1>
+                            <p className="text-sm text-gray-600 mb-6 font-bold">Latihan B. Indonesia Kls 4 (Bab 7 & 8)</p>
+                            
+                            <div className="mb-6 flex justify-center gap-2 text-4xl">
+                                📖 ✏️ 🇮🇩
+                            </div>
+
+                            <input 
+                                type="text" 
+                                value={nama} 
+                                onChange={e => {setNama(e.target.value); setErrorMsg('');}} 
+                                placeholder="Tulis Nama Kamu..." 
+                                className="w-full p-4 border-2 border-blue-300 rounded-xl mb-2 text-center font-bold text-lg focus:outline-none focus:border-blue-500" 
+                            />
+                            {errorMsg && <p className="text-red-500 text-sm font-bold mb-4 animate-bounce">{errorMsg}</p>}
+                            
+                            <div className="flex gap-2 mb-6 mt-2">
+                                <button onClick={() => setPaket('A')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'A' ? 'bg-blue-500 text-white shadow-md border-blue-600' : 'bg-white text-gray-500 border-gray-200'}`}>Paket A</button>
+                                <button onClick={() => setPaket('B')} className={`flex-1 p-3 rounded-xl border-2 font-bold transition-all ${paket === 'B' ? 'bg-indigo-500 text-white shadow-md border-indigo-600' : 'bg-white text-gray-500 border-gray-200'}`}>Paket B</button>
+                            </div>
+                            <button onClick={startQuiz} className="w-full bg-blue-600 py-4 rounded-xl font-black text-xl border-b-4 border-blue-800 btn-fun shadow-lg text-white">MULAI! ✨</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN QUIZ
+            if (step === 'quiz') {
+                const limit = 5;
+                const start = page * limit;
+                const currentQ = activeQuestions.slice(start, start + limit);
+                const totalPages = Math.ceil(activeQuestions.length / limit);
+                const isLastPage = start + limit >= activeQuestions.length;
+
+                return (
+                    <div className="max-w-3xl mx-auto p-4 pb-48">
+                        {/* HEADER */}
+                        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 border-b-4 border-blue-300 px-4 py-2 flex justify-between items-center h-16 safe-top">
+                            <div><div className="text-[10px] font-bold text-blue-800">SISWA</div><div className="font-bold text-blue-700 truncate max-w-[150px]">{nama}</div></div>
+                            <div className="font-mono font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-lg border border-blue-300">{formatTime(timeLeft)}</div>
+                        </div>
+
+                        {/* LIST SOAL */}
+                        <div className="mt-20 space-y-6">
+                            {currentQ.map((q, idx) => (
+                                <div key={q.id} className="bg-white p-5 rounded-2xl shadow-sm border-2 border-blue-100 relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 bg-blue-500 text-white px-3 py-1 rounded-br-xl font-bold text-sm shadow">No. {start + idx + 1}</div>
+                                    <div className="mt-8">
+                                        <p className="font-bold text-gray-800 mb-6 text-lg leading-relaxed whitespace-pre-wrap">{q.text}</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {Object.entries(q.options).map(([k, v]) => (
+                                                <button key={k} onClick={() => setAnswers({...answers, [q.id]: k})} className={`text-left p-4 rounded-xl border-2 flex items-center gap-4 transition-all ${answers[q.id] === k ? 'bg-blue-100 border-blue-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50 active:scale-[0.99]'}`}>
+                                                    <span className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold text-sm flex-shrink-0 transition-colors ${answers[q.id] === k ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{k}</span>
+                                                    <span className="text-base font-medium text-gray-700">{v}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* NAVIGASI STATIS (BAWAH) */}
+                        <div className="mt-12 mb-10 p-6 bg-blue-50 rounded-2xl border-2 border-blue-200 text-center">
+                            <h3 className="text-sm font-bold text-blue-800 mb-4 uppercase tracking-widest">Navigasi Halaman</h3>
+                            <div className="flex gap-4 justify-center">
+                                <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-6 py-3 bg-white border-2 border-gray-300 rounded-xl font-bold text-gray-500 disabled:opacity-50">← Sebelumnya</button>
+                                {isLastPage ? 
+                                    <button onClick={() => setStep('result')} className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg border-b-4 border-blue-800 btn-fun">SELESAI ✅</button> :
+                                    <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-8 py-3 bg-indigo-500 text-white rounded-xl font-bold shadow-lg border-b-4 border-indigo-700 btn-fun">SELANJUTNYA →</button>
+                                }
+                            </div>
+                        </div>
+
+                        {/* NAVIGASI FLOATING */}
+                        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t-2 border-gray-200 shadow-[0_-4px_15px_rgba(0,0,0,0.1)] p-3 z-50 flex items-center justify-between safe-bottom">
+                            <button disabled={page === 0} onClick={() => {setPage(p=>p-1);window.scrollTo(0,0)}} className="px-5 py-3 bg-gray-100 rounded-xl font-bold text-gray-600 disabled:opacity-30 active:bg-gray-200">←</button>
+                            <span className="text-sm font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full">Hal {page+1} / {totalPages}</span>
+                            {isLastPage ? 
+                                <button onClick={() => setStep('result')} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold shadow btn-fun">Selesai</button> :
+                                <button onClick={() => {setPage(p=>p+1);window.scrollTo(0,0)}} className="px-6 py-3 bg-indigo-500 text-white rounded-xl font-bold shadow btn-fun">Lanjut</button>
+                            }
+                        </div>
+                    </div>
+                );
+            }
+
+            // HALAMAN HASIL
+            if (step === 'result') {
+                const score = calculateScore();
+                const wrongs = activeQuestions.filter(q => answers[q.id] !== q.answer);
+                return (
+                    <div className="min-h-screen bg-blue-50 p-6 pb-24">
+                        <div className="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-xl border-4 border-blue-300 text-center mb-8 relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400"></div>
+                            <h2 className="text-gray-400 font-bold uppercase text-xs tracking-widest mt-2">Nilai Akhir</h2>
+                            <h1 className="text-7xl font-black text-blue-600 my-4 tracking-tighter">{score.toFixed(0)}</h1>
+                            <div className="inline-block bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-bold text-xl mb-4">{nama}</div>
+                            <p className="text-gray-500 font-medium">{score >= 80 ? "Hebat! Kamu Juara Sastra! 🌟" : score >= 60 ? "Bagus! Terus Semangat Belajar! 👍" : "Jangan Menyerah, Ayo Coba Lagi! 💪"}</p>
+                            <button onClick={() => window.location.reload()} className="mt-8 bg-indigo-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-600 transition shadow-lg w-full">Ulangi Tes ↺</button>
+                        </div>
+                        
+                        {wrongs.length > 0 && <h3 className="text-center font-bold text-red-500 mb-4 uppercase tracking-wider text-sm">Review Jawaban Salah ({wrongs.length})</h3>}
+                        
+                        {wrongs.map((q, i) => (
+                            <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-red-100 mb-4">
+                                <div className="flex gap-3 mb-3">
+                                    <span className="bg-red-100 text-red-600 font-bold px-2 py-1 rounded text-xs h-fit">No. {activeQuestions.indexOf(q)+1}</span>
+                                    <p className="font-bold text-gray-800 text-sm leading-snug whitespace-pre-wrap">{q.text}</p>
+                                </div>
+                                <div className="text-sm space-y-2 ml-10">
+                                    <div className="flex items-center gap-2 text-red-500 bg-red-50 p-2 rounded w-fit text-xs font-bold">❌ {q.options[answers[q.id]] || "Kosong"}</div>
+                                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-2 rounded w-fit text-xs font-bold">✅ {q.options[q.answer]}</div>
+                                    <div className="bg-blue-50 p-3 rounded-lg text-blue-800 text-xs border border-blue-100 leading-relaxed">💡 {q.discussion}</div>
+                                </div>
+                            </div>
+                        ))}
+                        {wrongs.length === 0 && <div className="text-center p-8 bg-green-100 rounded-3xl font-bold text-green-700 border-2 border-green-200 text-xl">🎉 SEMPURNA! <br/>Semua Jawaban Benar!</div>}
+                        
+                        <div className="text-center mt-12 text-gray-400 font-bold text-xs font-mono">Bimbel Musafir One</div>
+                    </div>
+                );
+            }
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+```
